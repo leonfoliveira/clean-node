@@ -4,5 +4,8 @@
   "main": "index.js",
   "repository": "https://github.com/leonfoliveira/clean-node.git",
   "author": "Leonardo Oliveira <leonfoliveira@gmail.com>",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.0.0"
+  }
 }
