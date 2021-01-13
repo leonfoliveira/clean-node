@@ -6,8 +6,9 @@
   "author": "Leonardo Oliveira <leonfoliveira@gmail.com>",
   "license": "GPL-3.0",
   "scripts": {
-    "test": "jest",
-    "test:staged": "jest"
+    "test": "jest --passWithNoTests --no-cache --runInBand",
+    "test:watch": "yarn test --watch",
+    "test:staged": "yarn test --findRelatedTests"
   },
   "devDependencies": {
     "@types/jest": "^26.0.20",
