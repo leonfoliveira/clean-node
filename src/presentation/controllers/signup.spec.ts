@@ -1,16 +1,10 @@
 import faker from 'faker';
 
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
-import { AddAccountStub } from '@/presentation/mocks';
-import { EmailValidator, HttpRequest } from '@/presentation/protocols';
+import { AddAccountStub, EmailValidatorStub } from '@/presentation/mocks';
+import { HttpRequest } from '@/presentation/protocols';
 
 import { SignUpController } from './signup';
-
-class EmailValidatorStub implements EmailValidator {
-  isValid(): boolean {
-    return true;
-  }
-}
 
 type SutTypes = {
   sut: SignUpController;
