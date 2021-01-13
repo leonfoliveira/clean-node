@@ -62,4 +62,12 @@ describe('DbAddAccount', () => {
 
     await expect(promise).rejects.toThrow(error);
   });
+
+  it('should return an AccountModel on success', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut();
+
+    const account = await sut.add(mockAddAccountParams());
+
+    expect(account).toEqual(addAccountRepositoryStub.response);
+  });
 });
