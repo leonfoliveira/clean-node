@@ -122,7 +122,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError());
   });
 
-  it('should call AddAccount with correct email', () => {
+  it('should call AddAccount with correct values', () => {
     const { sut, addAccountStub } = makeSut();
     const httpRequest = mockSignupHttpRequest();
     const addSpy = jest.spyOn(addAccountStub, 'add');
