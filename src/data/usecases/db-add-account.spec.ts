@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { EncrypterStub } from '@/data/mocks';
+import { AddAccountRepositoryStub, EncrypterStub } from '@/data/mocks';
 import { mockAddAccountParams } from '@/presentation/mocks/mock-add-account';
 
 import { DbAddAccount } from './db-add-account';
@@ -8,13 +8,15 @@ import { DbAddAccount } from './db-add-account';
 type SutTypes = {
   sut: DbAddAccount;
   encrypterStub: EncrypterStub;
+  addAccountRepositoryStub: AddAccountRepositoryStub;
 };
 
 const makeSut = (): SutTypes => {
   const encrypterStub = new EncrypterStub();
-  const sut = new DbAddAccount(encrypterStub);
+  const addAccountRepositoryStub = new AddAccountRepositoryStub();
+  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
 
-  return { sut, encrypterStub };
+  return { sut, encrypterStub, addAccountRepositoryStub };
 };
 
 describe('DbAddAccount', () => {
@@ -37,5 +39,18 @@ describe('DbAddAccount', () => {
     const promise = sut.add(accountData);
 
     await expect(promise).rejects.toThrow(error);
+  });
+
+  it('should call AddAccountRepository with correct values', async () => {
+    const { sut, encrypterStub, addAccountRepositoryStub } = makeSut();
+    const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
+    const accountData = mockAddAccountParams();
+
+    await sut.add(accountData);
+
+    expect(addSpy).toHaveBeenCalledWith({
+      ...accountData,
+      password: encrypterStub.response,
+    });
   });
 });
