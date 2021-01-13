@@ -1,6 +1,6 @@
 import { AddAccount } from '@/domain/usecases';
 import { InvalidParamError, MissingParamError } from '@/presentation/errors';
-import { badRequest, internalServerError } from '@/presentation/helpers';
+import { badRequest, internalServerError, ok } from '@/presentation/helpers';
 import { Controller, EmailValidator, HttpRequest, HttpResponse } from '@/presentation/protocols';
 
 export class SignUpController implements Controller {
@@ -28,10 +28,7 @@ export class SignUpController implements Controller {
 
       const account = this.addAccount.add({ name, email, password });
 
-      return {
-        statusCode: 200,
-        body: account,
-      };
+      return ok(account);
     } catch {
       return internalServerError();
     }
