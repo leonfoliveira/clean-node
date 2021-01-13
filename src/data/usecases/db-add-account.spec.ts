@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { EncrypterStub } from '@/data/mocks';
 import { mockAddAccountParams } from '@/presentation/mocks/mock-add-account';
 
@@ -24,5 +26,16 @@ describe('DbAddAccount', () => {
     sut.add(accountData);
 
     expect(encrypterSpy).toHaveBeenCalledWith(accountData.password);
+  });
+
+  it('should throw if Encrypter throws', async () => {
+    const { sut, encrypterStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(error);
+    const accountData = mockAddAccountParams();
+
+    const promise = sut.add(accountData);
+
+    await expect(promise).rejects.toThrow(error);
   });
 });
