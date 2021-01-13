@@ -34,9 +34,8 @@ describe('DbAddAccount', () => {
     const { sut, encrypterStub } = makeSut();
     const error = new Error(faker.random.words());
     jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(error);
-    const accountData = mockAddAccountParams();
 
-    const promise = sut.add(accountData);
+    const promise = sut.add(mockAddAccountParams());
 
     await expect(promise).rejects.toThrow(error);
   });
@@ -52,5 +51,15 @@ describe('DbAddAccount', () => {
       ...accountData,
       password: encrypterStub.response,
     });
+  });
+
+  it('should throw if AddAccountRepository throws', async () => {
+    const { sut, addAccountRepositoryStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(addAccountRepositoryStub, 'add').mockRejectedValueOnce(error);
+
+    const promise = sut.add(mockAddAccountParams());
+
+    await expect(promise).rejects.toThrow(error);
   });
 });
