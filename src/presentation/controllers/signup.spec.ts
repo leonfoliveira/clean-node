@@ -1,6 +1,7 @@
 import faker from 'faker';
 
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
+import { AddAccountStub } from '@/presentation/mocks';
 import { EmailValidator, HttpRequest } from '@/presentation/protocols';
 
 import { SignUpController } from './signup';
@@ -14,13 +15,15 @@ class EmailValidatorStub implements EmailValidator {
 type SutTypes = {
   sut: SignUpController;
   emailValidatorStub: EmailValidatorStub;
+  addAccountStub: AddAccountStub;
 };
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = new EmailValidatorStub();
-  const sut = new SignUpController(emailValidatorStub);
+  const addAccountStub = new AddAccountStub();
+  const sut = new SignUpController(emailValidatorStub, addAccountStub);
 
-  return { sut, emailValidatorStub };
+  return { sut, emailValidatorStub, addAccountStub };
 };
 
 const mockSignupHttpRequest = (): HttpRequest => {
@@ -123,5 +126,16 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toBe(500);
     expect(httpResponse.body).toEqual(new ServerError());
+  });
+
+  it('should call AddAccount with correct email', () => {
+    const { sut, addAccountStub } = makeSut();
+    const httpRequest = mockSignupHttpRequest();
+    const addSpy = jest.spyOn(addAccountStub, 'add');
+    const { passwordConfirmation, ...addAccountParams } = httpRequest.body;
+
+    sut.handle(httpRequest);
+
+    expect(addSpy).toHaveBeenCalledWith(addAccountParams);
   });
 });
