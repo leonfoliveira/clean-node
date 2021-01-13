@@ -1,15 +1,11 @@
-import faker from 'faker';
-
+import { mockAccountModel } from '@/domain/mocks';
 import { AccountModel } from '@/domain/models';
 import { AddAccount } from '@/domain/usecases';
 
 export class AddAccountStub implements AddAccount {
+  response = mockAccountModel();
+
   add(): AccountModel {
-    return {
-      id: faker.random.uuid(),
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
+    return this.response;
   }
 }
