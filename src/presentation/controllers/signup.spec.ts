@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
 import { EmailValidator, HttpRequest } from '@/presentation/protocols';
 
@@ -21,14 +23,17 @@ const makeSut = (): SutTypes => {
   return { sut, emailValidatorStub };
 };
 
-const mockSignupHttpRequest = (): HttpRequest => ({
-  body: {
-    name: 'any_name',
-    email: 'any_email@mail.com',
-    password: 'any_password',
-    passwordConfirmation: 'any_password',
-  },
-});
+const mockSignupHttpRequest = (): HttpRequest => {
+  const password = faker.internet.password();
+  return {
+    body: {
+      name: faker.name.findName(),
+      email: faker.internet.email(),
+      password,
+      passwordConfirmation: password,
+    },
+  };
+};
 
 describe('SignUp Controller', () => {
   it('should return 400 if no name is provided', () => {
@@ -93,7 +98,7 @@ describe('SignUp Controller', () => {
 
     sut.handle(httpRequest);
 
-    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com');
+    expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.email);
   });
 
   it('should return 500 if EmailValidator throws', () => {
