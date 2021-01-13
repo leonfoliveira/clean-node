@@ -132,4 +132,17 @@ describe('SignUp Controller', () => {
 
     expect(addSpy).toHaveBeenCalledWith(addAccountParams);
   });
+
+  it('should return 500 if AddAccount throws', () => {
+    const { sut, addAccountStub } = makeSut();
+    const httpRequest = mockSignupHttpRequest();
+    jest.spyOn(addAccountStub, 'add').mockImplementationOnce(() => {
+      throw new Error('any_error');
+    });
+
+    const httpResponse = sut.handle(httpRequest);
+
+    expect(httpResponse.statusCode).toBe(500);
+    expect(httpResponse.body).toEqual(new ServerError());
+  });
 });
