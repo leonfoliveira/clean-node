@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { AddAccountRepositoryStub, EncrypterStub } from '@/data/mocks';
-import { mockAddAccountParams } from '@/presentation/mocks/mock-add-account';
+import { mockAddAccountDTO } from '@/presentation/mocks/mock-add-account';
 
 import { DbAddAccount } from './db-add-account';
 
@@ -23,7 +23,7 @@ describe('DbAddAccount', () => {
   it('should call Encrypter with correct password', () => {
     const { sut, encrypterStub } = makeSut();
     const encrypterSpy = jest.spyOn(encrypterStub, 'encrypt');
-    const accountData = mockAddAccountParams();
+    const accountData = mockAddAccountDTO();
 
     sut.add(accountData);
 
@@ -35,7 +35,7 @@ describe('DbAddAccount', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(error);
 
-    const promise = sut.add(mockAddAccountParams());
+    const promise = sut.add(mockAddAccountDTO());
 
     await expect(promise).rejects.toThrow(error);
   });
@@ -43,7 +43,7 @@ describe('DbAddAccount', () => {
   it('should call AddAccountRepository with correct values', async () => {
     const { sut, encrypterStub, addAccountRepositoryStub } = makeSut();
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
-    const accountData = mockAddAccountParams();
+    const accountData = mockAddAccountDTO();
 
     await sut.add(accountData);
 
@@ -58,7 +58,7 @@ describe('DbAddAccount', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(addAccountRepositoryStub, 'add').mockRejectedValueOnce(error);
 
-    const promise = sut.add(mockAddAccountParams());
+    const promise = sut.add(mockAddAccountDTO());
 
     await expect(promise).rejects.toThrow(error);
   });
@@ -66,7 +66,7 @@ describe('DbAddAccount', () => {
   it('should return an AccountModel on success', async () => {
     const { sut, addAccountRepositoryStub } = makeSut();
 
-    const account = await sut.add(mockAddAccountParams());
+    const account = await sut.add(mockAddAccountDTO());
 
     expect(account).toEqual(addAccountRepositoryStub.response);
   });
