@@ -1,7 +1,7 @@
 import faker from 'faker';
 import request from 'supertest';
 
-import { MongoHelper } from '@/infra/helpers';
+import { MongoHelper } from '@/infra/db/mongodb';
 import { app } from '@/main/config/app';
 
 describe('SignupRoutes', () => {

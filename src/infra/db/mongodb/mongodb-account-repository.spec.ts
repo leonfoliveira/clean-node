@@ -1,5 +1,5 @@
 import { mockAddAccountRepositoryParams } from '@/data/mocks';
-import { MongoHelper } from '@/infra/helpers';
+import { MongoHelper } from '@/infra/db/mongodb';
 
 import { MongodbAccountRepository } from './mongodb-account-repository';
 
