@@ -8,9 +8,6 @@ export class MongodbAccountRepository implements AddAccountRepository {
 
     const result = await accountCollection.insertOne(params);
 
-    const account = result.ops[0];
-    account.id = account._id;
-    delete account._id;
-    return account;
+    return MongoHelper.mapId(result.ops[0]);
   }
 }

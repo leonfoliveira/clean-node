@@ -17,4 +17,14 @@ export const MongoHelper = {
   getCollection(name: string): Collection {
     return this.client.db().collection(name);
   },
+
+  mapId(data: any): any {
+    const mappedData = {
+      ...data,
+      id: data._id,
+    };
+    delete mappedData._id;
+
+    return mappedData;
+  },
 };
