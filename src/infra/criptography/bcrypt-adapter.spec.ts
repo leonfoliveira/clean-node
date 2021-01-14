@@ -8,13 +8,14 @@ jest.mock('bcrypt', () => ({
 }));
 
 describe('BcryptAdapter', () => {
-  it('should call bcrypt with correct value', async () => {
-    const sut = new BcryptAdapter();
+  it('should call bcrypt with correct values', async () => {
+    const rounds = 12;
+    const sut = new BcryptAdapter(rounds);
     const value = faker.random.word();
     const hashSpy = jest.spyOn(bcrypt, 'hash');
 
     await sut.encrypt(value);
 
-    expect(hashSpy).toHaveBeenCalledWith(value, 12);
+    expect(hashSpy).toHaveBeenCalledWith(value, rounds);
   });
 });
