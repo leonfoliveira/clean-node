@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { MongoHelper } from '@/infra/helpers';
 import { env } from '@/main/config/env';
 
@@ -10,4 +9,3 @@ MongoHelper.connect(env.mongoUrl)
     );
   })
   .catch(console.error);
-/* eslint-enable no-console */

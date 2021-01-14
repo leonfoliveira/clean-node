@@ -17,8 +17,9 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "rules": {
+  "rules": {    
     "prettier/prettier": "error",
+    "no-console": "off",
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
