@@ -7,10 +7,21 @@ jest.mock('bcrypt', () => ({
   hash: async (): Promise<string> => faker.random.uuid(),
 }));
 
+type SutTypes = {
+  sut: BcryptAdapter;
+  rounds: number;
+};
+
+const makeSut = (): SutTypes => {
+  const rounds = 12;
+  const sut = new BcryptAdapter(rounds);
+
+  return { sut, rounds };
+};
+
 describe('BcryptAdapter', () => {
   it('should call bcrypt with correct values', async () => {
-    const rounds = 12;
-    const sut = new BcryptAdapter(rounds);
+    const { sut, rounds } = makeSut();
     const value = faker.random.word();
     const hashSpy = jest.spyOn(bcrypt, 'hash');
 
@@ -20,13 +31,12 @@ describe('BcryptAdapter', () => {
   });
 
   it('should return a hash on success', async () => {
-    const rounds = 12;
-    const sut = new BcryptAdapter(rounds);
-    const value = faker.random.uuid();
-    jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce(value);
+    const { sut } = makeSut();
+    const hash = faker.random.uuid();
+    jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce(hash);
 
-    const hash = await sut.encrypt(faker.random.word());
+    const result = await sut.encrypt(faker.random.word());
 
-    expect(hash).toBe(value);
+    expect(result).toBe(hash);
   });
 });
