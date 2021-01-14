@@ -19,6 +19,7 @@
   },
   "rules": {
     "prettier/prettier": "error",
+    "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
     "import/order": [
