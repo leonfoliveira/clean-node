@@ -1,7 +1,7 @@
 {
   "preset": "@shelf/jest-mongodb",
   "roots": ["<rootDir>/src"],
-  "collectCoverageFrom": ["<rootDir>/src/**/*.ts", "!<rootDir>/src/**/index.ts"],
+  "collectCoverageFrom": ["<rootDir>/src/**/*.ts", "!<rootDir>/src/**/index.ts", "!<rootDir>/src/main/**"],
   "coverageDirectory": "coverage",
   "testEnvironment": "node",
   "transform": {
