@@ -3,6 +3,8 @@ import { MongoHelper } from '@/infra/helpers';
 
 import { MongodbAccountRepository } from './mongodb-account-repository';
 
+const makeSut = (): MongodbAccountRepository => new MongodbAccountRepository();
+
 describe('MongodbAccountRepository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
@@ -13,7 +15,7 @@ describe('MongodbAccountRepository', () => {
   });
 
   it('should return an account on success', async () => {
-    const sut = new MongodbAccountRepository();
+    const sut = makeSut();
     const account = mockAddAccountRepositoryParams();
 
     const result = await sut.add(account);
