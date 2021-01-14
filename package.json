@@ -12,7 +12,7 @@
     "test": "jest --passWithNoTests --no-cache --runInBand",
     "test:unit": "yarn test --testMatch '**/*.spec.ts'",
     "test:integration": "yarn test --testMatch '**/*.test.ts'",
-    "test:watch": "yarn test:unit --watch",
+    "test:watch": "yarn test --watch",
     "test:staged": "yarn test --findRelatedTests",
     "test:ci": "yarn test --coverage"
   },
