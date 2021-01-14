@@ -1,4 +1,13 @@
-import { app } from '@/main/config/app';
+/* eslint-disable no-console */
+import { MongoHelper } from '@/infra/helpers';
+import { env } from '@/main/config/env';
 
-// eslint-disable-next-line no-console
-app.listen(4000, () => console.log('Server running at http://localhost:4000'));
+MongoHelper.connect(env.mongoUrl)
+  .then(async () => {
+    const { app } = await import('./config/app');
+    return app.listen(env.port, () =>
+      console.log(`Server running at http://localhost:${env.port}`),
+    );
+  })
+  .catch(console.error);
+/* eslint-enable no-console */
