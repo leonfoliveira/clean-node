@@ -1,7 +1,7 @@
 import faker from 'faker';
 
-import { mockAuthenticationModel } from '@/domain/mocks';
-import { AuthenticationModel } from '@/domain/models';
+import { mockAuthorizationModel } from '@/domain/mocks';
+import { AuthorizationModel } from '@/domain/models';
 import { Authentication, AuthenticationDTO } from '@/domain/usecases';
 
 export const mockAuthenticationDTO = (): AuthenticationDTO => ({
@@ -10,9 +10,9 @@ export const mockAuthenticationDTO = (): AuthenticationDTO => ({
 });
 
 export class AuthenticationStub implements Authentication {
-  response = mockAuthenticationModel();
+  response = mockAuthorizationModel();
 
-  async auth(): Promise<AuthenticationModel> {
+  async auth(): Promise<AuthorizationModel> {
     return this.response;
   }
 }

@@ -1,4 +1,4 @@
-import { ServerError } from '../errors';
+import { ServerError, UnauthorizedError } from '@/presentation/errors';
 
 export type HttpRequest = {
   body?: any;
@@ -13,6 +13,10 @@ export class HttpResponse {
 
   static BadRequest(error: Error): HttpResponse {
     return new HttpResponse(400, error);
+  }
+
+  static Unauthorized(): HttpResponse {
+    return new HttpResponse(401, new UnauthorizedError());
   }
 
   static InternalServerError(error: Error): HttpResponse {

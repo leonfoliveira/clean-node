@@ -23,7 +23,10 @@ export class LoginController implements Controller {
         return HttpResponse.BadRequest(new InvalidParamError('email'));
       }
 
-      await this.authentication.auth({ email, password });
+      const authorization = await this.authentication.auth({ email, password });
+      if (!authorization) {
+        return HttpResponse.Unauthorized();
+      }
 
       return null;
     } catch (error) {
