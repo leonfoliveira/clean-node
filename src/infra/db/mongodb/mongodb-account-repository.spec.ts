@@ -19,7 +19,7 @@ describe('MongodbAccountRepository', () => {
     await accountCollection.deleteMany({});
   });
 
-  it('should return an account on success', async () => {
+  it('should return an AccountModel on success', async () => {
     const sut = makeSut();
     const account = mockAddAccountRepositoryParams();
 
