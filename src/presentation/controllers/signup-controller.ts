@@ -5,19 +5,19 @@ import {
   EmailValidator,
   HttpRequest,
   HttpResponse,
-  Validation,
+  Validator,
 } from '@/presentation/interfaces';
 
 export class SignUpController implements Controller {
   constructor(
     private readonly emailValidator: EmailValidator,
     private readonly addAccount: AddAccount,
-    private readonly validation: Validation,
+    private readonly validator: Validator,
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const error = this.validation.validate(httpRequest.body);
+      const error = this.validator.validate(httpRequest.body);
       if (error) {
         return HttpResponse.BadRequest(error);
       }

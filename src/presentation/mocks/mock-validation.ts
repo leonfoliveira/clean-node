@@ -1,7 +1,7 @@
-import { Validation } from '@/presentation/interfaces';
+import { Validator } from '@/presentation/interfaces';
 
-export class ValidationStub implements Validation {
-  validate(input: Record<string, any>): Error {
+export class ValidatorStub implements Validator {
+  validate(): Error {
     return null;
   }
 }

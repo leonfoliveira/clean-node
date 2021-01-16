@@ -1,11 +1,11 @@
-import { Validation } from '@/presentation/interfaces';
+import { Validator } from '@/presentation/interfaces';
 
-export class ValidationComposite implements Validation {
-  constructor(private readonly validations: Validation[]) {}
+export class ValidatorComposite implements Validator {
+  constructor(private readonly validators: Validator[]) {}
 
   validate(input: Record<string, any>): Error {
-    for (const validation of this.validations) {
-      const error = validation.validate(input);
+    for (const validator of this.validators) {
+      const error = validator.validate(input);
       if (error) {
         return error;
       }

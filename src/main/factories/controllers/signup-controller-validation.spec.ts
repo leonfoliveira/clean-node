@@ -1,12 +1,12 @@
-import { RequiredFieldValidator, ValidationComposite } from '@/validation/validators';
+import { RequiredFieldValidator, ValidatorComposite } from '@/validation/validators';
 
-import { makeSignUpValidation } from './signup-controller-factory';
+import { makeSignUpValidator } from './signup-controller-factory';
 
 describe('SignUpController.Validation', () => {
   it('should call ValidationComposite with all validations', () => {
-    const validation = makeSignUpValidation();
+    const validation = makeSignUpValidator();
     expect(validation).toEqual(
-      new ValidationComposite([
+      new ValidatorComposite([
         new RequiredFieldValidator('name'),
         new RequiredFieldValidator('email'),
         new RequiredFieldValidator('password'),

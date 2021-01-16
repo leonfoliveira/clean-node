@@ -1,7 +1,7 @@
 import { MissingParamError } from '@/presentation/errors';
-import { Validation } from '@/presentation/interfaces';
+import { Validator } from '@/presentation/interfaces';
 
-export class RequiredFieldValidator implements Validation {
+export class RequiredFieldValidator implements Validator {
   constructor(private readonly fieldName: string) {}
 
   validate(input: Record<string, any>): Error {

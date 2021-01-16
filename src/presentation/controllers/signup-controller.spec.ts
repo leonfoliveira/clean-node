@@ -3,7 +3,7 @@ import faker from 'faker';
 import { AddAccountStub } from '@/domain/mocks';
 import { InvalidParamError, ServerError } from '@/presentation/errors';
 import { HttpRequest, HttpResponse } from '@/presentation/interfaces';
-import { EmailValidatorStub, ValidationStub } from '@/presentation/mocks';
+import { EmailValidatorStub, ValidatorStub } from '@/presentation/mocks';
 
 import { SignUpController } from './signup-controller';
 
@@ -11,16 +11,16 @@ type SutTypes = {
   sut: SignUpController;
   emailValidatorStub: EmailValidatorStub;
   addAccountStub: AddAccountStub;
-  validationStub: ValidationStub;
+  validatorStub: ValidatorStub;
 };
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = new EmailValidatorStub();
   const addAccountStub = new AddAccountStub();
-  const validationStub = new ValidationStub();
-  const sut = new SignUpController(emailValidatorStub, addAccountStub, validationStub);
+  const validatorStub = new ValidatorStub();
+  const sut = new SignUpController(emailValidatorStub, addAccountStub, validatorStub);
 
-  return { sut, emailValidatorStub, addAccountStub, validationStub };
+  return { sut, emailValidatorStub, addAccountStub, validatorStub };
 };
 
 const mockSignupHttpRequest = (): HttpRequest => {
@@ -115,8 +115,8 @@ describe('SignUp Controller', () => {
   });
 
   it('should call Validation with correct value', async () => {
-    const { sut, validationStub } = makeSut();
-    const validateSpy = jest.spyOn(validationStub, 'validate');
+    const { sut, validatorStub } = makeSut();
+    const validateSpy = jest.spyOn(validatorStub, 'validate');
     const httpRequest = mockSignupHttpRequest();
 
     await sut.handle(httpRequest);
@@ -125,9 +125,9 @@ describe('SignUp Controller', () => {
   });
 
   it('should returns 400 if Validation returns an error', async () => {
-    const { sut, validationStub } = makeSut();
+    const { sut, validatorStub } = makeSut();
     const error = new Error(faker.random.words());
-    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(error);
+    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(error);
     const httpRequest = mockSignupHttpRequest();
 
     const httpResponse = await sut.handle(httpRequest);
