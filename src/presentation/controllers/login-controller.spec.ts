@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { MissingParamError } from '@/presentation/errors';
+import { InvalidParamError, MissingParamError } from '@/presentation/errors';
 import { HttpRequest, HttpResponse } from '@/presentation/interfaces';
 import { EmailValidatorStub } from '@/presentation/mocks';
 
@@ -54,5 +54,15 @@ describe('LoginController', () => {
     await sut.handle(httpRequest);
 
     expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.email);
+  });
+
+  it('should return 400 if an invalid email is provided', async () => {
+    const { sut, emailValidatorStub } = makeSut();
+    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false);
+    const httpRequest = mockLoginHttpRequest();
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(HttpResponse.BadRequest(new InvalidParamError('email')));
   });
 });
