@@ -28,4 +28,13 @@ describe('ValidatorComposite', () => {
 
     expect(error).toBe(response);
   });
+
+  test('Should return falsy if all validators succeed', () => {
+    const fieldName = faker.database.column();
+    const { sut } = makeSut(fieldName);
+
+    const error = sut.validate({ [fieldName]: faker.random.word() });
+
+    expect(error).toBeFalsy();
+  });
 });
