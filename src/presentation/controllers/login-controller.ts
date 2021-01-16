@@ -1,6 +1,6 @@
 import { Controller, EmailValidator, HttpRequest, HttpResponse } from '@/presentation/interfaces';
 
-import { MissingParamError } from '../errors';
+import { InvalidParamError, MissingParamError } from '../errors';
 
 export class LoginController implements Controller {
   constructor(private readonly emailValidator: EmailValidator) {}
@@ -13,7 +13,10 @@ export class LoginController implements Controller {
       return HttpResponse.BadRequest(new MissingParamError('password'));
     }
     const { email } = httpRequest.body;
-    this.emailValidator.isValid(email);
+    const isValid = this.emailValidator.isValid(email);
+    if (!isValid) {
+      return HttpResponse.BadRequest(new InvalidParamError('email'));
+    }
     return null;
   }
 }
