@@ -14,4 +14,12 @@ describe('RequiredFieldValidator', () => {
     const error = sut.validate({ [field]: '' });
     expect(error).toEqual(new MissingParamError(field));
   });
+
+  it('should return null if field is not empty', () => {
+    const field = faker.database.column();
+    const sut = makeSut(field);
+
+    const error = sut.validate({ [field]: faker.random.word() });
+    expect(error).toBeNull();
+  });
 });
