@@ -62,9 +62,8 @@ describe('LoginController', () => {
   it('should return 400 if an invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut();
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false);
-    const httpRequest = mockLoginHttpRequest();
 
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(mockLoginHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponse.BadRequest(new InvalidParamError('email')));
   });
@@ -76,9 +75,8 @@ describe('LoginController', () => {
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw error;
     });
-    const httpRequest = mockLoginHttpRequest();
 
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(mockLoginHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponse.InternalServerError(error));
   });
@@ -96,9 +94,8 @@ describe('LoginController', () => {
   it('should return 401 if invalid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut();
     jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(null);
-    const httpRequest = mockLoginHttpRequest();
 
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(mockLoginHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponse.Unauthorized());
   });
@@ -108,10 +105,17 @@ describe('LoginController', () => {
     const error = new Error(faker.random.words());
     error.stack = faker.random.words();
     jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error);
-    const httpRequest = mockLoginHttpRequest();
 
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(mockLoginHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponse.InternalServerError(error));
+  });
+
+  it('should return 200 if valid credentials are provided', async () => {
+    const { sut, authenticationStub } = makeSut();
+
+    const httpResponse = await sut.handle(mockLoginHttpRequest());
+
+    expect(httpResponse).toEqual(HttpResponse.Ok(authenticationStub.response));
   });
 });
