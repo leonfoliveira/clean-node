@@ -21,4 +21,15 @@ describe('CompareFieldsValidator', () => {
 
     expect(error).toEqual(new InvalidParamError(field));
   });
+
+  test('Should return null if compare is valid', () => {
+    const field = faker.database.column();
+    const fieldToCompare = `diff_${field}`;
+    const fieldValue = faker.random.words();
+    const sut = makeSut(field, fieldToCompare);
+
+    const error = sut.validate({ [field]: fieldValue, [fieldToCompare]: fieldValue });
+
+    expect(error).toBeNull();
+  });
 });
