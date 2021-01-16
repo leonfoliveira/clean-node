@@ -4,6 +4,7 @@ import {
   CompareFieldsValidator,
   RequiredFieldValidator,
   EmailValidator,
+  LengthValidator,
 } from '@/validation/validators';
 
 import { ValidatorBuilder as sut } from './validator-builder';
@@ -29,5 +30,16 @@ describe('ValidatorBuilder', () => {
     const validators = sut.field(field).email().build();
 
     expect(validators).toEqual([new EmailValidator(field)]);
+  });
+
+  it('should return LengthValidator', () => {
+    const field = faker.database.column();
+    const options = {
+      min: faker.random.number(),
+      max: faker.random.number(),
+    };
+    const validators = sut.field(field).length(options).build();
+
+    expect(validators).toEqual([new LengthValidator(field, options)]);
   });
 });
