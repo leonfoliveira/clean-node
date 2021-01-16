@@ -1,3 +1,3 @@
 export * from './required-field-validator';
-export * from './validation-builder';
-export * from './validation-composite';
+export * from './validator-builder';
+export * from './validator-composite';
