@@ -28,7 +28,7 @@ export class LoginController implements Controller {
         return HttpResponse.Unauthorized();
       }
 
-      return null;
+      return HttpResponse.Ok(authorization);
     } catch (error) {
       return HttpResponse.InternalServerError(error);
     }
