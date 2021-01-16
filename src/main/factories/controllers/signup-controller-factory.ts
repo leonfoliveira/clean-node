@@ -14,6 +14,6 @@ export const makeSignUpValidator = (): Validator =>
   new ValidatorComposite([
     ...ValidatorBuilder.field('name').required().build(),
     ...ValidatorBuilder.field('email').required().email().build(),
-    ...ValidatorBuilder.field('password').required().build(),
+    ...ValidatorBuilder.field('password').required().length({ min: 8 }).build(),
     ...ValidatorBuilder.field('passwordConfirmation').sameAs('password').build(),
   ]);

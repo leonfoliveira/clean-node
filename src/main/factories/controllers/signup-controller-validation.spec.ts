@@ -3,6 +3,7 @@ import {
   EmailValidator,
   RequiredFieldValidator,
   ValidatorComposite,
+  LengthValidator,
 } from '@/validation/validators';
 
 import { makeSignUpValidator } from './signup-controller-factory';
@@ -16,6 +17,7 @@ describe('SignUpController.Validator', () => {
         new RequiredFieldValidator('email'),
         new EmailValidator('email'),
         new RequiredFieldValidator('password'),
+        new LengthValidator('password', { min: 8 }),
         new CompareFieldsValidator('passwordConfirmation', 'password'),
       ]),
     );
