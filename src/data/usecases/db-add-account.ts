@@ -1,5 +1,5 @@
 import { AddAccountRepository, Encrypter } from '@/data/protocols';
-import { AccountModel } from '@/domain/models';
+import { ProtectedAccountModel } from '@/domain/models';
 import { AddAccount, AddAccountDTO } from '@/domain/usecases';
 
 export class DbAddAccount implements AddAccount {
@@ -8,13 +8,14 @@ export class DbAddAccount implements AddAccount {
     private readonly addAccountRepository: AddAccountRepository,
   ) {}
 
-  async add(params: AddAccountDTO): Promise<AccountModel> {
+  async add(params: AddAccountDTO): Promise<ProtectedAccountModel> {
     const hashedPassword = await this.encrypter.encrypt(params.password);
 
     const account = await this.addAccountRepository.add({
       ...params,
       password: hashedPassword,
     });
+    delete account.password;
 
     return account;
   }
