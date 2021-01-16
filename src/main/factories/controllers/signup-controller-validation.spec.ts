@@ -1,5 +1,6 @@
 import {
   CompareFieldsValidator,
+  EmailValidator,
   RequiredFieldValidator,
   ValidatorComposite,
 } from '@/validation/validators';
@@ -13,6 +14,7 @@ describe('SignUpController.Validator', () => {
       new ValidatorComposite([
         new RequiredFieldValidator('name'),
         new RequiredFieldValidator('email'),
+        new EmailValidator('email'),
         new RequiredFieldValidator('password'),
         new CompareFieldsValidator('passwordConfirmation', 'password'),
       ]),

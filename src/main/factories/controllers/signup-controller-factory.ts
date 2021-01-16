@@ -13,7 +13,7 @@ export const makeSignUpController = (): Controller =>
 export const makeSignUpValidator = (): Validator =>
   new ValidatorComposite([
     ...ValidatorBuilder.field('name').required().build(),
-    ...ValidatorBuilder.field('email').required().build(),
+    ...ValidatorBuilder.field('email').required().email().build(),
     ...ValidatorBuilder.field('password').required().build(),
     ...ValidatorBuilder.field('passwordConfirmation').sameAs('password').build(),
   ]);

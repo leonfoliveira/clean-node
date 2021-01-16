@@ -1,5 +1,4 @@
 import { AddAccount } from '@/domain/usecases';
-import { InvalidParamError } from '@/presentation/errors';
 import {
   Controller,
   EmailValidator,
@@ -23,11 +22,6 @@ export class SignUpController implements Controller {
       }
 
       const { name, email, password } = httpRequest.body;
-      const isValid = this.emailValidator.isValid(email);
-      if (!isValid) {
-        return HttpResponse.BadRequest(new InvalidParamError('email'));
-      }
-
       const account = await this.addAccount.add({ name, email, password });
 
       return HttpResponse.Ok(account);
