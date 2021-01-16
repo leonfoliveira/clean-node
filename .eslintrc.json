@@ -58,6 +58,7 @@
     "@typescript-eslint/no-empty-function": ["error", { "allow": ["constructors"] }],
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-null": "off",
-    "unicorn/consistent-function-scoping": "off"
+    "unicorn/consistent-function-scoping": "off",
+    "unicorn/no-object-as-default-parameter": "off"
   }
 }
