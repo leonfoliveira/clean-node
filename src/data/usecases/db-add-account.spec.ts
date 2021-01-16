@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { AddAccountRepositoryStub, EncrypterStub } from '@/data/mocks';
-import { mockAddAccountDTO } from '@/presentation/mocks/mock-add-account';
+import { mockAddAccountDTO } from '@/domain/mocks/mock-add-account';
 
 import { DbAddAccount } from './db-add-account';
 

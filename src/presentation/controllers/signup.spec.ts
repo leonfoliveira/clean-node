@@ -1,7 +1,8 @@
 import faker from 'faker';
 
+import { AddAccountStub } from '@/domain/mocks';
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
-import { AddAccountStub, EmailValidatorStub } from '@/presentation/mocks';
+import { EmailValidatorStub } from '@/presentation/mocks';
 import { HttpRequest } from '@/presentation/protocols';
 
 import { SignUpController } from './signup';
