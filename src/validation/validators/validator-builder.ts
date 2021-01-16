@@ -1,5 +1,5 @@
 import { Validator } from '@/presentation/interfaces';
-import { RequiredFieldValidator } from '@/validation/validators';
+import { CompareFieldsValidator, RequiredFieldValidator } from '@/validation/validators';
 
 export class ValidatorBuilder {
   private constructor(
@@ -13,6 +13,11 @@ export class ValidatorBuilder {
 
   required(): ValidatorBuilder {
     this.validators.push(new RequiredFieldValidator(this.fieldName));
+    return this;
+  }
+
+  sameAs(fieldToCompareName: string): ValidatorBuilder {
+    this.validators.push(new CompareFieldsValidator(this.fieldName, fieldToCompareName));
     return this;
   }
 
