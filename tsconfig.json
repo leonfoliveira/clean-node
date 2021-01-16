@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "allowJs": true,
     "sourceMap": true,
+    "experimentalDecorators": true,
     "baseUrl": "src",
     "paths": {
       "@/*": ["*"]
