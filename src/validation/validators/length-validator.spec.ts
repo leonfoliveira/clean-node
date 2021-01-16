@@ -25,4 +25,13 @@ describe('LengthValidator', () => {
 
     expect(error).toEqual(new InvalidParamError(field));
   });
+
+  it('should return null if length is valid', () => {
+    const field = faker.database.column();
+    const sut = makeSut(field);
+
+    const error = sut.validate({ [field]: '...' });
+
+    expect(error).toBeNull();
+  });
 });
