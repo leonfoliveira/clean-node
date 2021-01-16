@@ -1,4 +1,8 @@
-import { RequiredFieldValidator, ValidatorComposite } from '@/validation/validators';
+import {
+  CompareFieldsValidator,
+  RequiredFieldValidator,
+  ValidatorComposite,
+} from '@/validation/validators';
 
 import { makeSignUpValidator } from './signup-controller-factory';
 
@@ -10,7 +14,7 @@ describe('SignUpController.Validator', () => {
         new RequiredFieldValidator('name'),
         new RequiredFieldValidator('email'),
         new RequiredFieldValidator('password'),
-        new RequiredFieldValidator('passwordConfirmation'),
+        new CompareFieldsValidator('passwordConfirmation', 'password'),
       ]),
     );
   });

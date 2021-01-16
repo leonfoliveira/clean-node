@@ -36,18 +36,6 @@ const mockSignupHttpRequest = (): HttpRequest => {
 };
 
 describe('SignUp Controller', () => {
-  it('should return 400 if an passwordConfirmation fails', async () => {
-    const { sut } = makeSut();
-    const httpRequest = mockSignupHttpRequest();
-    httpRequest.body.passwordConfirmation = `diff_${httpRequest.body.password}`;
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse).toEqual(
-      HttpResponse.BadRequest(new InvalidParamError('passwordConfirmation')),
-    );
-  });
-
   it('should return 400 if an invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut();
     const httpRequest = mockSignupHttpRequest();
