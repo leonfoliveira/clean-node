@@ -1,5 +1,5 @@
-import { LogRepository } from '@/data/protocols';
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols';
+import { LogRepository } from '@/data/interfaces';
+import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
 
 export class LogControllerDecorator implements Controller {
   constructor(

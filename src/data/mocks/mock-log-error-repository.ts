@@ -1,4 +1,4 @@
-import { LogRepository } from '@/data/protocols';
+import { LogRepository } from '@/data/interfaces';
 
 export class LogRepositoryStub implements LogRepository {
   async logError(): Promise<void> {

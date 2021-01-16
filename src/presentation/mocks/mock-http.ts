@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { HttpRequest, HttpResponse } from '../protocols';
+import { HttpRequest, HttpResponse } from '../interfaces';
 
 export const mockHttpRequest = (): HttpRequest => ({
   body: {

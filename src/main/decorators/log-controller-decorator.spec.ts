@@ -1,8 +1,8 @@
 import faker from 'faker';
 
 import { LogRepositoryStub } from '@/data/mocks';
+import { HttpResponse } from '@/presentation/interfaces';
 import { mockHttpRequest, ControllerStub } from '@/presentation/mocks';
-import { HttpResponse } from '@/presentation/protocols';
 
 import { LogControllerDecorator } from './log-controller-decorator';
 

@@ -1,5 +1,5 @@
+import { Controller, HttpResponse } from '@/presentation/interfaces';
 import { mockHttpResponse } from '@/presentation/mocks';
-import { Controller, HttpResponse } from '@/presentation/protocols';
 
 export class ControllerStub implements Controller {
   response = mockHttpResponse();

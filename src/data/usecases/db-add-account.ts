@@ -1,4 +1,4 @@
-import { AddAccountRepository, Encrypter } from '@/data/protocols';
+import { AddAccountRepository, Encrypter } from '@/data/interfaces';
 import { ProtectedAccountModel } from '@/domain/models';
 import { AddAccount, AddAccountDTO } from '@/domain/usecases';
 

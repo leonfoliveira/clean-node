@@ -1,4 +1,4 @@
-import { EmailValidator } from '@/presentation/protocols';
+import { EmailValidator } from '@/presentation/interfaces';
 
 export class EmailValidatorStub implements EmailValidator {
   isValid(): boolean {
