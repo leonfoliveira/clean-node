@@ -1,26 +1,24 @@
 import faker from 'faker';
 
 import { AddAccountStub } from '@/domain/mocks';
-import { InvalidParamError, ServerError } from '@/presentation/errors';
+import { ServerError } from '@/presentation/errors';
 import { HttpRequest, HttpResponse } from '@/presentation/interfaces';
-import { EmailValidatorStub, ValidatorStub } from '@/presentation/mocks';
+import { ValidatorStub } from '@/presentation/mocks';
 
 import { SignUpController } from './signup-controller';
 
 type SutTypes = {
   sut: SignUpController;
-  emailValidatorStub: EmailValidatorStub;
   addAccountStub: AddAccountStub;
   validatorStub: ValidatorStub;
 };
 
 const makeSut = (): SutTypes => {
-  const emailValidatorStub = new EmailValidatorStub();
   const addAccountStub = new AddAccountStub();
   const validatorStub = new ValidatorStub(faker.database.column());
-  const sut = new SignUpController(emailValidatorStub, addAccountStub, validatorStub);
+  const sut = new SignUpController(addAccountStub, validatorStub);
 
-  return { sut, emailValidatorStub, addAccountStub, validatorStub };
+  return { sut, addAccountStub, validatorStub };
 };
 
 const mockSignupHttpRequest = (): HttpRequest => {

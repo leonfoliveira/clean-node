@@ -1,18 +1,8 @@
 import { AddAccount } from '@/domain/usecases';
-import {
-  Controller,
-  EmailValidator,
-  HttpRequest,
-  HttpResponse,
-  Validator,
-} from '@/presentation/interfaces';
+import { Controller, HttpRequest, HttpResponse, Validator } from '@/presentation/interfaces';
 
 export class SignUpController implements Controller {
-  constructor(
-    private readonly emailValidator: EmailValidator,
-    private readonly addAccount: AddAccount,
-    private readonly validator: Validator,
-  ) {}
+  constructor(private readonly addAccount: AddAccount, private readonly validator: Validator) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
