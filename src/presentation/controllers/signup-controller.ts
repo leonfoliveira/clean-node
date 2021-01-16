@@ -1,5 +1,5 @@
 import { AddAccount } from '@/domain/usecases';
-import { InvalidParamError, MissingParamError } from '@/presentation/errors';
+import { InvalidParamError } from '@/presentation/errors';
 import {
   Controller,
   EmailValidator,
@@ -22,12 +22,6 @@ export class SignUpController implements Controller {
         return HttpResponse.BadRequest(error);
       }
 
-      const requiredFields = ['name', 'email', 'password', 'passwordConfirmation'];
-      for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
-          return HttpResponse.BadRequest(new MissingParamError(field));
-        }
-      }
       const { name, email, password, passwordConfirmation } = httpRequest.body;
       if (password !== passwordConfirmation) {
         return HttpResponse.BadRequest(new InvalidParamError('passwordConfirmation'));
