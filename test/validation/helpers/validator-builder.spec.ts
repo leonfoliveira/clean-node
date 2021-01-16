@@ -1,11 +1,11 @@
 import faker from 'faker';
 
+import { ValidatorBuilder as sut } from '@/validation/helpers';
 import {
   CompareFieldsValidator,
   RequiredFieldValidator,
   EmailValidator,
   LengthValidator,
-  ValidatorBuilder as sut,
 } from '@/validation/validators';
 
 describe('ValidatorBuilder', () => {

@@ -1,5 +1,5 @@
 import { Validator } from '@/presentation/interfaces';
-import { ValidatorBuilder, ValidatorComposite } from '@/validation/validators';
+import { ValidatorBuilder, ValidatorComposite } from '@/validation/helpers';
 
 export const makeLoginValidator = (): Validator =>
   new ValidatorComposite([

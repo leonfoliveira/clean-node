@@ -1,9 +1,9 @@
 import { makeSignUpValidator } from '@/main/factories/controllers';
+import { ValidatorComposite } from '@/validation/helpers';
 import {
   CompareFieldsValidator,
   EmailValidator,
   RequiredFieldValidator,
-  ValidatorComposite,
   LengthValidator,
 } from '@/validation/validators';
 

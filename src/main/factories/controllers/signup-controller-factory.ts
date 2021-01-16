@@ -2,7 +2,7 @@ import { makeLogControllerDecorator } from '@/main/factories/decorators';
 import { makeAddAccount } from '@/main/factories/usecases';
 import { SignUpController } from '@/presentation/controllers';
 import { Controller, Validator } from '@/presentation/interfaces';
-import { ValidatorComposite, ValidatorBuilder } from '@/validation/validators';
+import { ValidatorComposite, ValidatorBuilder } from '@/validation/helpers';
 
 export const makeSignUpController = (): Controller =>
   makeLogControllerDecorator(new SignUpController(makeAddAccount(), makeSignUpValidator()));

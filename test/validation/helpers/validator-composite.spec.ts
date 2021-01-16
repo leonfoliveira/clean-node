@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { ValidatorStub } from '@/test/presentation/mocks';
-import { ValidatorComposite } from '@/validation/validators';
+import { ValidatorComposite } from '@/validation/helpers';
 
 type SutTypes = {
   sut: ValidatorComposite;
