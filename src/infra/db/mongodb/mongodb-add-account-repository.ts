@@ -2,7 +2,7 @@ import { AddAccountRepository, AddAccountRepositoryParams } from '@/data/protoco
 import { AccountModel } from '@/domain/models';
 import { MongoHelper } from '@/infra/db/mongodb';
 
-export class MongodbAccountRepository implements AddAccountRepository {
+export class MongodbAddAccountRepository implements AddAccountRepository {
   async add(params: AddAccountRepositoryParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
 

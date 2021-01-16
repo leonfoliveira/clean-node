@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 import { Encrypter } from '@/data/protocols';
 
-export class BcryptAdapter implements Encrypter {
+export class BcryptEncrypter implements Encrypter {
   constructor(private readonly rounds: number) {}
 
   async encrypt(value: string): Promise<string> {

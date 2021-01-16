@@ -1,1 +1,1 @@
-export * from './bcrypt-adapter-factory';
+export * from './encrypter-factory';
