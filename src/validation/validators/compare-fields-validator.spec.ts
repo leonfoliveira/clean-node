@@ -8,7 +8,7 @@ const makeSut = (field: string, fieldToCompare: string): CompareFieldsValidator 
   new CompareFieldsValidator(field, fieldToCompare);
 
 describe('CompareFieldsValidator', () => {
-  test('Should return error if compare is invalid', () => {
+  it('Should return error if compare is invalid', () => {
     const field = faker.database.column();
     const fieldToCompare = `diff_${field}`;
     const sut = makeSut(field, fieldToCompare);
@@ -22,7 +22,7 @@ describe('CompareFieldsValidator', () => {
     expect(error).toEqual(new InvalidParamError(field));
   });
 
-  test('Should return null if compare is valid', () => {
+  it('Should return null if compare is valid', () => {
     const field = faker.database.column();
     const fieldToCompare = `diff_${field}`;
     const fieldValue = faker.random.words();
