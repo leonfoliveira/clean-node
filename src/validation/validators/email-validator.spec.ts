@@ -7,7 +7,7 @@ import { EmailValidator } from './email-validator';
 const makeSut = (field: string): EmailValidator => new EmailValidator(field);
 
 describe('EmailValidator', () => {
-  it('Should return error if email is invalid', () => {
+  it('should return error if email is invalid', () => {
     const field = faker.database.column();
     const sut = makeSut(field);
 
@@ -16,11 +16,20 @@ describe('EmailValidator', () => {
     expect(error).toEqual(new InvalidParamError(field));
   });
 
-  it('Should return null if email is valid', () => {
+  it('should return null if email is valid', () => {
     const field = faker.database.column();
     const sut = makeSut(field);
 
     const error = sut.validate({ [field]: faker.internet.email() });
+
+    expect(error).toBeNull();
+  });
+
+  test('should return null if email is empty', () => {
+    const field = faker.database.column();
+    const sut = makeSut(field);
+
+    const error = sut.validate({ [field]: '' });
 
     expect(error).toBeNull();
   });
