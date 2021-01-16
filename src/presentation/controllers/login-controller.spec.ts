@@ -65,4 +65,18 @@ describe('LoginController', () => {
 
     expect(httpResponse).toEqual(HttpResponse.BadRequest(new InvalidParamError('email')));
   });
+
+  it('should return 500 if EmailValidator throws', async () => {
+    const { sut, emailValidatorStub } = makeSut();
+    const error = new Error(faker.random.words());
+    error.stack = faker.random.words();
+    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+      throw error;
+    });
+    const httpRequest = mockLoginHttpRequest();
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(HttpResponse.InternalServerError(error));
+  });
 });
