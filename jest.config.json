@@ -1,13 +1,18 @@
 {
   "preset": "@shelf/jest-mongodb",
-  "roots": ["<rootDir>/src"],
-  "collectCoverageFrom": ["<rootDir>/src/**/*.ts", "!<rootDir>/src/**/index.ts", "!<rootDir>/src/main/**"],
+  "roots": ["<rootDir>/test"],
+  "collectCoverageFrom": [
+    "<rootDir>/src/**/*.ts",
+    "!<rootDir>/src/**/index.ts",
+    "!<rootDir>/src/main/**"
+  ],
   "coverageDirectory": "coverage",
   "testEnvironment": "node",
   "transform": {
     ".+\\.ts$": "ts-jest"
   },
   "moduleNameMapper": {
+    "@/test/(.*)": "<rootDir>/test/$1",
     "@/(.*)": "<rootDir>/src/$1"
   }
 }

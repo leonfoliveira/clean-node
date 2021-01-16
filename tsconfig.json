@@ -9,8 +9,9 @@
     "experimentalDecorators": true,
     "baseUrl": "src",
     "paths": {
+      "@/test/*": ["../test/*"],
       "@/*": ["*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }
