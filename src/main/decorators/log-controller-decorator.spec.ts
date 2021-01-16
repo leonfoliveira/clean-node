@@ -40,6 +40,20 @@ describe('LogControllerDecorator', () => {
     expect(response).toEqual(controllerStub.response);
   });
 
+  it('should not call LogErrorRepository when statusCode is not 500', async () => {
+    const { sut, controllerStub, logRepository } = makeSut();
+    jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce({
+      statusCode: 200,
+      body: { [faker.database.column()]: faker.random.words() },
+    });
+    const logErrorSpy = jest.spyOn(logRepository, 'logError');
+    const httpRequest = mockHttpRequest();
+
+    await sut.handle(httpRequest);
+
+    expect(logErrorSpy).not.toBeCalled();
+  });
+
   it('should call LogErrorRepository on 500', async () => {
     const { sut, controllerStub, logRepository } = makeSut();
     const error = new Error(faker.random.words());
