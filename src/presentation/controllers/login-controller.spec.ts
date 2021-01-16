@@ -19,8 +19,18 @@ describe('LoginController', () => {
     const httpRequest = mockLoginHttpRequest();
     delete httpRequest.body.email;
 
-    const httpResponse = await sut.handle(mockLoginHttpRequest());
+    const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse).toEqual(HttpResponse.BadRequest(new MissingParamError('email')));
+  });
+
+  it('should return 400 if no password is provided', async () => {
+    const sut = new LoginController();
+    const httpRequest = mockLoginHttpRequest();
+    delete httpRequest.body.password;
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(HttpResponse.BadRequest(new MissingParamError('password')));
   });
 });
