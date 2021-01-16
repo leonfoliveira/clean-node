@@ -13,4 +13,14 @@ describe('LogControllerDecorator', () => {
 
     expect(handleSpy).toHaveBeenCalledWith(httpRequest);
   });
+
+  it('should return the same as Controller', async () => {
+    const controllerStub = new ControllerStub();
+    const sut = new LogControllerDecorator(controllerStub);
+    const httpRequest = mockHttpRequest();
+
+    const response = await sut.handle(httpRequest);
+
+    expect(response).toEqual(controllerStub.response);
+  });
 });
