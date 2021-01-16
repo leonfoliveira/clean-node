@@ -5,7 +5,7 @@ import { InvalidParamError, MissingParamError, ServerError } from '@/presentatio
 import { HttpRequest, HttpResponse } from '@/presentation/interfaces';
 import { EmailValidatorStub } from '@/presentation/mocks';
 
-import { SignUpController } from './signup';
+import { SignUpController } from './signup-controller';
 
 type SutTypes = {
   sut: SignUpController;
