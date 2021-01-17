@@ -1,9 +1,13 @@
+import { Collection } from 'mongodb';
+
 import { MongoHelper, MongodbAccountRepository } from '@/infra/db/mongodb';
 import { mockAddAccountRepositoryParams } from '@/test/data/mocks/db';
 
 const makeSut = (): MongodbAccountRepository => new MongodbAccountRepository();
 
 describe('MongodbAccountRepository', () => {
+  let accountCollection: Collection;
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
@@ -13,15 +17,29 @@ describe('MongodbAccountRepository', () => {
   });
 
   beforeEach(async () => {
-    const accountCollection = await MongoHelper.getCollection('accounts');
+    accountCollection = await MongoHelper.getCollection('accounts');
     await accountCollection.deleteMany({});
   });
 
-  it('should return an AccountModel on success', async () => {
+  it('should return an AccountModel on add success', async () => {
     const sut = makeSut();
     const account = mockAddAccountRepositoryParams();
 
     const result = await sut.add(account);
+
+    expect(result).toBeTruthy();
+    expect(result.id).toBeTruthy();
+    expect(result.name).toBe(account.name);
+    expect(result.email).toBe(account.email);
+    expect(result.password).toBe(account.password);
+  });
+
+  it('should return an AccountModel on loadByEmail success', async () => {
+    const sut = makeSut();
+    const account = mockAddAccountRepositoryParams();
+    await accountCollection.insertOne(account);
+
+    const result = await sut.loadByEmail(account.email);
 
     expect(result).toBeTruthy();
     expect(result.id).toBeTruthy();
