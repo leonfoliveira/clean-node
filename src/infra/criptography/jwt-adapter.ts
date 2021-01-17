@@ -6,7 +6,6 @@ export class JwtAdapter implements TokenGenerator {
   constructor(private readonly secret: string) {}
 
   async generate(id: string): Promise<string> {
-    jwt.sign({ id }, this.secret);
-    return null;
+    return jwt.sign({ id }, this.secret);
   }
 }
