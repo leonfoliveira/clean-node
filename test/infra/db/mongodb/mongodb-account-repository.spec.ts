@@ -1,3 +1,4 @@
+import faker from 'faker';
 import { Collection } from 'mongodb';
 
 import { MongoHelper, MongodbAccountRepository } from '@/infra/db/mongodb';
@@ -57,5 +58,19 @@ describe('MongodbAccountRepository', () => {
     const result = await sut.loadByEmail(mockLoadAccountByEmailRepositoryParams());
 
     expect(result).toBeNull();
+  });
+
+  it('should update account accessToken on updateAccessToken success', async () => {
+    const sut = makeSut();
+    const account = mockAddAccountRepositoryParams();
+    const dbAccount = (await accountCollection.insertOne(account)).ops[0];
+    const accessToken = faker.random.uuid();
+
+    await sut.updateAccessToken(dbAccount._id, accessToken);
+
+    expect(dbAccount.accessToken).toBeFalsy();
+    const result = await accountCollection.findOne({ _id: dbAccount._id });
+    expect(result).toBeTruthy();
+    expect(result.accessToken).toBe(accessToken);
   });
 });
