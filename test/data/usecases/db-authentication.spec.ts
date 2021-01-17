@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { DbAuthentication } from '@/data/usecases';
 import { LoadAccountByEmailRepositoryStub } from '@/test/data/mocks';
 import { mockAuthenticationDTO } from '@/test/domain/mocks';
@@ -23,5 +25,16 @@ describe('DbAuthentication', () => {
     await sut.auth(authenticationDTO);
 
     expect(loadSpy).toHaveBeenCalledWith(authenticationDTO.email);
+  });
+
+  it('should throw if LoadAccountByEmailRepository throws', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut();
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'load')
+      .mockRejectedValueOnce(new Error(faker.random.words()));
+
+    const promise = sut.auth(mockAuthenticationDTO());
+
+    await expect(promise).rejects.toThrow();
   });
 });
