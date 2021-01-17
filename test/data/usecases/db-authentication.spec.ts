@@ -130,17 +130,17 @@ describe('DbAuthentication', () => {
 
   it('should call UpdateAccessTokenRepository with correct values', async () => {
     const { sut, updateAccessTokenRepositoryStub } = makeSut();
-    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update');
+    const updateAccessTokenSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken');
 
     const authorization = await sut.auth(mockAuthenticationDTO());
 
-    expect(updateSpy).toBeCalledWith(authorization.accessToken);
+    expect(updateAccessTokenSpy).toBeCalledWith(authorization.accessToken);
   });
 
   it('should throw if UpdateAccessTokenRepository throws', async () => {
     const { sut, updateAccessTokenRepositoryStub } = makeSut();
     jest
-      .spyOn(updateAccessTokenRepositoryStub, 'update')
+      .spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken')
       .mockRejectedValueOnce(new Error(faker.random.words()));
 
     const promise = sut.auth(mockAuthenticationDTO());
