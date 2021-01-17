@@ -1,7 +1,10 @@
 import { Collection } from 'mongodb';
 
 import { MongoHelper, MongodbAccountRepository } from '@/infra/db/mongodb';
-import { mockAddAccountRepositoryParams } from '@/test/data/mocks/db';
+import {
+  mockAddAccountRepositoryParams,
+  mockLoadAccountByEmailRepositoryParams,
+} from '@/test/data/mocks/db';
 
 const makeSut = (): MongodbAccountRepository => new MongodbAccountRepository();
 
@@ -46,5 +49,13 @@ describe('MongodbAccountRepository', () => {
     expect(result.name).toBe(account.name);
     expect(result.email).toBe(account.email);
     expect(result.password).toBe(account.password);
+  });
+
+  it('should return null on loadByEmail fail', async () => {
+    const sut = makeSut();
+
+    const result = await sut.loadByEmail(mockLoadAccountByEmailRepositoryParams());
+
+    expect(result).toBeNull();
   });
 });
