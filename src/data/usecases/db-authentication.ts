@@ -1,4 +1,4 @@
-import { LoadAccountByEmailRepository } from '@/data/interfaces';
+import { LoadAccountByEmailRepository } from '@/data/interfaces/db';
 import { AuthorizationModel } from '@/domain/models';
 import { Authentication, AuthenticationDTO } from '@/domain/usecases';
 

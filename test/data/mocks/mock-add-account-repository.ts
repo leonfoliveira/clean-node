@@ -1,4 +1,4 @@
-import { AddAccountRepository } from '@/data/interfaces';
+import { AddAccountRepository } from '@/data/interfaces/db';
 import { AccountModel } from '@/domain/models';
 import { mockAccountModel, mockAddAccountDTO } from '@/test/domain/mocks';
 

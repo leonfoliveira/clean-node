@@ -1,4 +1,4 @@
-import { AddAccountRepository } from '@/data/interfaces';
+import { AddAccountRepository } from '@/data/interfaces/db';
 import { MongodbAddAccountRepository } from '@/infra/db/mongodb';
 
 export const makeAddAccountRepository = (): AddAccountRepository =>

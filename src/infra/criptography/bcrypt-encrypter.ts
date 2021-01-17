@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { Encrypter } from '@/data/interfaces';
+import { Encrypter } from '@/data/interfaces/criptography';
 
 export class BcryptEncrypter implements Encrypter {
   constructor(private readonly rounds: number) {}
