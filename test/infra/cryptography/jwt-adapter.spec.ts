@@ -30,4 +30,16 @@ describe('JwtAdapter', () => {
 
     expect(result).toBe(accessToken);
   });
+
+  it('should throw if jwt.sign throws', async () => {
+    const secret = faker.random.word();
+    const sut = new JwtAdapter(secret);
+    jest.spyOn(jwt, 'sign').mockImplementationOnce(() => {
+      throw new Error(faker.random.words());
+    });
+
+    const promise = sut.generate(faker.random.uuid());
+
+    await expect(promise).rejects.toThrow();
+  });
 });
