@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { DbAuthentication } from '@/data/usecases';
-import { HashComparerStub } from '@/test/data/mocks/criptography';
+import { HashComparerStub, TokenGeneratorStub } from '@/test/data/mocks/criptography';
 import { LoadAccountByEmailRepositoryStub } from '@/test/data/mocks/db';
 import { mockAuthenticationDTO } from '@/test/domain/mocks';
 
@@ -9,14 +9,20 @@ type SutTypes = {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub;
   hashComparerStub: HashComparerStub;
+  tokenGeneratorStub: TokenGeneratorStub;
 };
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub();
   const hashComparerStub = new HashComparerStub();
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub);
+  const tokenGeneratorStub = new TokenGeneratorStub();
+  const sut = new DbAuthentication(
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub,
+    tokenGeneratorStub,
+  );
 
-  return { sut, loadAccountByEmailRepositoryStub, hashComparerStub };
+  return { sut, loadAccountByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub };
 };
 
 describe('DbAuthentication', () => {
@@ -79,5 +85,15 @@ describe('DbAuthentication', () => {
     const authorization = await sut.auth(mockAuthenticationDTO());
 
     expect(authorization).toBeNull();
+  });
+
+  it('should call TokenGenerator with correct id', async () => {
+    const { sut, loadAccountByEmailRepositoryStub, tokenGeneratorStub } = makeSut();
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate');
+    const authenticationDTO = mockAuthenticationDTO();
+
+    await sut.auth(authenticationDTO);
+
+    expect(generateSpy).toBeCalledWith(loadAccountByEmailRepositoryStub.response.id);
   });
 });
