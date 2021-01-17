@@ -2,7 +2,10 @@ import faker from 'faker';
 
 import { DbAuthentication } from '@/data/usecases';
 import { HashComparerStub, TokenGeneratorStub } from '@/test/data/mocks/criptography';
-import { LoadAccountByEmailRepositoryStub } from '@/test/data/mocks/db';
+import {
+  LoadAccountByEmailRepositoryStub,
+  UpdateAccessTokenRepositoryStub,
+} from '@/test/data/mocks/db';
 import { mockAuthenticationDTO } from '@/test/domain/mocks';
 
 type SutTypes = {
@@ -10,19 +13,28 @@ type SutTypes = {
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub;
   hashComparerStub: HashComparerStub;
   tokenGeneratorStub: TokenGeneratorStub;
+  updateAccessTokenRepositoryStub: UpdateAccessTokenRepositoryStub;
 };
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub();
   const hashComparerStub = new HashComparerStub();
   const tokenGeneratorStub = new TokenGeneratorStub();
+  const updateAccessTokenRepositoryStub = new UpdateAccessTokenRepositoryStub();
   const sut = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
     tokenGeneratorStub,
+    updateAccessTokenRepositoryStub,
   );
 
-  return { sut, loadAccountByEmailRepositoryStub, hashComparerStub, tokenGeneratorStub };
+  return {
+    sut,
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub,
+    tokenGeneratorStub,
+    updateAccessTokenRepositoryStub,
+  };
 };
 
 describe('DbAuthentication', () => {
@@ -114,5 +126,14 @@ describe('DbAuthentication', () => {
     const authorization = await sut.auth(mockAuthenticationDTO());
 
     expect(authorization).toEqual({ accessToken: tokenGeneratorStub.response });
+  });
+
+  it('should call UpdateAccessTokenRepository with correct values', async () => {
+    const { sut, updateAccessTokenRepositoryStub } = makeSut();
+    const updateSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update');
+
+    const authorization = await sut.auth(mockAuthenticationDTO());
+
+    expect(updateSpy).toBeCalledWith(authorization.accessToken);
   });
 });
