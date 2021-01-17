@@ -2,21 +2,21 @@ import faker from 'faker';
 
 import { LogControllerDecorator } from '@/main/decorators';
 import { HttpResponse } from '@/presentation/interfaces';
-import { LogRepositoryStub } from '@/test/data/mocks/db';
+import { LogErrorRepositoryStub } from '@/test/data/mocks/db';
 import { mockHttpRequest, ControllerStub } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: LogControllerDecorator;
   controllerStub: ControllerStub;
-  logRepository: LogRepositoryStub;
+  logErrorRepository: LogErrorRepositoryStub;
 };
 
 const makeSut = (): SutTypes => {
   const controllerStub = new ControllerStub();
-  const logRepository = new LogRepositoryStub();
-  const sut = new LogControllerDecorator(controllerStub, logRepository);
+  const logErrorRepository = new LogErrorRepositoryStub();
+  const sut = new LogControllerDecorator(controllerStub, logErrorRepository);
 
-  return { sut, controllerStub, logRepository };
+  return { sut, controllerStub, logErrorRepository };
 };
 
 describe('LogControllerDecorator', () => {
@@ -40,12 +40,12 @@ describe('LogControllerDecorator', () => {
   });
 
   it('should not call LogErrorRepository when statusCode is not 500', async () => {
-    const { sut, controllerStub, logRepository } = makeSut();
+    const { sut, controllerStub, logErrorRepository } = makeSut();
     jest.spyOn(controllerStub, 'handle').mockResolvedValueOnce({
       statusCode: 200,
       body: { [faker.database.column()]: faker.random.words() },
     });
-    const logErrorSpy = jest.spyOn(logRepository, 'logError');
+    const logErrorSpy = jest.spyOn(logErrorRepository, 'logError');
     const httpRequest = mockHttpRequest();
 
     await sut.handle(httpRequest);
@@ -54,13 +54,13 @@ describe('LogControllerDecorator', () => {
   });
 
   it('should call LogErrorRepository on 500', async () => {
-    const { sut, controllerStub, logRepository } = makeSut();
+    const { sut, controllerStub, logErrorRepository } = makeSut();
     const error = new Error(faker.random.words());
     error.stack = faker.random.words();
     jest
       .spyOn(controllerStub, 'handle')
       .mockResolvedValueOnce(HttpResponse.InternalServerError(error));
-    const logErrorSpy = jest.spyOn(logRepository, 'logError');
+    const logErrorSpy = jest.spyOn(logErrorRepository, 'logError');
     const httpRequest = mockHttpRequest();
 
     await sut.handle(httpRequest);

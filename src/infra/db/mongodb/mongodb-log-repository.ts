@@ -1,7 +1,7 @@
-import { LogRepository } from '@/data/interfaces/db';
+import { LogErrorRepository } from '@/data/interfaces/db';
 import { MongoHelper } from '@/infra/db/mongodb';
 
-export class MongodbLogRepository implements LogRepository {
+export class MongodbLogRepository implements LogErrorRepository {
   async logError(stack: string): Promise<void> {
     const errorCollection = await MongoHelper.getCollection('errors');
     await errorCollection.insertOne({ stack, date: new Date() });
