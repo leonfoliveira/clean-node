@@ -96,4 +96,15 @@ describe('DbAuthentication', () => {
 
     expect(generateSpy).toBeCalledWith(loadAccountByEmailRepositoryStub.response.id);
   });
+
+  it('should throw if TokenGenerator throws', async () => {
+    const { sut, tokenGeneratorStub } = makeSut();
+    jest
+      .spyOn(tokenGeneratorStub, 'generate')
+      .mockRejectedValueOnce(new Error(faker.random.words()));
+
+    const promise = sut.auth(mockAuthenticationDTO());
+
+    await expect(promise).rejects.toThrow();
+  });
 });
