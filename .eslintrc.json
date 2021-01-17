@@ -1,5 +1,4 @@
 {
-  "plugins": ["@typescript-eslint", "eslint-comments", "jest", "promise", "unicorn", "prettier"],
   "extends": [
     "airbnb-typescript/base",
     "plugin:@typescript-eslint/recommended",
@@ -7,8 +6,9 @@
     "plugin:jest/recommended",
     "plugin:promise/recommended",
     "plugin:unicorn/recommended",
-    "prettier",
-    "prettier/@typescript-eslint"
+    "prettier/@typescript-eslint",
+    "prettier/unicorn",
+    "plugin:prettier/recommended"
   ],
   "env": {
     "node": true,
@@ -18,10 +18,7 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    "prettier/prettier": "error",
     "func-names": "off",
-    "no-console": "off",
-    "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
     "import/order": [

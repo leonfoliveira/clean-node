@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { MongoClient, Collection } from 'mongodb';
 
 export const MongoHelper = {
@@ -32,3 +33,4 @@ export const MongoHelper = {
     return mappedData;
   },
 };
+/* eslint-enable no-underscore-dangle */
