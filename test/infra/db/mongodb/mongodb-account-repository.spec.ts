@@ -1,9 +1,9 @@
-import { MongoHelper, MongodbAddAccountRepository } from '@/infra/db/mongodb';
+import { MongoHelper, MongodbAccountRepository } from '@/infra/db/mongodb';
 import { mockAddAccountRepositoryParams } from '@/test/data/mocks/db';
 
-const makeSut = (): MongodbAddAccountRepository => new MongodbAddAccountRepository();
+const makeSut = (): MongodbAccountRepository => new MongodbAccountRepository();
 
-describe('MongodbAddAccountRepository', () => {
+describe('MongodbAccountRepository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
