@@ -1,19 +1,21 @@
 import faker from 'faker';
 
 import { DbAuthentication } from '@/data/usecases';
-import { LoadAccountByEmailRepositoryStub } from '@/test/data/mocks';
+import { LoadAccountByEmailRepositoryStub, HashComparerStub } from '@/test/data/mocks';
 import { mockAuthenticationDTO } from '@/test/domain/mocks';
 
 type SutTypes = {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub;
+  hashComparerStub: HashComparerStub;
 };
 
 const makeSut = (): SutTypes => {
   const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub();
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub);
+  const hashComparerStub = new HashComparerStub();
+  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub, hashComparerStub);
 
-  return { sut, loadAccountByEmailRepositoryStub };
+  return { sut, loadAccountByEmailRepositoryStub, hashComparerStub };
 };
 
 describe('DbAuthentication', () => {
@@ -45,5 +47,18 @@ describe('DbAuthentication', () => {
     const authorization = await sut.auth(mockAuthenticationDTO());
 
     expect(authorization).toBeNull();
+  });
+
+  it('should call HashComparer with correct values', async () => {
+    const { sut, loadAccountByEmailRepositoryStub, hashComparerStub } = makeSut();
+    const compareSpy = jest.spyOn(hashComparerStub, 'compare');
+    const authenticationDTO = mockAuthenticationDTO();
+
+    await sut.auth(authenticationDTO);
+
+    expect(compareSpy).toBeCalledWith(
+      authenticationDTO.password,
+      loadAccountByEmailRepositoryStub.response.password,
+    );
   });
 });
