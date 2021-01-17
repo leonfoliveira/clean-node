@@ -107,4 +107,12 @@ describe('DbAuthentication', () => {
 
     await expect(promise).rejects.toThrow();
   });
+
+  it('should return an AuthorizationModel on success', async () => {
+    const { sut, tokenGeneratorStub } = makeSut();
+
+    const authorization = await sut.auth(mockAuthenticationDTO());
+
+    expect(authorization).toEqual({ accessToken: tokenGeneratorStub.response });
+  });
 });
