@@ -61,4 +61,12 @@ describe('BcryptAdapter', () => {
 
     expect(compareSpy).toHaveBeenCalledWith(value, hash);
   });
+
+  it('should return true on bcrypt.compare success', async () => {
+    const { sut } = makeSut();
+
+    const result = await sut.compare(faker.random.word(), faker.random.uuid());
+
+    expect(result).toBe(true);
+  });
 });
