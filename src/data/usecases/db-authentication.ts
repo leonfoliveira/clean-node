@@ -1,5 +1,5 @@
 import { HashComparer, TokenGenerator } from '@/data/interfaces/criptography';
-import { LoadAccountByEmailRepository } from '@/data/interfaces/db';
+import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/interfaces/db';
 import { AuthorizationModel } from '@/domain/models';
 import { Authentication, AuthenticationDTO } from '@/domain/usecases';
 
@@ -8,6 +8,7 @@ export class DbAuthentication implements Authentication {
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
     private readonly tokenGenerator: TokenGenerator,
+    private readonly updateAccessTokenRepository: UpdateAccessTokenRepository,
   ) {}
 
   async auth(params: AuthenticationDTO): Promise<AuthorizationModel> {
@@ -16,6 +17,8 @@ export class DbAuthentication implements Authentication {
       const isValid = await this.hashComparer.compare(params.password, account.password);
       if (isValid) {
         const accessToken = await this.tokenGenerator.generate(account.id);
+
+        await this.updateAccessTokenRepository.update(accessToken);
         return { accessToken };
       }
     }
