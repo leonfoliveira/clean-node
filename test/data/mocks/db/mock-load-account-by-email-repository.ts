@@ -9,7 +9,7 @@ export const mockLoadAccountByEmailRepositoryParams = faker.internet.email();
 export class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   response = mockAccountModel();
 
-  async load(): Promise<AccountModel> {
+  async loadByEmail(): Promise<AccountModel> {
     return this.response;
   }
 }

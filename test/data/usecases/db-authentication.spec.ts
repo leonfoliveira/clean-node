@@ -40,18 +40,18 @@ const makeSut = (): SutTypes => {
 describe('DbAuthentication', () => {
   it('should call LoadAccountByEmailRepository with correct email', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut();
-    const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load');
+    const loadByEmail = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail');
     const authenticationDTO = mockAuthenticationDTO();
 
     await sut.auth(authenticationDTO);
 
-    expect(loadSpy).toHaveBeenCalledWith(authenticationDTO.email);
+    expect(loadByEmail).toHaveBeenCalledWith(authenticationDTO.email);
   });
 
   it('should throw if LoadAccountByEmailRepository throws', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut();
     jest
-      .spyOn(loadAccountByEmailRepositoryStub, 'load')
+      .spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
       .mockRejectedValueOnce(new Error(faker.random.words()));
 
     const promise = sut.auth(mockAuthenticationDTO());
@@ -61,7 +61,7 @@ describe('DbAuthentication', () => {
 
   it('should return null if LoadAccountByEmailRepository returns null', async () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut();
-    jest.spyOn(loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(null);
+    jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail').mockResolvedValueOnce(null);
 
     const authorization = await sut.auth(mockAuthenticationDTO());
 
