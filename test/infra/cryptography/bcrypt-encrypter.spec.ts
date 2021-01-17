@@ -1,31 +1,31 @@
 import bcrypt from 'bcrypt';
 import faker from 'faker';
 
-import { BcryptEncrypter } from '@/infra/criptography';
+import { BcryptHashGenerator } from '@/infra/criptography';
 
 jest.mock('bcrypt', () => ({
   hash: async (): Promise<string> => faker.random.uuid(),
 }));
 
 type SutTypes = {
-  sut: BcryptEncrypter;
+  sut: BcryptHashGenerator;
   rounds: number;
 };
 
 const makeSut = (): SutTypes => {
   const rounds = 12;
-  const sut = new BcryptEncrypter(rounds);
+  const sut = new BcryptHashGenerator(rounds);
 
   return { sut, rounds };
 };
 
-describe('BcryptEncrypter', () => {
+describe('BcryptHashGenerator', () => {
   it('should call bcrypt with correct values', async () => {
     const { sut, rounds } = makeSut();
     const value = faker.random.word();
     const hashSpy = jest.spyOn(bcrypt, 'hash');
 
-    await sut.encrypt(value);
+    await sut.generate(value);
 
     expect(hashSpy).toHaveBeenCalledWith(value, rounds);
   });
@@ -35,7 +35,7 @@ describe('BcryptEncrypter', () => {
     const hash = faker.random.uuid();
     jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce(hash);
 
-    const result = await sut.encrypt(faker.random.word());
+    const result = await sut.generate(faker.random.word());
 
     expect(result).toBe(hash);
   });
@@ -45,7 +45,7 @@ describe('BcryptEncrypter', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(bcrypt, 'hash').mockRejectedValueOnce(error);
 
-    const promise = sut.encrypt(faker.random.word());
+    const promise = sut.generate(faker.random.word());
 
     await expect(promise).rejects.toThrow(error);
   });

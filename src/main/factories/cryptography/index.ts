@@ -1,1 +1,1 @@
-export * from './encrypter-factory';
+export * from './hash-generator-factory';

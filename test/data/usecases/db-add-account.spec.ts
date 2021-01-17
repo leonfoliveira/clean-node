@@ -1,39 +1,39 @@
 import faker from 'faker';
 
 import { DbAddAccount } from '@/data/usecases';
-import { EncrypterStub } from '@/test/data/mocks/criptography';
+import { HashGeneratorStub } from '@/test/data/mocks/criptography';
 import { AddAccountRepositoryStub } from '@/test/data/mocks/db';
 import { mockAddAccountDTO } from '@/test/domain/mocks';
 
 type SutTypes = {
   sut: DbAddAccount;
-  encrypterStub: EncrypterStub;
+  hashGeneratorStub: HashGeneratorStub;
   addAccountRepositoryStub: AddAccountRepositoryStub;
 };
 
 const makeSut = (): SutTypes => {
-  const encrypterStub = new EncrypterStub();
+  const hashGeneratorStub = new HashGeneratorStub();
   const addAccountRepositoryStub = new AddAccountRepositoryStub();
-  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
+  const sut = new DbAddAccount(hashGeneratorStub, addAccountRepositoryStub);
 
-  return { sut, encrypterStub, addAccountRepositoryStub };
+  return { sut, hashGeneratorStub, addAccountRepositoryStub };
 };
 
 describe('DbAddAccount', () => {
-  it('should call Encrypter with correct password', () => {
-    const { sut, encrypterStub } = makeSut();
-    const encrypterSpy = jest.spyOn(encrypterStub, 'encrypt');
+  it('should call HashGenerator with correct password', () => {
+    const { sut, hashGeneratorStub } = makeSut();
+    const hashGeneratorSpy = jest.spyOn(hashGeneratorStub, 'generate');
     const accountData = mockAddAccountDTO();
 
     sut.add(accountData);
 
-    expect(encrypterSpy).toHaveBeenCalledWith(accountData.password);
+    expect(hashGeneratorSpy).toHaveBeenCalledWith(accountData.password);
   });
 
-  it('should throw if Encrypter throws', async () => {
-    const { sut, encrypterStub } = makeSut();
+  it('should throw if HashGenerator throws', async () => {
+    const { sut, hashGeneratorStub } = makeSut();
     const error = new Error(faker.random.words());
-    jest.spyOn(encrypterStub, 'encrypt').mockRejectedValueOnce(error);
+    jest.spyOn(hashGeneratorStub, 'generate').mockRejectedValueOnce(error);
 
     const promise = sut.add(mockAddAccountDTO());
 
@@ -41,7 +41,7 @@ describe('DbAddAccount', () => {
   });
 
   it('should call AddAccountRepository with correct values', async () => {
-    const { sut, encrypterStub, addAccountRepositoryStub } = makeSut();
+    const { sut, hashGeneratorStub, addAccountRepositoryStub } = makeSut();
     const addSpy = jest.spyOn(addAccountRepositoryStub, 'add');
     const accountData = mockAddAccountDTO();
 
@@ -49,7 +49,7 @@ describe('DbAddAccount', () => {
 
     expect(addSpy).toHaveBeenCalledWith({
       ...accountData,
-      password: encrypterStub.response,
+      password: hashGeneratorStub.response,
     });
   });
 
