@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { JwtAdapter } from '@/infra/criptography/jwt-adapter';
 
 jest.mock('jsonwebtoken', () => ({
-  sign: async (): Promise<string> => faker.random.uuid(),
+  sign: (): string => faker.random.uuid(),
 }));
 
 describe('JwtAdapter', () => {
@@ -17,5 +17,17 @@ describe('JwtAdapter', () => {
     await sut.generate(id);
 
     expect(signSpy).toHaveBeenCalledWith({ id }, secret);
+  });
+
+  it('should return a token on sign success', async () => {
+    const secret = faker.random.word();
+    const sut = new JwtAdapter(secret);
+    const id = faker.random.uuid();
+    const accessToken = faker.random.uuid();
+    jest.spyOn(jwt, 'sign').mockImplementationOnce(() => accessToken);
+
+    const result = await sut.generate(id);
+
+    expect(result).toBe(accessToken);
   });
 });
