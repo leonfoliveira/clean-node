@@ -1,25 +1,25 @@
 import bcrypt from 'bcrypt';
 import faker from 'faker';
 
-import { BcryptHashGenerator } from '@/infra/criptography';
+import { BcryptAdapter } from '@/infra/criptography';
 
 jest.mock('bcrypt', () => ({
   hash: async (): Promise<string> => faker.random.uuid(),
 }));
 
 type SutTypes = {
-  sut: BcryptHashGenerator;
+  sut: BcryptAdapter;
   rounds: number;
 };
 
 const makeSut = (): SutTypes => {
   const rounds = 12;
-  const sut = new BcryptHashGenerator(rounds);
+  const sut = new BcryptAdapter(rounds);
 
   return { sut, rounds };
 };
 
-describe('BcryptHashGenerator', () => {
+describe('BcryptAdapter', () => {
   it('should call bcrypt with correct values', async () => {
     const { sut, rounds } = makeSut();
     const value = faker.random.word();

@@ -1,4 +1,4 @@
 import { HashGenerator } from '@/data/interfaces/criptography';
-import { BcryptHashGenerator } from '@/infra/criptography';
+import { BcryptAdapter } from '@/infra/criptography';
 
-export const makeHashGenerator = (): HashGenerator => new BcryptHashGenerator(12);
+export const makeHashGenerator = (): HashGenerator => new BcryptAdapter(12);
