@@ -1,5 +1,5 @@
 import { MongoHelper, MongodbAddAccountRepository } from '@/infra/db/mongodb';
-import { mockAddAccountRepositoryParams } from '@/test/data/mocks';
+import { mockAddAccountRepositoryParams } from '@/test/data/mocks/db';
 
 const makeSut = (): MongodbAddAccountRepository => new MongodbAddAccountRepository();
 

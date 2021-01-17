@@ -1,7 +1,8 @@
 import faker from 'faker';
 
 import { DbAuthentication } from '@/data/usecases';
-import { LoadAccountByEmailRepositoryStub, HashComparerStub } from '@/test/data/mocks';
+import { HashComparerStub } from '@/test/data/mocks/criptography';
+import { LoadAccountByEmailRepositoryStub } from '@/test/data/mocks/db';
 import { mockAuthenticationDTO } from '@/test/domain/mocks';
 
 type SutTypes = {
