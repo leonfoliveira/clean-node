@@ -9,6 +9,8 @@
     "start": "node dist/main/server.js",
     "dev": "concurrently -k 'tsc -w' 'node-dev --respawn dist/main/server.js'",
     "build": "rimraf dist && tsc --project tsconfig.build.json",
+    "up": "yarn build && docker-compose up -d",
+    "down": "docker-compose down",
     "test": "jest --passWithNoTests --no-cache --runInBand --silent",
     "test:unit": "yarn test --testMatch '**/*.spec.ts'",
     "test:integration": "yarn test --testMatch '**/*.test.ts'",
