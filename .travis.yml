@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - 14
+script:
+  - eslint 'src/**'
+  - yarn test:coveralls
+deploy:
+  provider: heroku
+  api_key: $HEROKU_API
+  app: leonfoliveira-fordevs-node
+  skip_cleanup: true
+  on:
+    branch: main
+notifications:
+  email: false
