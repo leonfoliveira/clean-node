@@ -32,7 +32,7 @@ describe('LoginRoutes', () => {
   });
 
   describe('POST /login', () => {
-    it('should return 200 on login', async () => {
+    it('should return 200 on login success', async () => {
       const httpRequest = mockLoginHttpRequest();
       const account = httpRequest.body;
       await accountCollection.insertOne({
@@ -43,6 +43,13 @@ describe('LoginRoutes', () => {
       const response = await request(app).post('/api/login').send(httpRequest.body);
 
       expect(response.status).toBe(200);
+    });
+
+    it('should return 401 on login fail', async () => {
+      const httpRequest = mockLoginHttpRequest();
+      const response = await request(app).post('/api/login').send(httpRequest.body);
+
+      expect(response.status).toBe(401);
     });
   });
 });
