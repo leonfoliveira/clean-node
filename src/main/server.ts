@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import 'module-alias/register';
 import { MongoHelper } from '@/infra/db/mongodb';
 import { env } from '@/main/config/env';
 
