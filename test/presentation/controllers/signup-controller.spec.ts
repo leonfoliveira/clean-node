@@ -2,21 +2,9 @@ import faker from 'faker';
 
 import { SignUpController } from '@/presentation/controllers';
 import { ServerError } from '@/presentation/errors';
-import { HttpRequest, HttpResponse } from '@/presentation/interfaces';
+import { HttpResponse } from '@/presentation/interfaces';
 import { AddAccountStub } from '@/test/domain/mocks';
-import { ValidatorStub } from '@/test/presentation/mocks';
-
-const mockSignupHttpRequest = (): HttpRequest => {
-  const password = faker.internet.password();
-  return {
-    body: {
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      password,
-      passwordConfirmation: password,
-    },
-  };
-};
+import { ValidatorStub, mockSignupHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: SignUpController;

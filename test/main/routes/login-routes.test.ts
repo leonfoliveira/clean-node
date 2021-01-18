@@ -1,10 +1,10 @@
-import faker from 'faker';
 import request from 'supertest';
 
 import { MongoHelper } from '@/infra/db/mongodb';
 import { app } from '@/main/config/app';
+import { mockSignupHttpRequest } from '@/test/presentation/mocks';
 
-describe('SignupRoutes', () => {
+describe('LoginRoutes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
@@ -18,15 +18,11 @@ describe('SignupRoutes', () => {
     await accountCollection.deleteMany({});
   });
 
-  it('should return an account on success', async () => {
-    const password = faker.internet.password();
-    const response = await request(app).post('/api/signup').send({
-      name: faker.name.findName(),
-      email: faker.internet.email(),
-      password,
-      passwordConfirmation: password,
-    });
+  describe('POST /signup', () => {
+    it('should return 200 on signup', async () => {
+      const response = await request(app).post('/api/signup').send(mockSignupHttpRequest().body);
 
-    expect(response.status).toBe(200);
+      expect(response.status).toBe(200);
+    });
   });
 });

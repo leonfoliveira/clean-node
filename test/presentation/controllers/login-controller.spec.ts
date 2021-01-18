@@ -1,16 +1,9 @@
 import faker from 'faker';
 
 import { LoginController } from '@/presentation/controllers';
-import { HttpRequest, HttpResponse } from '@/presentation/interfaces';
+import { HttpResponse } from '@/presentation/interfaces';
 import { AuthenticationStub } from '@/test/domain/mocks';
-import { ValidatorStub } from '@/test/presentation/mocks';
-
-const mockLoginHttpRequest = (): HttpRequest => ({
-  body: {
-    email: faker.internet.email(),
-    password: faker.internet.password(),
-  },
-});
+import { ValidatorStub, mockLoginHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: LoginController;
