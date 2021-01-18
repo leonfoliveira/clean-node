@@ -13,11 +13,11 @@ services:
     image: node:14-alpine
     working_dir: /usr/src/clean-node-api
     restart: always
-    command: /bin/sh -c "yarn install --prod && yarn debug"
+    command: /bin/sh -c "yarn install --prod && yarn add -D node-dev && yarn debug"
     environment:
       - MONGO_URL=mongodb://mongo:27017/clean-node-api
     volumes:
-      - ./dist:/usr/src/clean-node-api/dist
+      - ./dist/:/usr/src/clean-node-api/dist/
       - ./package.json:/usr/src/clean-node-api/package.json
     ports:
       - '4000:4000'

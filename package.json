@@ -7,9 +7,10 @@
   "license": "GPL-3.0",
   "scripts": {
     "start": "node dist/main/server.js",
-    "dev": "concurrently -k 'tsc -w' 'node-dev --respawn dist/main/server.js'",
-    "build": "rimraf dist && tsc --project tsconfig.build.json",
-    "debug": "node-dev --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
+    "dev": "yarn build && concurrently -k 'yarn build:watch' 'yarn debug'",
+    "debug": "node-dev --respawn --no-notify --inspect=0.0.0.0:9222 --nolazy ./dist/main/server.js",
+    "build": "rimraf dist && tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json -w",
     "up": "yarn build && docker-compose up -d",
     "down": "docker-compose down",
     "test": "jest --passWithNoTests --no-cache --runInBand --silent",
