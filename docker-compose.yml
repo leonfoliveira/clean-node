@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:4.2-bionic
+    restart: always
+    volumes:
+      - ./data:/data/db
+    ports:
+      - '27017:27017'
+  api:
+    container_name: api
+    image: node:14-alpine
+    working_dir: /usr/src/clean-node-api
+    restart: always
+    command: /bin/sh -c "yarn install --prod && yarn start"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/clean-node-api
+    volumes:
+      - ./dist:/usr/src/clean-node-api/dist
+      - ./package.json:/usr/src/clean-node-api/package.json
+    ports:
+      - '4000:4000'
+    links:
+      - mongo
