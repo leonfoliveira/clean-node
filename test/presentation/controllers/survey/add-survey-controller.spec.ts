@@ -1,6 +1,7 @@
 import faker from 'faker';
 
 import { AddSurveyController } from '@/presentation/controllers';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { mockAddSurveyHttpRequest, ValidatorStub } from '@/test/presentation/mocks';
 
 type SutTypes = {
@@ -24,5 +25,16 @@ describe('AddSurveyController', () => {
     await sut.handle(httpRequest);
 
     expect(validateSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+
+  it('should returns 400 if Validation returns an error', async () => {
+    const { sut, validatorStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(error);
+    const httpRequest = mockAddSurveyHttpRequest();
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeBadRequest(error));
   });
 });

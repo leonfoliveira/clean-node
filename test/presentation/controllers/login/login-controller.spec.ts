@@ -58,7 +58,7 @@ describe('LoginController', () => {
     expect(httpResponse).toEqual(HttpResponseFactory.makeOk(authenticationStub.response));
   });
 
-  it('should returns 400 if Validation returns an error', async () => {
+  it('should return 400 if Validation returns an error', async () => {
     const { sut, validatorStub } = makeSut();
     const error = new Error(faker.random.words());
     jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(error);
