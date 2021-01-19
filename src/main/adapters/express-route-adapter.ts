@@ -12,7 +12,7 @@ export const adaptRoute = (controller: Controller) => async (
 
   const httpResponse = await controller.handle(httpRequest);
 
-  if ([200, 201].includes(httpResponse.statusCode)) {
+  if (httpResponse.statusCode <= 300) {
     res.status(httpResponse.statusCode).json(httpResponse.body);
   } else {
     res.status(httpResponse.statusCode).json({ error: httpResponse.body.message });
