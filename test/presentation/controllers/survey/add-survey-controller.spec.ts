@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { AddSurveyController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { AddSurveyStub } from '@/test/domain/mocks';
+import { AddSurveyStub } from '@/test/domain/mocks/usecases';
 import { mockAddSurveyHttpRequest, ValidatorStub } from '@/test/presentation/mocks';
 
 type SutTypes = {

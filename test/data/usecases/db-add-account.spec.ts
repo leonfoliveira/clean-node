@@ -6,7 +6,8 @@ import {
   AddAccountRepositoryStub,
   LoadAccountByEmailRepositoryStub,
 } from '@/test/data/mocks';
-import { mockAccountModel, mockAddAccountDTO } from '@/test/domain/mocks';
+import { mockAccountModel } from '@/test/domain/mocks/models';
+import { mockAddAccountDTO } from '@/test/domain/mocks/usecases';
 
 type SutTypes = {
   sut: DbAddAccount;

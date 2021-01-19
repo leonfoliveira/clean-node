@@ -1,6 +1,7 @@
 import { AddAccountRepository } from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
-import { mockAccountModel, mockAddAccountDTO } from '@/test/domain/mocks';
+import { mockAccountModel } from '@/test/domain/mocks/models';
+import { mockAddAccountDTO } from '@/test/domain/mocks/usecases';
 
 export const mockAddAccountRepositoryParams = mockAddAccountDTO;
 

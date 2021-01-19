@@ -3,7 +3,7 @@ import faker from 'faker';
 import { SignUpController } from '@/presentation/controllers';
 import { EmailInUseError, ServerError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { AddAccountStub, AuthenticationStub } from '@/test/domain/mocks';
+import { AddAccountStub, AuthenticationStub } from '@/test/domain/mocks/usecases';
 import { ValidatorStub, mockSignupHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {

@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { LoginController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { AuthenticationStub } from '@/test/domain/mocks';
+import { AuthenticationStub } from '@/test/domain/mocks/usecases';
 import { ValidatorStub, mockLoginHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {

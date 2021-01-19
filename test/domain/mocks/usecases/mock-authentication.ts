@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { AuthorizationModel } from '@/domain/models';
 import { Authentication, AuthenticationDTO } from '@/domain/usecases';
-import { mockAuthorizationModel } from '@/test/domain/mocks';
+import { mockAuthorizationModel } from '@/test/domain/mocks/models';
 
 export const mockAuthenticationDTO = (): AuthenticationDTO => ({
   email: faker.internet.email(),

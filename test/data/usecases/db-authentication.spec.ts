@@ -7,7 +7,7 @@ import {
   LoadAccountByEmailRepositoryStub,
   UpdateAccessTokenRepositoryStub,
 } from '@/test/data/mocks';
-import { mockAuthenticationDTO } from '@/test/domain/mocks';
+import { mockAuthenticationDTO } from '@/test/domain/mocks/usecases';
 
 type SutTypes = {
   sut: DbAuthentication;
