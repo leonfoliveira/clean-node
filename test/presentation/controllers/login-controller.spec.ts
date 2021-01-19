@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { LoginController } from '@/presentation/controllers';
-import { HttpResponse } from '@/presentation/interfaces';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { AuthenticationStub } from '@/test/domain/mocks';
 import { ValidatorStub, mockLoginHttpRequest } from '@/test/presentation/mocks';
 
@@ -36,7 +36,7 @@ describe('LoginController', () => {
 
     const httpResponse = await sut.handle(mockLoginHttpRequest());
 
-    expect(httpResponse).toEqual(HttpResponse.Unauthorized());
+    expect(httpResponse).toEqual(HttpResponseFactory.makeUnauthorized());
   });
 
   it('should return 500 if Authentication throws', async () => {
@@ -47,7 +47,7 @@ describe('LoginController', () => {
 
     const httpResponse = await sut.handle(mockLoginHttpRequest());
 
-    expect(httpResponse).toEqual(HttpResponse.InternalServerError(error));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
 
   it('should return 200 if valid credentials are provided', async () => {
@@ -55,7 +55,7 @@ describe('LoginController', () => {
 
     const httpResponse = await sut.handle(mockLoginHttpRequest());
 
-    expect(httpResponse).toEqual(HttpResponse.Ok(authenticationStub.response));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeOk(authenticationStub.response));
   });
 
   it('should returns 400 if Validation returns an error', async () => {
@@ -66,6 +66,6 @@ describe('LoginController', () => {
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.BadRequest(error));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeBadRequest(error));
   });
 });

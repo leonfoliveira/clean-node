@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { LogControllerDecorator } from '@/main/decorators';
-import { HttpResponse } from '@/presentation/interfaces';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { LogErrorRepositoryStub } from '@/test/data/mocks/db';
 import { mockHttpRequest, ControllerStub } from '@/test/presentation/mocks';
 
@@ -59,7 +59,7 @@ describe('LogControllerDecorator', () => {
     error.stack = faker.random.words();
     jest
       .spyOn(controllerStub, 'handle')
-      .mockResolvedValueOnce(HttpResponse.InternalServerError(error));
+      .mockResolvedValueOnce(HttpResponseFactory.makeInternalServerError(error));
     const logErrorSpy = jest.spyOn(logErrorRepository, 'logError');
     const httpRequest = mockHttpRequest();
 

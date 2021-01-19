@@ -1,7 +1,7 @@
 import { AddAccount, Authentication } from '@/domain/usecases';
+import { EmailInUseError } from '@/presentation/errors';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpRequest, HttpResponse, Validator } from '@/presentation/interfaces';
-
-import { EmailInUseError } from '../errors';
 
 export class SignUpController implements Controller {
   constructor(
@@ -14,20 +14,20 @@ export class SignUpController implements Controller {
     try {
       const error = this.validator.validate(httpRequest.body);
       if (error) {
-        return HttpResponse.BadRequest(error);
+        return HttpResponseFactory.makeBadRequest(error);
       }
 
       const { name, email, password } = httpRequest.body;
       const account = await this.addAccount.add({ name, email, password });
       if (!account) {
-        return HttpResponse.Forbidden(new EmailInUseError());
+        return HttpResponseFactory.makeForbidden(new EmailInUseError());
       }
 
       const authorization = await this.authentication.auth({ email, password });
 
-      return HttpResponse.Ok(authorization);
+      return HttpResponseFactory.makeOk(authorization);
     } catch (error) {
-      return HttpResponse.InternalServerError(error);
+      return HttpResponseFactory.makeInternalServerError(error);
     }
   }
 }

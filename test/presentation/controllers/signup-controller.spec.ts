@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { SignUpController } from '@/presentation/controllers';
 import { EmailInUseError, ServerError } from '@/presentation/errors';
-import { HttpResponse } from '@/presentation/interfaces';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { AddAccountStub, AuthenticationStub } from '@/test/domain/mocks';
 import { ValidatorStub, mockSignupHttpRequest } from '@/test/presentation/mocks';
 
@@ -43,7 +43,9 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.InternalServerError(new ServerError(error.stack)));
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeInternalServerError(new ServerError(error.stack)),
+    );
   });
 
   it('should return 403 if AddAccount returns null', async () => {
@@ -53,7 +55,7 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.Forbidden(new EmailInUseError()));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeForbidden(new EmailInUseError()));
   });
 
   it('should return 200 if valid data is provided', async () => {
@@ -62,7 +64,7 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.Ok(authenticationStub.response));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeOk(authenticationStub.response));
   });
 
   it('should call Validation with correct value', async () => {
@@ -83,7 +85,7 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.BadRequest(error));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeBadRequest(error));
   });
 
   it('should call Authentication with correct values', async () => {
@@ -108,6 +110,8 @@ describe('SignUp Controller', () => {
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.InternalServerError(new ServerError(error.stack)));
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeInternalServerError(new ServerError(error.stack)),
+    );
   });
 });
