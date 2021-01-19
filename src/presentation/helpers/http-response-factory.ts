@@ -2,10 +2,12 @@ import { ServerError, UnauthorizedError } from '@/presentation/errors';
 import { HttpResponse } from '@/presentation/interfaces';
 
 export class HttpResponseFactory {
-  private constructor(public statusCode: number, public body: any) {}
-
   static makeOk(data: any): HttpResponse {
     return { statusCode: 200, body: data };
+  }
+
+  static makeNoContent(): HttpResponse {
+    return { statusCode: 204 };
   }
 
   static makeBadRequest(error: Error): HttpResponse {

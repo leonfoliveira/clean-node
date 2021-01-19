@@ -15,7 +15,7 @@ export class AddSurveyController implements Controller {
       const { question, answers } = httpRequest.body;
       await this.addSurvey.add({ question, answers });
 
-      return null;
+      return HttpResponseFactory.makeNoContent();
     } catch (error) {
       return HttpResponseFactory.makeInternalServerError(error);
     }
