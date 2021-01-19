@@ -1,11 +1,13 @@
 import { makeLogControllerDecorator } from '@/main/factories/decorators';
-import { makeAddAccount } from '@/main/factories/usecases';
+import { makeAddAccount, makeAuthentication } from '@/main/factories/usecases';
 import { SignUpController } from '@/presentation/controllers';
 import { Controller, Validator } from '@/presentation/interfaces';
 import { ValidatorComposite, ValidatorBuilder } from '@/validation/helpers';
 
 export const makeSignUpController = (): Controller =>
-  makeLogControllerDecorator(new SignUpController(makeSignUpValidator(), makeAddAccount()));
+  makeLogControllerDecorator(
+    new SignUpController(makeSignUpValidator(), makeAddAccount(), makeAuthentication()),
+  );
 
 export const makeSignUpValidator = (): Validator =>
   new ValidatorComposite([
