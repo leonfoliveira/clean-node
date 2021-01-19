@@ -1,6 +1,21 @@
+import faker from 'faker';
+
 import { SurveyModel } from '@/domain/models';
-import { AddSurvey } from '@/domain/usecases';
+import { AddSurvey, AddSurveyDTO } from '@/domain/usecases';
 import { mockSurveyModel } from '@/test/domain/mocks/models';
+
+export const mockAddSurveyDTO = (): AddSurveyDTO => ({
+  question: faker.random.words(),
+  answers: [
+    {
+      answer: faker.random.words(),
+    },
+    {
+      image: faker.internet.url(),
+      answer: faker.random.words(),
+    },
+  ],
+});
 
 export class AddSurveyStub implements AddSurvey {
   response = mockSurveyModel();
