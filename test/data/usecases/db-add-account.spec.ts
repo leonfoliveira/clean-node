@@ -2,30 +2,36 @@ import faker from 'faker';
 
 import { DbAddAccount } from '@/data/usecases';
 import { HashGeneratorStub } from '@/test/data/mocks/criptography';
-import { AddAccountRepositoryStub } from '@/test/data/mocks/db';
+import { AddAccountRepositoryStub, LoadAccountByEmailRepositoryStub } from '@/test/data/mocks/db';
 import { mockAddAccountDTO } from '@/test/domain/mocks';
 
 type SutTypes = {
   sut: DbAddAccount;
   hashGeneratorStub: HashGeneratorStub;
   addAccountRepositoryStub: AddAccountRepositoryStub;
+  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub;
 };
 
 const makeSut = (): SutTypes => {
   const hashGeneratorStub = new HashGeneratorStub();
   const addAccountRepositoryStub = new AddAccountRepositoryStub();
-  const sut = new DbAddAccount(hashGeneratorStub, addAccountRepositoryStub);
+  const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub();
+  const sut = new DbAddAccount(
+    hashGeneratorStub,
+    addAccountRepositoryStub,
+    loadAccountByEmailRepositoryStub,
+  );
 
-  return { sut, hashGeneratorStub, addAccountRepositoryStub };
+  return { sut, hashGeneratorStub, addAccountRepositoryStub, loadAccountByEmailRepositoryStub };
 };
 
 describe('DbAddAccount', () => {
-  it('should call HashGenerator with correct password', () => {
+  it('should call HashGenerator with correct password', async () => {
     const { sut, hashGeneratorStub } = makeSut();
     const hashGeneratorSpy = jest.spyOn(hashGeneratorStub, 'generate');
     const accountData = mockAddAccountDTO();
 
-    sut.add(accountData);
+    await sut.add(accountData);
 
     expect(hashGeneratorSpy).toHaveBeenCalledWith(accountData.password);
   });
@@ -69,5 +75,15 @@ describe('DbAddAccount', () => {
     const account = await sut.add(mockAddAccountDTO());
 
     expect(account).toEqual(addAccountRepositoryStub.response);
+  });
+
+  it('should call LoadAccountByEmailRepository with correct values', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut();
+    const loadByEmailSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail');
+    const accountData = mockAddAccountDTO();
+
+    await sut.add(accountData);
+
+    expect(loadByEmailSpy).toHaveBeenCalledWith(accountData.email);
   });
 });
