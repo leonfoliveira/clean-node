@@ -7,7 +7,7 @@ export interface AddSurvey {
 export type AddSurveyDTO = {
   question: string;
   answers: {
-    image: string;
+    image?: string;
     answer: string;
   }[];
 };
