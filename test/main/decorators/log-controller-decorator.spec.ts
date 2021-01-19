@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { LogControllerDecorator } from '@/main/decorators';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { LogErrorRepositoryStub } from '@/test/data/mocks/db';
+import { LogErrorRepositoryStub } from '@/test/data/mocks';
 import { mockHttpRequest, ControllerStub } from '@/test/presentation/mocks';
 
 type SutTypes = {

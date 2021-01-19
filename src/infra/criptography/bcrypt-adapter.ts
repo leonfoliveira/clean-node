@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 
-import { HashComparer, HashGenerator } from '@/data/interfaces/criptography';
+import { HashComparer, HashGenerator } from '@/data/interfaces';
 
 export class BcryptAdapter implements HashGenerator, HashComparer {
   constructor(private readonly rounds: number) {}

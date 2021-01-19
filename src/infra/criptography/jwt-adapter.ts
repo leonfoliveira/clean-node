@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { TokenGenerator } from '@/data/interfaces/criptography';
+import { TokenGenerator } from '@/data/interfaces';
 
 export class JwtAdapter implements TokenGenerator {
   constructor(private readonly secret: string) {}

@@ -1,4 +1,4 @@
-import { UpdateAccessTokenRepository } from '@/data/interfaces/db';
+import { UpdateAccessTokenRepository } from '@/data/interfaces';
 import { MongodbAccountRepository } from '@/infra/db/mongodb';
 
 export const makeUpdateAccessTokenRepository = (): UpdateAccessTokenRepository =>

@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { HashGenerator } from '@/data/interfaces/criptography';
+import { HashGenerator } from '@/data/interfaces';
 
 export class HashGeneratorStub implements HashGenerator {
   response = faker.random.uuid();

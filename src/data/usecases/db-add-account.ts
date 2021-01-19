@@ -1,5 +1,8 @@
-import { HashGenerator } from '@/data/interfaces/criptography';
-import { AddAccountRepository, LoadAccountByEmailRepository } from '@/data/interfaces/db';
+import {
+  HashGenerator,
+  AddAccountRepository,
+  LoadAccountByEmailRepository,
+} from '@/data/interfaces';
 import { ProtectedAccountModel } from '@/domain/models';
 import { AddAccount, AddAccountDTO } from '@/domain/usecases';
 

@@ -1,5 +1,9 @@
-import { HashComparer, TokenGenerator } from '@/data/interfaces/criptography';
-import { LoadAccountByEmailRepository, UpdateAccessTokenRepository } from '@/data/interfaces/db';
+import {
+  HashComparer,
+  TokenGenerator,
+  LoadAccountByEmailRepository,
+  UpdateAccessTokenRepository,
+} from '@/data/interfaces';
 import { AuthorizationModel } from '@/domain/models';
 import { Authentication, AuthenticationDTO } from '@/domain/usecases';
 

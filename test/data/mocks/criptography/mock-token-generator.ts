@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { TokenGenerator } from '@/data/interfaces/criptography';
+import { TokenGenerator } from '@/data/interfaces';
 
 export class TokenGeneratorStub implements TokenGenerator {
   response = faker.random.uuid();

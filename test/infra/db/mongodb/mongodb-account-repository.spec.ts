@@ -5,7 +5,7 @@ import { MongoHelper, MongodbAccountRepository } from '@/infra/db/mongodb';
 import {
   mockAddAccountRepositoryParams,
   mockLoadAccountByEmailRepositoryParams,
-} from '@/test/data/mocks/db';
+} from '@/test/data/mocks';
 
 const makeSut = (): MongodbAccountRepository => new MongodbAccountRepository();
 

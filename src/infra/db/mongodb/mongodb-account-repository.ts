@@ -3,7 +3,7 @@ import {
   AddAccountRepositoryParams,
   LoadAccountByEmailRepository,
   UpdateAccessTokenRepository,
-} from '@/data/interfaces/db';
+} from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
 import { MongoHelper } from '@/infra/db/mongodb';
 

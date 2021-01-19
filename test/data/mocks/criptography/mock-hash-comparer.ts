@@ -1,4 +1,4 @@
-import { HashComparer } from '@/data/interfaces/criptography';
+import { HashComparer } from '@/data/interfaces';
 
 export class HashComparerStub implements HashComparer {
   response = true;

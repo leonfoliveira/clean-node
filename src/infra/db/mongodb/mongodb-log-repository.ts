@@ -1,4 +1,4 @@
-import { LogErrorRepository } from '@/data/interfaces/db';
+import { LogErrorRepository } from '@/data/interfaces';
 import { MongoHelper } from '@/infra/db/mongodb';
 
 export class MongodbLogRepository implements LogErrorRepository {

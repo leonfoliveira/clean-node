@@ -1,7 +1,7 @@
 import faker from 'faker';
 import jwt from 'jsonwebtoken';
 
-import { JwtAdapter } from '@/infra/criptography/jwt-adapter';
+import { JwtAdapter } from '@/infra/criptography';
 
 jest.mock('jsonwebtoken', () => ({
   sign: (): string => faker.random.uuid(),

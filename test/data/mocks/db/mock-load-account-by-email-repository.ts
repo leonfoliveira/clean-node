@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { LoadAccountByEmailRepository } from '@/data/interfaces/db';
+import { LoadAccountByEmailRepository } from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
 import { mockAccountModel } from '@/test/domain/mocks';
 
