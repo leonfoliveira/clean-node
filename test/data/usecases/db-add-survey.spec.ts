@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { DbAddSurvey } from '@/data/usecases';
 import { AddSurveyRepositoryStub } from '@/test/data/mocks';
 import { mockAddSurveyDTO } from '@/test/domain/mocks/usecases';
@@ -23,5 +25,16 @@ describe('DbAddSurvey', () => {
     await sut.add(survey);
 
     expect(addSpy).toHaveBeenCalledWith(survey);
+  });
+
+  it('should throw if AddSurveyRepository throws', async () => {
+    const { sut, addSurveyRepositoryStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(addSurveyRepositoryStub, 'add').mockRejectedValueOnce(error);
+    const survey = mockAddSurveyDTO();
+
+    const promise = sut.add(survey);
+
+    await expect(promise).rejects.toThrow(error);
   });
 });
