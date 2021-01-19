@@ -16,11 +16,11 @@ export class SignUpController implements Controller {
       }
 
       const { name, email, password } = httpRequest.body;
-      const account = await this.addAccount.add({ name, email, password });
+      await this.addAccount.add({ name, email, password });
 
-      await this.authentication.auth({ email, password });
+      const authorization = await this.authentication.auth({ email, password });
 
-      return HttpResponse.Ok(account);
+      return HttpResponse.Ok(authorization);
     } catch (error) {
       return HttpResponse.InternalServerError(error);
     }
