@@ -1,7 +1,7 @@
 import faker from 'faker';
 
 import { SignUpController } from '@/presentation/controllers';
-import { ServerError } from '@/presentation/errors';
+import { EmailInUseError, ServerError } from '@/presentation/errors';
 import { HttpResponse } from '@/presentation/interfaces';
 import { AddAccountStub, AuthenticationStub } from '@/test/domain/mocks';
 import { ValidatorStub, mockSignupHttpRequest } from '@/test/presentation/mocks';
@@ -44,6 +44,16 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse).toEqual(HttpResponse.InternalServerError(new ServerError(error.stack)));
+  });
+
+  it('should return 403 if AddAccount returns null', async () => {
+    const { sut, addAccountStub } = makeSut();
+    jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(null);
+    const httpRequest = mockSignupHttpRequest();
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(HttpResponse.Forbidden(new EmailInUseError()));
   });
 
   it('should return 200 if valid data is provided', async () => {
