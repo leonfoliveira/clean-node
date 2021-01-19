@@ -14,7 +14,7 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const authenticationStub = new AuthenticationStub();
   const validatorStub = new ValidatorStub(faker.database.column());
-  const sut = new LoginController(authenticationStub, validatorStub);
+  const sut = new LoginController(validatorStub, authenticationStub);
 
   return { sut, authenticationStub, validatorStub };
 };

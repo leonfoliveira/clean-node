@@ -5,7 +5,7 @@ import { Controller, Validator } from '@/presentation/interfaces';
 import { ValidatorBuilder, ValidatorComposite } from '@/validation/helpers';
 
 export const makeLoginController = (): Controller =>
-  makeLogControllerDecorator(new LoginController(makeAuthentication(), makeLoginValidator()));
+  makeLogControllerDecorator(new LoginController(makeLoginValidator(), makeAuthentication()));
 
 export const makeLoginValidator = (): Validator =>
   new ValidatorComposite([

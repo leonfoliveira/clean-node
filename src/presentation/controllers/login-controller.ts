@@ -3,8 +3,8 @@ import { Controller, HttpRequest, HttpResponse, Validator } from '@/presentation
 
 export class LoginController implements Controller {
   constructor(
-    private readonly authentication: Authentication,
     private readonly validator: Validator,
+    private readonly authentication: Authentication,
   ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {

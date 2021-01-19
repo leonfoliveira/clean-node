@@ -2,7 +2,7 @@ import { AddAccount } from '@/domain/usecases';
 import { Controller, HttpRequest, HttpResponse, Validator } from '@/presentation/interfaces';
 
 export class SignUpController implements Controller {
-  constructor(private readonly addAccount: AddAccount, private readonly validator: Validator) {}
+  constructor(private readonly validator: Validator, private readonly addAccount: AddAccount) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {

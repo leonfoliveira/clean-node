@@ -5,7 +5,7 @@ import { Controller, Validator } from '@/presentation/interfaces';
 import { ValidatorComposite, ValidatorBuilder } from '@/validation/helpers';
 
 export const makeSignUpController = (): Controller =>
-  makeLogControllerDecorator(new SignUpController(makeAddAccount(), makeSignUpValidator()));
+  makeLogControllerDecorator(new SignUpController(makeSignUpValidator(), makeAddAccount()));
 
 export const makeSignUpValidator = (): Validator =>
   new ValidatorComposite([
