@@ -3,7 +3,7 @@ import faker from 'faker';
 import { DbAddAccount } from '@/data/usecases';
 import { HashGeneratorStub } from '@/test/data/mocks/criptography';
 import { AddAccountRepositoryStub, LoadAccountByEmailRepositoryStub } from '@/test/data/mocks/db';
-import { mockAddAccountDTO } from '@/test/domain/mocks';
+import { mockAccountModel, mockAddAccountDTO } from '@/test/domain/mocks';
 
 type SutTypes = {
   sut: DbAddAccount;
@@ -16,6 +16,7 @@ const makeSut = (): SutTypes => {
   const hashGeneratorStub = new HashGeneratorStub();
   const addAccountRepositoryStub = new AddAccountRepositoryStub();
   const loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub();
+  loadAccountByEmailRepositoryStub.response = null;
   const sut = new DbAddAccount(
     hashGeneratorStub,
     addAccountRepositoryStub,
@@ -85,5 +86,14 @@ describe('DbAddAccount', () => {
     await sut.add(accountData);
 
     expect(loadByEmailSpy).toHaveBeenCalledWith(accountData.email);
+  });
+
+  it('should return null if LoadAccountByEmailRepository does not return null', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut();
+    loadAccountByEmailRepositoryStub.response = mockAccountModel();
+
+    const account = await sut.add(mockAddAccountDTO());
+
+    expect(account).toBeNull();
   });
 });
