@@ -1,7 +1,10 @@
 import { DbAddAccount } from '@/data/usecases';
 import { AddAccount } from '@/domain/usecases';
-import { makeHashGenerator } from '@/main/factories/cryptography';
-import { makeAddAccountRepository, makeLoadAccountByEmailRepository } from '@/main/factories/db';
+import {
+  makeHashGenerator,
+  makeAddAccountRepository,
+  makeLoadAccountByEmailRepository,
+} from '@/main/factories/infras';
 
 export const makeAddAccount = (): AddAccount =>
   new DbAddAccount(

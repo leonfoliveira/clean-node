@@ -3,7 +3,7 @@ import faker from 'faker';
 import { Collection } from 'mongodb';
 import request from 'supertest';
 
-import { MongoHelper } from '@/infra/db/mongodb';
+import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
 import { mockLoginHttpRequest, mockSignupHttpRequest } from '@/test/presentation/mocks';
 

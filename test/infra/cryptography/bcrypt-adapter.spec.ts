@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import faker from 'faker';
 
-import { BcryptAdapter } from '@/infra/criptography';
+import { BcryptAdapter } from '@/infra';
 
 jest.mock('bcrypt', () => ({
   hash: async (): Promise<string> => faker.random.uuid(),

@@ -1,7 +1,7 @@
 import faker from 'faker';
 import { Collection } from 'mongodb';
 
-import { MongodbLogRepository, MongoHelper } from '@/infra/db/mongodb';
+import { MongodbLogRepository, MongoHelper } from '@/infra';
 
 describe('MongodbLogRepository', () => {
   let errorCollection: Collection;

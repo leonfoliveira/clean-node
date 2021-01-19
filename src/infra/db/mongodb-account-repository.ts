@@ -5,7 +5,7 @@ import {
   UpdateAccessTokenRepository,
 } from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
-import { MongoHelper } from '@/infra/db/mongodb';
+import { MongoHelper } from '@/infra';
 
 export class MongodbAccountRepository
   implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository {

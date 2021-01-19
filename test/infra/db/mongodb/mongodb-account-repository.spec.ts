@@ -1,7 +1,7 @@
 import faker from 'faker';
 import { Collection } from 'mongodb';
 
-import { MongoHelper, MongodbAccountRepository } from '@/infra/db/mongodb';
+import { MongoHelper, MongodbAccountRepository } from '@/infra';
 import {
   mockAddAccountRepositoryParams,
   mockLoadAccountByEmailRepositoryParams,
