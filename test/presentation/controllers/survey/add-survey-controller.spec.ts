@@ -60,4 +60,12 @@ describe('AddSurveyController', () => {
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
+
+  it('should return 204 on success', async () => {
+    const { sut } = makeSut();
+
+    const httpResponse = await sut.handle(mockAddSurveyHttpRequest());
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeNoContent());
+  });
 });
