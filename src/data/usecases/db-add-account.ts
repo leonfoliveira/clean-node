@@ -11,7 +11,10 @@ export class DbAddAccount implements AddAccount {
   ) {}
 
   async add(params: AddAccountDTO): Promise<ProtectedAccountModel> {
-    await this.loadAccountByEmailRepository.loadByEmail(params.email);
+    const isEmailInUse = await this.loadAccountByEmailRepository.loadByEmail(params.email);
+    if (isEmailInUse) {
+      return null;
+    }
 
     const hashedPassword = await this.hashGenerator.generate(params.password);
 
