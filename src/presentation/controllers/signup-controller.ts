@@ -1,6 +1,8 @@
 import { AddAccount, Authentication } from '@/domain/usecases';
 import { Controller, HttpRequest, HttpResponse, Validator } from '@/presentation/interfaces';
 
+import { EmailInUseError } from '../errors';
+
 export class SignUpController implements Controller {
   constructor(
     private readonly validator: Validator,
@@ -16,7 +18,10 @@ export class SignUpController implements Controller {
       }
 
       const { name, email, password } = httpRequest.body;
-      await this.addAccount.add({ name, email, password });
+      const account = await this.addAccount.add({ name, email, password });
+      if (!account) {
+        return HttpResponse.Forbidden(new EmailInUseError());
+      }
 
       const authorization = await this.authentication.auth({ email, password });
 

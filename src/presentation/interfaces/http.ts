@@ -19,6 +19,10 @@ export class HttpResponse {
     return new HttpResponse(401, new UnauthorizedError());
   }
 
+  static Forbidden(error: Error): HttpResponse {
+    return new HttpResponse(403, error);
+  }
+
   static InternalServerError(error: Error): HttpResponse {
     return new HttpResponse(500, new ServerError(error.stack));
   }
