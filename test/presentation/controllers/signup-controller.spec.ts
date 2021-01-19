@@ -47,12 +47,12 @@ describe('SignUp Controller', () => {
   });
 
   it('should return 200 if valid data is provided', async () => {
-    const { sut, addAccountStub } = makeSut();
+    const { sut, authenticationStub } = makeSut();
     const httpRequest = mockSignupHttpRequest();
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponse.Ok(addAccountStub.response));
+    expect(httpResponse).toEqual(HttpResponse.Ok(authenticationStub.response));
   });
 
   it('should call Validation with correct value', async () => {
