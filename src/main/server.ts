@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import 'module-alias/register';
-import { MongoHelper } from '@/infra/db/mongodb';
+import { MongoHelper } from '@/infra';
 import { env } from '@/main/config/env';
 
 MongoHelper.connect(env.mongoUrl)
