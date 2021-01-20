@@ -10,7 +10,12 @@ export class AuthMiddleware implements Middleware {
     const accessToken = httpRequest.headers?.['x-access-token'];
 
     if (accessToken) {
-      await this.loadAccountByToken.load(httpRequest.headers['x-access-token']);
+      const account = await this.loadAccountByToken.load(httpRequest.headers['x-access-token']);
+      if (account) {
+        return HttpResponseFactory.makeOk({
+          accountId: account.id,
+        });
+      }
     }
 
     return HttpResponseFactory.makeForbidden(new AccessDeniedError());
