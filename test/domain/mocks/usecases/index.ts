@@ -1,3 +1,4 @@
-export * from './mock-add-account';
-export * from './mock-add-survey';
-export * from './mock-authentication';
+export * from './account/mock-add-account';
+export * from './account/mock-authentication';
+
+export * from './survey/mock-add-survey';

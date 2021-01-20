@@ -1,3 +1,4 @@
-export * from './mock-add-survey-http-request';
-export * from './mock-login-http-request';
-export * from './mock-signup-http-request';
+export * from './login/mock-login-http-request';
+export * from './login/mock-signup-http-request';
+
+export * from './survey/mock-add-survey-http-request';

@@ -1,3 +1,4 @@
-export * from './add-account-factory';
-export * from './add-survey-factory';
-export * from './authentication-factory';
+export * from './account/add-account-factory';
+export * from './account/authentication-factory';
+
+export * from './survey/add-survey-factory';
