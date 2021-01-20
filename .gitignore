@@ -1,11 +1,10 @@
-.vscode/*
-!.vscode/launch.json
+/.vscode/*
+!/.vscode/launch.json
 
-coverage
-data
-!*/data
-dist
-node_modules
+/coverage
+/data
+/dist
+/node_modules
 
 globalConfig.json
 
