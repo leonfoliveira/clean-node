@@ -46,8 +46,18 @@ describe('AuthMiddleware', () => {
     const { sut, loadAccountByTokenStub } = makeSut();
     jest.spyOn(loadAccountByTokenStub, 'load').mockResolvedValueOnce(null);
 
-    const httpResponse = await sut.handle({});
+    const httpResponse = await sut.handle(mockHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeForbidden(new AccessDeniedError()));
+  });
+
+  it('should return 200 if LoadAccountByToken returns an AccountModel', async () => {
+    const { sut, loadAccountByTokenStub } = makeSut();
+
+    const httpResponse = await sut.handle(mockHttpRequest());
+
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeOk({ accountId: loadAccountByTokenStub.response.id }),
+    );
   });
 });
