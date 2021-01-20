@@ -1,4 +1,5 @@
 import faker from 'faker';
+import { HttpRequest } from 'presentation/interfaces';
 
 import { AccessDeniedError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
@@ -17,6 +18,12 @@ const makeSut = (): SutTypes => {
   return { sut, loadAccountByTokenStub };
 };
 
+const mockHttpRequest = (): HttpRequest => ({
+  headers: {
+    'x-access-token': faker.random.uuid(),
+  },
+});
+
 describe('AuthMiddleware', () => {
   it('should return 403 if no x-access-token exists in headers', async () => {
     const { sut } = makeSut();
@@ -29,11 +36,7 @@ describe('AuthMiddleware', () => {
   it('should call LoadAccountByToken with correct accessToken', async () => {
     const { sut, loadAccountByTokenStub } = makeSut();
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load');
-    const httpRequest = {
-      headers: {
-        'x-access-token': faker.random.uuid(),
-      },
-    };
+    const httpRequest = mockHttpRequest();
 
     await sut.handle(httpRequest);
     expect(loadSpy).toHaveBeenCalledWith(httpRequest.headers['x-access-token']);
