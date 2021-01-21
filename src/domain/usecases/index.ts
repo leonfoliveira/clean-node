@@ -3,3 +3,4 @@ export * from './account/authentication';
 export * from './account/load-account-by-token';
 
 export * from './survey/add-survey';
+export * from './survey/load-surveys';
