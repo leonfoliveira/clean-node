@@ -15,6 +15,7 @@ export const mockAddSurveyDTO = (): AddSurveyDTO => ({
       answer: faker.random.words(),
     },
   ],
+  date: new Date(),
 });
 
 export class AddSurveyStub implements AddSurvey {

@@ -8,7 +8,7 @@ export class AddSurveyController implements Controller {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { question, answers } = httpRequest.body;
-      await this.addSurvey.add({ question, answers });
+      await this.addSurvey.add({ question, answers, date: new Date() });
 
       return HttpResponseFactory.makeCreated();
     } catch (error) {

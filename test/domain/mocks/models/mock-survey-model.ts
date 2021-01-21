@@ -14,4 +14,5 @@ export const mockSurveyModel = (): SurveyModel => ({
       answer: faker.random.words(),
     },
   ],
+  date: new Date(),
 });

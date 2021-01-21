@@ -10,4 +10,5 @@ export type AddSurveyDTO = {
     image?: string;
     answer: string;
   }[];
+  date: Date;
 };

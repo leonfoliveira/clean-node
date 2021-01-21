@@ -1,4 +1,5 @@
 import faker from 'faker';
+import MockDate from 'mockdate';
 
 import { AddSurveyController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
@@ -18,6 +19,14 @@ const makeSut = (): SutTypes => {
 };
 
 describe('AddSurveyController', () => {
+  beforeAll(() => {
+    MockDate.set(new Date());
+  });
+
+  afterAll(() => {
+    MockDate.reset();
+  });
+
   it('should call AddSurvey with correct values', async () => {
     const { sut, addSurveyStub } = makeSut();
     const addSpy = jest.spyOn(addSurveyStub, 'add');
@@ -25,7 +34,7 @@ describe('AddSurveyController', () => {
 
     await sut.handle(httpRequest);
 
-    expect(addSpy).toHaveBeenCalledWith(httpRequest.body);
+    expect(addSpy).toHaveBeenCalledWith({ ...httpRequest.body, date: new Date() });
   });
 
   it('should return 500 if AddSurvey throws', async () => {
