@@ -75,6 +75,6 @@ describe('LoginValidator', () => {
   it('should not return InvalidParamError if validation passes', async () => {
     const httpRequest = mockLoginHttpRequest();
     const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
-    expect(httpResponse.body.error).not.toMatch(/Invalid Param/);
+    expect(!httpResponse.body.error || !/Invalid Param/.test(httpResponse.body.error)).toBeTruthy();
   });
 });

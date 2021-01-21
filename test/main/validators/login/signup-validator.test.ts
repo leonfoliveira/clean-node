@@ -107,10 +107,23 @@ describe('SignUpValidator', () => {
     testInvalidParamResponse(httpResponse);
   });
 
+  it('should return 400 if no passwordConfirmation is provided', async () => {
+    const httpRequest = mockSignupHttpRequest();
+    delete httpRequest.body.passwordConfirmation;
+    const httpResponse = await request(app).post('/api/signup').send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
+
   it('should return 400 if passwordConfirmation is not equal password', async () => {
     const httpRequest = mockSignupHttpRequest();
     httpRequest.body.passwordConfirmation = generateStringDifferent(httpRequest.body.password);
     const httpResponse = await request(app).post('/api/signup').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
+  });
+
+  it('should not return InvalidParamError if validation passes', async () => {
+    const httpRequest = mockSignupHttpRequest();
+    const httpResponse = await request(app).post('/api/signup').send(httpRequest.body);
+    expect(!httpResponse.body.error || !/Invalid Param/.test(httpResponse.body.error)).toBeTruthy();
   });
 });
