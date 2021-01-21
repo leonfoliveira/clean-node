@@ -4,22 +4,20 @@ import { SignUpController } from '@/presentation/controllers';
 import { EmailInUseError, ServerError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { AddAccountStub, AuthenticationStub } from '@/test/domain/mocks/usecases';
-import { ValidatorStub, mockSignupHttpRequest } from '@/test/presentation/mocks';
+import { mockSignupHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: SignUpController;
   addAccountStub: AddAccountStub;
-  validatorStub: ValidatorStub;
   authenticationStub: AuthenticationStub;
 };
 
 const makeSut = (): SutTypes => {
-  const validatorStub = new ValidatorStub(faker.database.column());
   const addAccountStub = new AddAccountStub();
   const authenticationStub = new AuthenticationStub();
-  const sut = new SignUpController(validatorStub, addAccountStub, authenticationStub);
+  const sut = new SignUpController(addAccountStub, authenticationStub);
 
-  return { sut, addAccountStub, validatorStub, authenticationStub };
+  return { sut, addAccountStub, authenticationStub };
 };
 
 describe('SignUp Controller', () => {
@@ -65,27 +63,6 @@ describe('SignUp Controller', () => {
     const httpResponse = await sut.handle(httpRequest);
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeOk(authenticationStub.response));
-  });
-
-  it('should call Validation with correct value', async () => {
-    const { sut, validatorStub } = makeSut();
-    const validateSpy = jest.spyOn(validatorStub, 'validate');
-    const httpRequest = mockSignupHttpRequest();
-
-    await sut.handle(httpRequest);
-
-    expect(validateSpy).toHaveBeenCalledWith(httpRequest.body);
-  });
-
-  it('should return 400 if Validation returns an error', async () => {
-    const { sut, validatorStub } = makeSut();
-    const error = new Error(faker.random.words());
-    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(error);
-    const httpRequest = mockSignupHttpRequest();
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse).toEqual(HttpResponseFactory.makeBadRequest(error));
   });
 
   it('should call Authentication with correct values', async () => {

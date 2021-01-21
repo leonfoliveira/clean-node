@@ -22,12 +22,12 @@ describe('SurveyRoutes', () => {
   });
 
   describe('POST /surveys', () => {
-    it('should return 200 on success', async () => {
+    it('should return 201 on success', async () => {
       const httpResponse = await request(app)
         .post('/api/surveys')
         .send(mockAddSurveyHttpRequest().body);
 
-      expect(httpResponse.status).toBe(204);
+      expect(httpResponse.status).toBe(201);
     });
   });
 });

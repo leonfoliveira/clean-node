@@ -3,20 +3,18 @@ import faker from 'faker';
 import { LoginController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { AuthenticationStub } from '@/test/domain/mocks/usecases';
-import { ValidatorStub, mockLoginHttpRequest } from '@/test/presentation/mocks';
+import { mockLoginHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: LoginController;
   authenticationStub: AuthenticationStub;
-  validatorStub: ValidatorStub;
 };
 
 const makeSut = (): SutTypes => {
   const authenticationStub = new AuthenticationStub();
-  const validatorStub = new ValidatorStub(faker.database.column());
-  const sut = new LoginController(validatorStub, authenticationStub);
+  const sut = new LoginController(authenticationStub);
 
-  return { sut, authenticationStub, validatorStub };
+  return { sut, authenticationStub };
 };
 
 describe('LoginController', () => {
@@ -56,16 +54,5 @@ describe('LoginController', () => {
     const httpResponse = await sut.handle(mockLoginHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeOk(authenticationStub.response));
-  });
-
-  it('should return 400 if Validation returns an error', async () => {
-    const { sut, validatorStub } = makeSut();
-    const error = new Error(faker.random.words());
-    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(error);
-    const httpRequest = mockLoginHttpRequest();
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse).toEqual(HttpResponseFactory.makeBadRequest(error));
   });
 });
