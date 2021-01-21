@@ -25,52 +25,58 @@ describe('MongodbAccountRepository', () => {
     await accountCollection.deleteMany({});
   });
 
-  it('should return an AccountModel on add success', async () => {
-    const sut = makeSut();
-    const account = mockAddAccountRepositoryParams();
+  describe('AddAccountRepository', () => {
+    it('should return an AccountModel on add success', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
 
-    const result = await sut.add(account);
+      const result = await sut.add(account);
 
-    expect(result).toBeTruthy();
-    expect(result.id).toBeTruthy();
-    expect(result.name).toBe(account.name);
-    expect(result.email).toBe(account.email);
-    expect(result.password).toBe(account.password);
+      expect(result).toBeTruthy();
+      expect(result.id).toBeTruthy();
+      expect(result.name).toBe(account.name);
+      expect(result.email).toBe(account.email);
+      expect(result.password).toBe(account.password);
+    });
   });
 
-  it('should return an AccountModel on loadByEmail success', async () => {
-    const sut = makeSut();
-    const account = mockAddAccountRepositoryParams();
-    await accountCollection.insertOne(account);
+  describe('LoadAccountByEmailRepository', () => {
+    it('should return an AccountModel on loadByEmail success', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
+      await accountCollection.insertOne(account);
 
-    const result = await sut.loadByEmail(account.email);
+      const result = await sut.loadByEmail(account.email);
 
-    expect(result).toBeTruthy();
-    expect(result.id).toBeTruthy();
-    expect(result.name).toBe(account.name);
-    expect(result.email).toBe(account.email);
-    expect(result.password).toBe(account.password);
+      expect(result).toBeTruthy();
+      expect(result.id).toBeTruthy();
+      expect(result.name).toBe(account.name);
+      expect(result.email).toBe(account.email);
+      expect(result.password).toBe(account.password);
+    });
+
+    it('should return null on loadByEmail fail', async () => {
+      const sut = makeSut();
+
+      const result = await sut.loadByEmail(mockLoadAccountByEmailRepositoryParams());
+
+      expect(result).toBeNull();
+    });
   });
 
-  it('should return null on loadByEmail fail', async () => {
-    const sut = makeSut();
+  describe('UpdateAccessTokenRepository', () => {
+    it('should update account accessToken on updateAccessToken success', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
+      const dbAccount = (await accountCollection.insertOne(account)).ops[0];
+      const accessToken = faker.random.uuid();
 
-    const result = await sut.loadByEmail(mockLoadAccountByEmailRepositoryParams());
+      await sut.updateAccessToken(dbAccount._id, accessToken);
 
-    expect(result).toBeNull();
-  });
-
-  it('should update account accessToken on updateAccessToken success', async () => {
-    const sut = makeSut();
-    const account = mockAddAccountRepositoryParams();
-    const dbAccount = (await accountCollection.insertOne(account)).ops[0];
-    const accessToken = faker.random.uuid();
-
-    await sut.updateAccessToken(dbAccount._id, accessToken);
-
-    expect(dbAccount.accessToken).toBeFalsy();
-    const result = await accountCollection.findOne({ _id: dbAccount._id });
-    expect(result).toBeTruthy();
-    expect(result.accessToken).toBe(accessToken);
+      expect(dbAccount.accessToken).toBeFalsy();
+      const result = await accountCollection.findOne({ _id: dbAccount._id });
+      expect(result).toBeTruthy();
+      expect(result.accessToken).toBe(accessToken);
+    });
   });
 });

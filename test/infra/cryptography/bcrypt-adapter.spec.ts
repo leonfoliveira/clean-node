@@ -21,71 +21,75 @@ const makeSut = (): SutTypes => {
 };
 
 describe('BcryptAdapter', () => {
-  it('should call bcrypt.hash with correct values', async () => {
-    const { sut, rounds } = makeSut();
-    const value = faker.random.word();
-    const hashSpy = jest.spyOn(bcrypt, 'hash');
+  describe('HashGenerator', () => {
+    it('should call bcrypt.hash with correct values', async () => {
+      const { sut, rounds } = makeSut();
+      const value = faker.random.word();
+      const hashSpy = jest.spyOn(bcrypt, 'hash');
 
-    await sut.generate(value);
+      await sut.generate(value);
 
-    expect(hashSpy).toHaveBeenCalledWith(value, rounds);
+      expect(hashSpy).toHaveBeenCalledWith(value, rounds);
+    });
+
+    it('should return a valid hash on bcrypt.hash success', async () => {
+      const { sut } = makeSut();
+      const hash = faker.random.uuid();
+      jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce(hash);
+
+      const result = await sut.generate(faker.random.word());
+
+      expect(result).toBe(hash);
+    });
   });
 
-  it('should return a valid hash on bcrypt.hash success', async () => {
-    const { sut } = makeSut();
-    const hash = faker.random.uuid();
-    jest.spyOn(bcrypt, 'hash').mockResolvedValueOnce(hash);
+  describe('HashComparer', () => {
+    it('should throw if bcrypt.hash throws', async () => {
+      const { sut } = makeSut();
+      const error = new Error(faker.random.words());
+      jest.spyOn(bcrypt, 'hash').mockRejectedValueOnce(error);
 
-    const result = await sut.generate(faker.random.word());
+      const promise = sut.generate(faker.random.word());
 
-    expect(result).toBe(hash);
-  });
+      await expect(promise).rejects.toThrow(error);
+    });
 
-  it('should throw if bcrypt.hash throws', async () => {
-    const { sut } = makeSut();
-    const error = new Error(faker.random.words());
-    jest.spyOn(bcrypt, 'hash').mockRejectedValueOnce(error);
+    it('should call bcrypt.compare with correct values', async () => {
+      const { sut } = makeSut();
+      const value = faker.random.word();
+      const hash = faker.random.uuid();
+      const compareSpy = jest.spyOn(bcrypt, 'compare');
 
-    const promise = sut.generate(faker.random.word());
+      await sut.compare(value, hash);
 
-    await expect(promise).rejects.toThrow(error);
-  });
+      expect(compareSpy).toHaveBeenCalledWith(value, hash);
+    });
 
-  it('should call bcrypt.compare with correct values', async () => {
-    const { sut } = makeSut();
-    const value = faker.random.word();
-    const hash = faker.random.uuid();
-    const compareSpy = jest.spyOn(bcrypt, 'compare');
+    it('should return true on bcrypt.compare success', async () => {
+      const { sut } = makeSut();
 
-    await sut.compare(value, hash);
+      const result = await sut.compare(faker.random.word(), faker.random.uuid());
 
-    expect(compareSpy).toHaveBeenCalledWith(value, hash);
-  });
+      expect(result).toBe(true);
+    });
 
-  it('should return true on bcrypt.compare success', async () => {
-    const { sut } = makeSut();
+    it('should return false on bcrypt.compare fail', async () => {
+      const { sut } = makeSut();
+      jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(false);
 
-    const result = await sut.compare(faker.random.word(), faker.random.uuid());
+      const result = await sut.compare(faker.random.word(), faker.random.uuid());
 
-    expect(result).toBe(true);
-  });
+      expect(result).toBe(false);
+    });
 
-  it('should return false on bcrypt.compare fail', async () => {
-    const { sut } = makeSut();
-    jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(false);
+    it('should throw if bcrypt.compare throws', async () => {
+      const { sut } = makeSut();
+      const error = new Error(faker.random.words());
+      jest.spyOn(bcrypt, 'compare').mockRejectedValueOnce(error);
 
-    const result = await sut.compare(faker.random.word(), faker.random.uuid());
+      const promise = sut.compare(faker.random.word(), faker.random.uuid());
 
-    expect(result).toBe(false);
-  });
-
-  it('should throw if bcrypt.compare throws', async () => {
-    const { sut } = makeSut();
-    const error = new Error(faker.random.words());
-    jest.spyOn(bcrypt, 'compare').mockRejectedValueOnce(error);
-
-    const promise = sut.compare(faker.random.word(), faker.random.uuid());
-
-    await expect(promise).rejects.toThrow(error);
+      await expect(promise).rejects.toThrow(error);
+    });
   });
 });
