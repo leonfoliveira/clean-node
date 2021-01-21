@@ -56,4 +56,13 @@ describe('DbLoadAccountByToken', () => {
 
     expect(account).toBeNull();
   });
+
+  it('should return an AccountModel on success', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut();
+    const params = mockLoadAccountByTokenDTO();
+
+    const account = await sut.load(params);
+
+    expect(account).toEqual(loadAccountByTokenRepositoryStub.response);
+  });
 });
