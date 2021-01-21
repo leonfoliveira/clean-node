@@ -50,4 +50,12 @@ describe('SurveyRoutes', () => {
       expect(httpResponse.status).toBe(201);
     });
   });
+
+  describe('GET /surveys', () => {
+    it('should return 403 if no accessToken is provided', async () => {
+      const httpResponse = await request(app).get('/api/surveys');
+
+      expect(httpResponse.status).toBe(403);
+    });
+  });
 });
