@@ -47,4 +47,32 @@ describe('LoginValidator', () => {
     const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
   });
+
+  it('should return 400 if no password is provided', async () => {
+    const httpRequest = mockLoginHttpRequest();
+    delete httpRequest.body.password;
+    const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
+
+  it('should return 400 if password is not a string', async () => {
+    const httpRequest = mockLoginHttpRequest();
+    httpRequest.body.password = faker.random.number();
+    const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
+
+  it('should return 400 if password length is less than 8', async () => {
+    const httpRequest = mockLoginHttpRequest();
+    httpRequest.body.password = [...Array.from({ length: 7 }).keys()].join('');
+    const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
+
+  it('should return 400 if password length is more than 32', async () => {
+    const httpRequest = mockLoginHttpRequest();
+    httpRequest.body.password = [...Array.from({ length: 33 }).keys()].join('');
+    const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
 });

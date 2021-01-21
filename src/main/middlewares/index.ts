@@ -1,4 +1,4 @@
 export * from './body-parser';
-export * from './celebrate-error';
+export * from './validation-error';
 export * from './content-type';
 export * from './cors';
