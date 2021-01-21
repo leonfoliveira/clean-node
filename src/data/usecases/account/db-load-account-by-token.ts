@@ -1,12 +1,20 @@
-import { TokenDecoder } from '@/data/interfaces';
+import { LoadAccountByTokenRepository, TokenDecoder } from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
 import { LoadAccountByToken, LoadAccountByTokenDTO } from '@/domain/usecases';
 
 export class DbLoadAccountByToken implements LoadAccountByToken {
-  constructor(private readonly tokenDecoder: TokenDecoder) {}
+  constructor(
+    private readonly tokenDecoder: TokenDecoder,
+    private readonly loadAccountByTokenRepository: LoadAccountByTokenRepository,
+  ) {}
 
   async load(params: LoadAccountByTokenDTO): Promise<AccountModel> {
-    await this.tokenDecoder.decode(params.accessToken);
+    const id = await this.tokenDecoder.decode(params.accessToken);
+    if (!id) {
+      return null;
+    }
+
+    await this.loadAccountByTokenRepository.loadByToken(params.accessToken, params.role);
     return null;
   }
 }
