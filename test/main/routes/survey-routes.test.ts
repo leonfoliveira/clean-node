@@ -8,6 +8,15 @@ import { env } from '@/main/config/env';
 import { mockAccountModel } from '@/test/domain/mocks/models';
 import { mockAddSurveyHttpRequest } from '@/test/presentation/mocks';
 
+const makeAccessToken = async (accountCollection: Collection, role?: string): Promise<string> => {
+  const account = mockAccountModel();
+  delete account.id;
+  const id = (await accountCollection.insertOne({ ...account, role })).ops[0]._id;
+  const accessToken = jwt.sign({ id }, env.jwtSecret);
+  await accountCollection.updateOne({ _id: id }, { $set: { accessToken } });
+  return accessToken;
+};
+
 describe('SurveyRoutes', () => {
   let accountCollection: Collection;
   let surveyCollection: Collection;
@@ -37,11 +46,7 @@ describe('SurveyRoutes', () => {
     });
 
     it('should return 201 if valid accessToken is provided', async () => {
-      const account = mockAccountModel();
-      delete account.id;
-      const id = (await accountCollection.insertOne({ ...account, role: 'admin' })).ops[0]._id;
-      const accessToken = jwt.sign({ id }, env.jwtSecret);
-      await accountCollection.updateOne({ _id: id }, { $set: { accessToken } });
+      const accessToken = await makeAccessToken(accountCollection, 'admin');
       const httpResponse = await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
@@ -59,11 +64,7 @@ describe('SurveyRoutes', () => {
     });
 
     it('should return 204 if valid accessToken is provided', async () => {
-      const account = mockAccountModel();
-      delete account.id;
-      const id = (await accountCollection.insertOne({ ...account })).ops[0]._id;
-      const accessToken = jwt.sign({ id }, env.jwtSecret);
-      await accountCollection.updateOne({ _id: id }, { $set: { accessToken } });
+      const accessToken = await makeAccessToken(accountCollection);
       const httpResponse = await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)
