@@ -1,3 +1,4 @@
+export * from './authentication';
 export * from './body-parser';
 export * from './validation-error';
 export * from './content-type';

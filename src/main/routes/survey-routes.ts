@@ -1,21 +1,17 @@
 import { Router } from 'express';
 
-import { adaptMiddleware, adaptRoute } from '@/main/adapters';
+import { adaptRoute } from '@/main/adapters';
 import { makeAddSurveyController, makeLoadSurveysController } from '@/main/factories/controllers';
-import { makeAuthMiddleware } from '@/main/factories/middlewares';
+import { authenticateAdmin, authenticateUser } from '@/main/middlewares';
 import { validateAddSurvey } from '@/main/validators';
 
 export default (router: Router): void => {
   router.post(
     '/surveys',
     validateAddSurvey(),
-    adaptMiddleware(makeAuthMiddleware('admin')),
+    authenticateAdmin(),
     adaptRoute(makeAddSurveyController()),
   );
 
-  router.get(
-    '/surveys',
-    adaptMiddleware(makeAuthMiddleware()),
-    adaptRoute(makeLoadSurveysController()),
-  );
+  router.get('/surveys', authenticateUser(), adaptRoute(makeLoadSurveysController()));
 };
