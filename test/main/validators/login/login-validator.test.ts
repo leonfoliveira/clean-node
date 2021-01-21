@@ -4,7 +4,7 @@ import request from 'supertest';
 
 import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
-import { testInvalidParamResponse, generateString } from '@/test/helpers';
+import { testInvalidParamResponse, generateStringWithLength } from '@/test/helpers';
 import { mockLoginHttpRequest } from '@/test/presentation/mocks/http-requests';
 
 describe('LoginValidator', () => {
@@ -60,14 +60,14 @@ describe('LoginValidator', () => {
 
   it('should return 400 if password length is less than 8', async () => {
     const httpRequest = mockLoginHttpRequest();
-    httpRequest.body.password = generateString(7);
+    httpRequest.body.password = generateStringWithLength(7);
     const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
   });
 
   it('should return 400 if password length is more than 32', async () => {
     const httpRequest = mockLoginHttpRequest();
-    httpRequest.body.password = generateString(33);
+    httpRequest.body.password = generateStringWithLength(33);
     const httpResponse = await request(app).post('/api/login').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
   });

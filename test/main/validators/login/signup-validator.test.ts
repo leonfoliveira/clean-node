@@ -4,7 +4,11 @@ import request from 'supertest';
 
 import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
-import { testInvalidParamResponse, generateString } from '@/test/helpers';
+import {
+  testInvalidParamResponse,
+  generateStringWithLength,
+  generateStringDifferent,
+} from '@/test/helpers';
 import { mockSignupHttpRequest } from '@/test/presentation/mocks/http-requests';
 
 describe('SignUpValidator', () => {
@@ -89,7 +93,7 @@ describe('SignUpValidator', () => {
 
   it('should return 400 if password length is less than 8', async () => {
     const httpRequest = mockSignupHttpRequest();
-    httpRequest.body.password = generateString(7);
+    httpRequest.body.password = generateStringWithLength(7);
     httpRequest.body.passwordConfirmation = httpRequest.body.password;
     const httpResponse = await request(app).post('/api/signup').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
@@ -97,10 +101,16 @@ describe('SignUpValidator', () => {
 
   it('should return 400 if password length is more than 32', async () => {
     const httpRequest = mockSignupHttpRequest();
-    httpRequest.body.password = generateString(33);
+    httpRequest.body.password = generateStringWithLength(33);
     httpRequest.body.passwordConfirmation = httpRequest.body.password;
     const httpResponse = await request(app).post('/api/signup').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
-    expect(httpResponse.body.error).toMatch(/Invalid Param/);
+  });
+
+  it('should return 400 if passwordConfirmation is not equal password', async () => {
+    const httpRequest = mockSignupHttpRequest();
+    httpRequest.body.passwordConfirmation = generateStringDifferent(httpRequest.body.password);
+    const httpResponse = await request(app).post('/api/signup').send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
   });
 });
