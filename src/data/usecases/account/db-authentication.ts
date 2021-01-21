@@ -17,15 +17,17 @@ export class DbAuthentication implements Authentication {
 
   async auth(params: AuthenticationDTO): Promise<AuthorizationModel> {
     const account = await this.loadAccountByEmailRepository.loadByEmail(params.email);
-    if (account) {
-      const isValid = await this.hashComparer.compare(params.password, account.password);
-      if (isValid) {
-        const accessToken = await this.tokenGenerator.generate(account.id);
-
-        await this.updateAccessTokenRepository.updateAccessToken(account.id, accessToken);
-        return { accessToken };
-      }
+    if (!account) {
+      return null;
     }
-    return null;
+
+    const isValid = await this.hashComparer.compare(params.password, account.password);
+    if (!isValid) {
+      return null;
+    }
+
+    const accessToken = await this.tokenGenerator.generate(account.id);
+    await this.updateAccessTokenRepository.updateAccessToken(account.id, accessToken);
+    return { accessToken };
   }
 }
