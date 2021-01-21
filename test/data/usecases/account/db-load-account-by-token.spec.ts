@@ -46,4 +46,14 @@ describe('DbLoadAccountByToken', () => {
 
     expect(loadByTokenSpy).toHaveBeenCalledWith(params.accessToken, params.role);
   });
+
+  it('should return null if LoadAccountByTokenRepository returns null', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut();
+    loadAccountByTokenRepositoryStub.response = null;
+    const params = mockLoadAccountByTokenDTO();
+
+    const account = await sut.load(params);
+
+    expect(account).toBeNull();
+  });
 });
