@@ -96,5 +96,20 @@ describe('MongodbAccountRepository', () => {
       expect(result.email).toBe(account.email);
       expect(result.password).toBe(account.password);
     });
+
+    it('should return an AccountModel on loadByToken success with role', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
+      const [accessToken, role] = mockLoadAccountByTokenRepositoryParams();
+      await accountCollection.insertOne({ ...account, accessToken, role });
+
+      const result = await sut.loadByToken(accessToken, role);
+
+      expect(result).toBeTruthy();
+      expect(result.id).toBeTruthy();
+      expect(result.name).toBe(account.name);
+      expect(result.email).toBe(account.email);
+      expect(result.password).toBe(account.password);
+    });
   });
 });
