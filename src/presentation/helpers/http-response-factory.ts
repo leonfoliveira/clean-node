@@ -10,6 +10,10 @@ export class HttpResponseFactory {
     return { statusCode: 201 };
   }
 
+  static makeNoContent(): HttpResponse {
+    return { statusCode: 204 };
+  }
+
   static makeUnauthorized(): HttpResponse {
     return { statusCode: 401, body: new UnauthorizedError() };
   }
