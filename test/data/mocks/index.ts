@@ -5,6 +5,7 @@ export * from './criptography/mock-token-generator';
 
 export * from './db/account/mock-add-account-repository';
 export * from './db/account/mock-load-account-by-email-repository';
+export * from './db/account/mock-load-account-by-token-repository';
 export * from './db/account/mock-update-access-token-repository';
 
 export * from './db/log/mock-log-error-repository';
