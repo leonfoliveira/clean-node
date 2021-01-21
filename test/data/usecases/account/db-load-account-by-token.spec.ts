@@ -24,4 +24,14 @@ describe('DbLoadAccountByToken', () => {
 
     expect(decodeSpy).toHaveBeenCalledWith(params.accessToken);
   });
+
+  it('should return null if TokenDecoder returns null', async () => {
+    const { sut, tokenDecoderStub } = makeSut();
+    tokenDecoderStub.response = null;
+    const params = mockLoadAccountByTokenDTO();
+
+    const account = await sut.load(params);
+
+    expect(account).toBeNull();
+  });
 });
