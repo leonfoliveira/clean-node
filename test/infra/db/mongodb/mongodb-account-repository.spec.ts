@@ -112,6 +112,32 @@ describe('MongodbAccountRepository', () => {
       expect(result.password).toBe(account.password);
     });
 
+    it('should return null on loadByToken with invalid role', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
+      const [accessToken, role] = mockLoadAccountByTokenRepositoryParams();
+      await accountCollection.insertOne({ ...account, accessToken });
+
+      const result = await sut.loadByToken(accessToken, role);
+
+      expect(result).toBeNull();
+    });
+
+    it('should return an AccountModel on loadByToken if user is admin', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
+      const [accessToken] = mockLoadAccountByTokenRepositoryParams();
+      await accountCollection.insertOne({ ...account, accessToken, role: 'admin' });
+
+      const result = await sut.loadByToken(accessToken);
+
+      expect(result).toBeTruthy();
+      expect(result.id).toBeTruthy();
+      expect(result.name).toBe(account.name);
+      expect(result.email).toBe(account.email);
+      expect(result.password).toBe(account.password);
+    });
+
     it('should return null on loadByToken fail', async () => {
       const sut = makeSut();
 
