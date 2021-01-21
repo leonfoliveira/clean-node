@@ -60,4 +60,14 @@ describe('AuthMiddleware', () => {
       HttpResponseFactory.makeOk({ accountId: loadAccountByTokenStub.response.id }),
     );
   });
+
+  it('should return 500 if LoadAccountByToken throws', async () => {
+    const { sut, loadAccountByTokenStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadAccountByTokenStub, 'load').mockRejectedValueOnce(error);
+
+    const httpResponse = await sut.handle(mockHttpRequest());
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
+  });
 });
