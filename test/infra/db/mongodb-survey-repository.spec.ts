@@ -51,5 +51,13 @@ describe('MongodbSurveyRepository', () => {
 
       expect(result).toEqual(surveys);
     });
+
+    it('should load empty list', async () => {
+      const sut = makeSut();
+
+      const result = await sut.loadAll();
+
+      expect(result).toEqual([]);
+    });
   });
 });
