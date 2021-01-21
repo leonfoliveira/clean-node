@@ -4,12 +4,8 @@ import request from 'supertest';
 
 import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
+import { testInvalidParamResponse } from '@/test/helpers';
 import { mockLoginHttpRequest } from '@/test/presentation/mocks/http-requests';
-
-const testInvalidParamResponse = (httpResponse: request.Response): void => {
-  expect(httpResponse.status).toBe(400);
-  expect(httpResponse.body.error).toMatch(/Invalid Param/);
-};
 
 describe('LoginValidator', () => {
   let accountCollection: Collection;
