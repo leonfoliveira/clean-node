@@ -4,14 +4,20 @@ import { HttpResponseFactory } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse, Middleware } from '@/presentation/interfaces';
 
 export class AuthMiddleware implements Middleware {
-  constructor(private readonly loadAccountByToken: LoadAccountByToken) {}
+  constructor(
+    private readonly loadAccountByToken: LoadAccountByToken,
+    private readonly role?: string,
+  ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const accessToken = httpRequest.headers?.['x-access-token'];
 
       if (accessToken) {
-        const account = await this.loadAccountByToken.load(httpRequest.headers['x-access-token']);
+        const account = await this.loadAccountByToken.load({
+          accessToken: httpRequest.headers['x-access-token'],
+          role: this.role,
+        });
         if (account) {
           return HttpResponseFactory.makeOk({
             accountId: account.id,
