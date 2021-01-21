@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { DbLoadSurveys } from '@/data/usecases';
 import { LoadSurveysRepositoryStub } from '@/test/data/mocks';
 
@@ -29,5 +31,15 @@ describe('DbLoadSurveys', () => {
     const surveys = await sut.load();
 
     expect(surveys).toEqual(loadSurveysRepositoryStub.response);
+  });
+
+  it('should throw if LoadSurveysRepository throws', async () => {
+    const { sut, loadSurveysRepositoryStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadSurveysRepositoryStub, 'loadAll').mockRejectedValueOnce(error);
+
+    const promise = sut.load();
+
+    await expect(promise).rejects.toThrow(error);
   });
 });
