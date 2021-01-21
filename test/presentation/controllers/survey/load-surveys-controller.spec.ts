@@ -34,6 +34,15 @@ describe('LoadSurveysController', () => {
     expect(httpResponse).toEqual(HttpResponseFactory.makeOk(loadSurveysStub.response));
   });
 
+  it('should return 204 if result is empty', async () => {
+    const { sut, loadSurveysStub } = makeSut();
+    loadSurveysStub.response = [];
+
+    const httpResponse = await sut.handle();
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeNoContent());
+  });
+
   it('should return 500 if LoadSurveys throws', async () => {
     const { sut, loadSurveysStub } = makeSut();
     const error = new Error(faker.random.words());
