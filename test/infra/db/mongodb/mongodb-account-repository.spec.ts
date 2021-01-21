@@ -5,6 +5,7 @@ import { MongoHelper, MongodbAccountRepository } from '@/infra';
 import {
   mockAddAccountRepositoryParams,
   mockLoadAccountByEmailRepositoryParams,
+  mockLoadAccountByTokenRepositoryParams,
 } from '@/test/data/mocks';
 
 const makeSut = (): MongodbAccountRepository => new MongodbAccountRepository();
@@ -77,6 +78,23 @@ describe('MongodbAccountRepository', () => {
       const result = await accountCollection.findOne({ _id: dbAccount._id });
       expect(result).toBeTruthy();
       expect(result.accessToken).toBe(accessToken);
+    });
+  });
+
+  describe('LoadAccountByTokenRepository', () => {
+    it('should return an AccountModel on loadByToken success without role', async () => {
+      const sut = makeSut();
+      const account = mockAddAccountRepositoryParams();
+      const [accessToken] = mockLoadAccountByTokenRepositoryParams();
+      await accountCollection.insertOne({ ...account, accessToken });
+
+      const result = await sut.loadByToken(accessToken);
+
+      expect(result).toBeTruthy();
+      expect(result.id).toBeTruthy();
+      expect(result.name).toBe(account.name);
+      expect(result.email).toBe(account.email);
+      expect(result.password).toBe(account.password);
     });
   });
 });
