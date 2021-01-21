@@ -2,13 +2,18 @@ import {
   AddAccountRepository,
   AddAccountRepositoryParams,
   LoadAccountByEmailRepository,
+  LoadAccountByTokenRepository,
   UpdateAccessTokenRepository,
 } from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
 import { MongoHelper } from '@/infra';
 
 export class MongodbAccountRepository
-  implements AddAccountRepository, LoadAccountByEmailRepository, UpdateAccessTokenRepository {
+  implements
+    AddAccountRepository,
+    LoadAccountByEmailRepository,
+    UpdateAccessTokenRepository,
+    LoadAccountByTokenRepository {
   async add(params: AddAccountRepositoryParams): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const result = await accountCollection.insertOne(params);
@@ -19,6 +24,13 @@ export class MongodbAccountRepository
   async loadByEmail(email: string): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const account = await accountCollection.findOne({ email });
+
+    return account && MongoHelper.mapId(account);
+  }
+
+  async loadByToken(accessToken: string, role?: string): Promise<AccountModel> {
+    const accountCollection = await MongoHelper.getCollection('accounts');
+    const account = await accountCollection.findOne({ accessToken, role });
 
     return account && MongoHelper.mapId(account);
   }
