@@ -1,5 +1,6 @@
 export * from './criptography/hash-comparer';
 export * from './criptography/hash-generator';
+export * from './criptography/token-decoder';
 export * from './criptography/token-generator';
 
 export * from './db/account/add-account-repository';
