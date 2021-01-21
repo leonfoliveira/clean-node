@@ -111,5 +111,13 @@ describe('MongodbAccountRepository', () => {
       expect(result.email).toBe(account.email);
       expect(result.password).toBe(account.password);
     });
+
+    it('should return null on loadByToken fail', async () => {
+      const sut = makeSut();
+
+      const result = await sut.loadByToken(...mockLoadAccountByTokenRepositoryParams());
+
+      expect(result).toBeNull();
+    });
   });
 });
