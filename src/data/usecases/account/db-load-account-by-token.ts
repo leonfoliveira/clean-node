@@ -14,7 +14,10 @@ export class DbLoadAccountByToken implements LoadAccountByToken {
       return null;
     }
 
-    await this.loadAccountByTokenRepository.loadByToken(params.accessToken, params.role);
-    return null;
+    const account = await this.loadAccountByTokenRepository.loadByToken(
+      params.accessToken,
+      params.role,
+    );
+    return account;
   }
 }
