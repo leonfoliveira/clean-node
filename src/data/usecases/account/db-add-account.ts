@@ -3,7 +3,7 @@ import {
   AddAccountRepository,
   LoadAccountByEmailRepository,
 } from '@/data/interfaces';
-import { ProtectedAccountModel } from '@/domain/models';
+import { AccountModel } from '@/domain/models';
 import { AddAccount, AddAccountDTO } from '@/domain/usecases';
 
 export class DbAddAccount implements AddAccount {
@@ -13,7 +13,7 @@ export class DbAddAccount implements AddAccount {
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
   ) {}
 
-  async add(params: AddAccountDTO): Promise<ProtectedAccountModel> {
+  async add(params: AddAccountDTO): Promise<AccountModel> {
     const isEmailInUse = await this.loadAccountByEmailRepository.loadByEmail(params.email);
     if (isEmailInUse) {
       return null;
@@ -25,7 +25,6 @@ export class DbAddAccount implements AddAccount {
       ...params,
       password: hashedPassword,
     });
-    delete account.password;
 
     return account;
   }

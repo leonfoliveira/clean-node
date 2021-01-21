@@ -4,5 +4,3 @@ export type AccountModel = {
   email: string;
   password: string;
 };
-
-export type ProtectedAccountModel = Omit<AccountModel, 'password'>;

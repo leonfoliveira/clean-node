@@ -1,7 +1,7 @@
-import { ProtectedAccountModel } from '@/domain/models/account-model';
+import { AccountModel } from '@/domain/models/account-model';
 
 export interface AddAccount {
-  add(params: AddAccountDTO): Promise<ProtectedAccountModel>;
+  add(params: AddAccountDTO): Promise<AccountModel>;
 }
 
 export type AddAccountDTO = {
