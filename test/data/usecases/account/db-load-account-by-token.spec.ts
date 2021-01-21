@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { DbLoadAccountByToken } from '@/data/usecases';
 import { LoadAccountByTokenRepositoryStub, TokenDecoderStub } from '@/test/data/mocks';
 import { mockLoadAccountByTokenDTO } from '@/test/domain/mocks/usecases';
@@ -64,5 +66,16 @@ describe('DbLoadAccountByToken', () => {
     const account = await sut.load(params);
 
     expect(account).toEqual(loadAccountByTokenRepositoryStub.response);
+  });
+
+  it('should throw if LoadAccountByTokenRepository throws', async () => {
+    const { sut, loadAccountByTokenRepositoryStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadAccountByTokenRepositoryStub, 'loadByToken').mockRejectedValueOnce(error);
+    const params = mockLoadAccountByTokenDTO();
+
+    const promise = sut.load(params);
+
+    await expect(promise).rejects.toThrow(error);
   });
 });
