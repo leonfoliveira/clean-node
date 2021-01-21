@@ -6,8 +6,12 @@ export class LoadSurveysController implements Controller {
   constructor(private readonly loadSurvey: LoadSurveys) {}
 
   async handle(): Promise<HttpResponse> {
-    const surveys = await this.loadSurvey.load();
+    try {
+      const surveys = await this.loadSurvey.load();
 
-    return HttpResponseFactory.makeOk(surveys);
+      return HttpResponseFactory.makeOk(surveys);
+    } catch (error) {
+      return HttpResponseFactory.makeInternalServerError(error);
+    }
   }
 }
