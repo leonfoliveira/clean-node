@@ -1,12 +1,23 @@
-import { AddSurveyRepository, AddSurveyRepositoryParams } from '@/data/interfaces';
+import {
+  AddSurveyRepository,
+  AddSurveyRepositoryParams,
+  LoadSurveysRepository,
+} from '@/data/interfaces';
 import { SurveyModel } from '@/domain/models';
 import { MongoHelper } from '@/infra';
 
-export class MongodbSurveyRepository implements AddSurveyRepository {
+export class MongodbSurveyRepository implements AddSurveyRepository, LoadSurveysRepository {
   async add(params: AddSurveyRepositoryParams): Promise<SurveyModel> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
-    const result = await surveyCollection.insertOne(params);
+    const survey = await surveyCollection.insertOne(params);
 
-    return MongoHelper.mapId(result.ops[0]);
+    return MongoHelper.mapId(survey.ops[0]);
+  }
+
+  async loadAll(): Promise<SurveyModel[]> {
+    const surveyCollection = await MongoHelper.getCollection('surveys');
+    const surveys = await surveyCollection.find().toArray();
+
+    return surveys.map((survey) => MongoHelper.mapId(survey));
   }
 }
