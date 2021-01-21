@@ -1,9 +1,13 @@
 import { Application } from 'express';
 
-import { bodyParser, contentType, cors } from '@/main/middlewares';
+import { bodyParser, celebrateError, contentType, cors } from '@/main/middlewares';
 
-export const setupMiddlewares = (app: Application): void => {
+export const setupRequestMiddlewares = (app: Application): void => {
   app.use(bodyParser);
   app.use(cors);
   app.use(contentType);
+};
+
+export const setupResponseMiddlewares = (app: Application): void => {
+  app.use(celebrateError);
 };

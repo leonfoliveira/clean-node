@@ -6,6 +6,10 @@ export class HttpResponseFactory {
     return { statusCode: 200, body: data };
   }
 
+  static makeCreated(): HttpResponse {
+    return { statusCode: 201 };
+  }
+
   static makeNoContent(): HttpResponse {
     return { statusCode: 204 };
   }
