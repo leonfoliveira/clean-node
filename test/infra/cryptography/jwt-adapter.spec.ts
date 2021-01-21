@@ -65,5 +65,16 @@ describe('JwtAdapter', () => {
 
       expect(verifySpy).toHaveBeenCalledWith(accessToken, secret);
     });
+
+    it('should return a value on success', async () => {
+      const { sut } = makeSut();
+      const id = faker.random.uuid();
+      const accessToken = faker.random.uuid();
+      jest.spyOn(jwt, 'verify').mockImplementationOnce(() => ({ id }));
+
+      const result = await sut.decode(accessToken);
+
+      expect(result).toEqual({ id });
+    });
   });
 });
