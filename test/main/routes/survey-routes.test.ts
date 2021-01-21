@@ -22,12 +22,12 @@ describe('SurveyRoutes', () => {
   });
 
   describe('POST /surveys', () => {
-    it('should return 201 on success', async () => {
+    it('should return 403 if no accessToken is provided', async () => {
       const httpResponse = await request(app)
         .post('/api/surveys')
         .send(mockAddSurveyHttpRequest().body);
 
-      expect(httpResponse.status).toBe(201);
+      expect(httpResponse.status).toBe(403);
     });
   });
 });
