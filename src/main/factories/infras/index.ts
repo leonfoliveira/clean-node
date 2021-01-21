@@ -11,3 +11,4 @@ export * from './db/account/update-access-token-repository-factory';
 export * from './db/log/log-error-repository-factory';
 
 export * from './db/survey/add-survey-repository-factory';
+export * from './db/survey/load-surveys-repository';
