@@ -57,5 +57,19 @@ describe('SurveyRoutes', () => {
 
       expect(httpResponse.status).toBe(403);
     });
+
+    it('should return 204 if valid accessToken is provided', async () => {
+      const account = mockAccountModel();
+      delete account.id;
+      const id = (await accountCollection.insertOne({ ...account })).ops[0]._id;
+      const accessToken = jwt.sign({ id }, env.jwtSecret);
+      await accountCollection.updateOne({ _id: id }, { $set: { accessToken } });
+      const httpResponse = await request(app)
+        .get('/api/surveys')
+        .set('x-access-token', accessToken)
+        .send(mockAddSurveyHttpRequest().body);
+
+      expect(httpResponse.status).toBe(204);
+    });
   });
 });
