@@ -120,4 +120,10 @@ describe('AddSurveyValidator', () => {
     const httpResponse = await request(app).post('/api/surveys').send(httpRequest.body);
     testInvalidParamResponse(httpResponse);
   });
+
+  it('should not return InvalidParamError if validation passes', async () => {
+    const httpRequest = mockAddSurveyHttpRequest();
+    const httpResponse = await request(app).post('/api/surveys').send(httpRequest.body);
+    expect(!httpResponse.body.error || !/Invalid Param/.test(httpResponse.body.error)).toBeTruthy();
+  });
 });
