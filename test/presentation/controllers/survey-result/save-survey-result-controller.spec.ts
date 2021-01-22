@@ -103,4 +103,12 @@ describe('SaveSurveyResultController', () => {
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
+
+  it('should return 200 if SaveSurveyResult on success', async () => {
+    const { sut, saveSurveyResultStub, params } = makeSut();
+
+    const httpResponse = await sut.handle(params);
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeOk(saveSurveyResultStub.response));
+  });
 });
