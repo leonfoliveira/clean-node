@@ -1,6 +1,8 @@
 import faker from 'faker';
 
-import { SaveSurveyResultDTO } from '@/domain/usecases';
+import { SurveyResultModel } from '@/domain/models';
+import { SaveSurveyResult, SaveSurveyResultDTO } from '@/domain/usecases';
+import { mockSurveyResultModel } from '@/test/domain/mocks/models';
 
 export const mockSaveSurveyResultDTO = (): SaveSurveyResultDTO => ({
   surveyId: faker.random.uuid(),
@@ -8,3 +10,11 @@ export const mockSaveSurveyResultDTO = (): SaveSurveyResultDTO => ({
   answer: faker.random.words(),
   date: faker.date.past(),
 });
+
+export class SaveSurveyResultStub implements SaveSurveyResult {
+  response = mockSurveyResultModel();
+
+  async save(): Promise<SurveyResultModel> {
+    return this.response;
+  }
+}

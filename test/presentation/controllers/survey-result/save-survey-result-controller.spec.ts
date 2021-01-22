@@ -1,29 +1,43 @@
 import faker from 'faker';
+import MockDate from 'mockdate';
 
 import { SaveSurveyResultController } from '@/presentation/controllers';
 import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { LoadSurveyByIdStub } from '@/test/domain/mocks/usecases';
+import { HttpRequest } from '@/presentation/interfaces';
+import { LoadSurveyByIdStub, SaveSurveyResultStub } from '@/test/domain/mocks/usecases';
 import { generateStringDifferent } from '@/test/helpers';
 import { mockSaveSurveyHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: SaveSurveyResultController;
   loadSurveyByIdStub: LoadSurveyByIdStub;
+  saveSurveyResultStub: SaveSurveyResultStub;
+  params: HttpRequest;
 };
 
 const makeSut = (): SutTypes => {
   const loadSurveyByIdStub = new LoadSurveyByIdStub();
-  const sut = new SaveSurveyResultController(loadSurveyByIdStub);
+  const saveSurveyResultStub = new SaveSurveyResultStub();
+  const sut = new SaveSurveyResultController(loadSurveyByIdStub, saveSurveyResultStub);
+  const params = mockSaveSurveyHttpRequest();
+  params.body.answer = loadSurveyByIdStub.response.answers[0].answer;
 
-  return { sut, loadSurveyByIdStub };
+  return { sut, loadSurveyByIdStub, saveSurveyResultStub, params };
 };
 
 describe('SaveSurveyResultController', () => {
+  beforeAll(() => {
+    MockDate.set(new Date());
+  });
+
+  afterAll(() => {
+    MockDate.reset();
+  });
+
   it('should call LoadSurveyById with correct values', async () => {
-    const { sut, loadSurveyByIdStub } = makeSut();
+    const { sut, loadSurveyByIdStub, params } = makeSut();
     const loadByIdSpy = jest.spyOn(loadSurveyByIdStub, 'loadById');
-    const params = mockSaveSurveyHttpRequest();
 
     await sut.handle(params);
 
@@ -31,10 +45,10 @@ describe('SaveSurveyResultController', () => {
   });
 
   it('should return 404 if LoadSurveyById returns null', async () => {
-    const { sut, loadSurveyByIdStub } = makeSut();
+    const { sut, loadSurveyByIdStub, params } = makeSut();
     loadSurveyByIdStub.response = null;
 
-    const httpResponse = await sut.handle(mockSaveSurveyHttpRequest());
+    const httpResponse = await sut.handle(params);
 
     expect(httpResponse).toEqual(
       HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey')),
@@ -42,28 +56,41 @@ describe('SaveSurveyResultController', () => {
   });
 
   it('should return 500 if LoadSurveyById throws', async () => {
-    const { sut, loadSurveyByIdStub } = makeSut();
+    const { sut, loadSurveyByIdStub, params } = makeSut();
     const error = new Error(faker.random.words());
     jest.spyOn(loadSurveyByIdStub, 'loadById').mockRejectedValueOnce(error);
 
-    const httpResponse = await sut.handle(mockSaveSurveyHttpRequest());
+    const httpResponse = await sut.handle(params);
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
 
   it('should return 404 if non existent answer is provided', async () => {
-    const { sut, loadSurveyByIdStub } = makeSut();
-    const httpRequest = mockSaveSurveyHttpRequest();
-    Object.assign(httpRequest.body, {
+    const { sut, loadSurveyByIdStub, params } = makeSut();
+    Object.assign(params.body, {
       answer: generateStringDifferent(
         `${loadSurveyByIdStub.response.answers[0].answer}${loadSurveyByIdStub.response.answers[1].answer}`,
       ),
     });
 
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(params);
 
     expect(httpResponse).toEqual(
       HttpResponseFactory.makeNotFound(new RegisterNotFoundError('answer')),
     );
+  });
+
+  it('should call SaveSurveyResult with correct values', async () => {
+    const { sut, saveSurveyResultStub, params } = makeSut();
+    const saveSpy = jest.spyOn(saveSurveyResultStub, 'save');
+
+    await sut.handle(params);
+
+    expect(saveSpy).toHaveBeenCalledWith({
+      surveyId: params.params.surveyId,
+      accountId: params.headers.accountId,
+      date: new Date(),
+      answer: params.body.answer,
+    });
   });
 });
