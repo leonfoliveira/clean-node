@@ -27,6 +27,6 @@ export class MongodbSurveyRepository
     const surveyCollection = await MongoHelper.getCollection('surveys');
     const survey = await surveyCollection.findOne({ _id: id });
 
-    return MongoHelper.mapId(survey);
+    return survey && MongoHelper.mapId(survey);
   }
 }
