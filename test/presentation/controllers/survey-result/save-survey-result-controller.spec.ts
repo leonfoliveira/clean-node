@@ -1,4 +1,6 @@
 import { SaveSurveyResultController } from '@/presentation/controllers';
+import { RegisterNotFoundError } from '@/presentation/errors';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { LoadSurveyByIdStub } from '@/test/domain/mocks/usecases';
 import { mockSaveSurveyHttpRequest } from '@/test/presentation/mocks';
 
@@ -23,5 +25,16 @@ describe('SaveSurveyResultController', () => {
     await sut.handle(params);
 
     expect(loadByIdSpy).toHaveBeenCalledWith(params.params.surveyId);
+  });
+
+  it('should return 404 if LoadSurveyById returns null', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut();
+    loadSurveyByIdStub.response = null;
+
+    const httpResponse = await sut.handle(mockSaveSurveyHttpRequest());
+
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey')),
+    );
   });
 });
