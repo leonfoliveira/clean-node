@@ -1,10 +1,13 @@
-import { LoadSurveyById } from '@/domain/usecases';
+import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases';
 import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
 
 export class SaveSurveyResultController implements Controller {
-  constructor(private readonly loadSurveyById: LoadSurveyById) {}
+  constructor(
+    private readonly loadSurveyById: LoadSurveyById,
+    private readonly saveSurveyResult: SaveSurveyResult,
+  ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -18,6 +21,9 @@ export class SaveSurveyResultController implements Controller {
       if (!survey.answers.map((a) => a.answer).includes(answer)) {
         return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('answer'));
       }
+
+      const { accountId } = httpRequest.headers;
+      await this.saveSurveyResult.save({ surveyId, accountId, date: new Date(), answer });
 
       return null;
     } catch (error) {
