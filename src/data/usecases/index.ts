@@ -5,3 +5,4 @@ export * from './account/db-load-account-by-token';
 export * from './survey/db-add-survey';
 export * from './survey/db-load-survey-by-id';
 export * from './survey/db-load-surveys';
+export * from './survey/db-save-survey-result';
