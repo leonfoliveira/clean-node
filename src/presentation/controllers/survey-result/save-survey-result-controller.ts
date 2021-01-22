@@ -23,9 +23,14 @@ export class SaveSurveyResultController implements Controller {
       }
 
       const { accountId } = httpRequest.headers;
-      await this.saveSurveyResult.save({ surveyId, accountId, date: new Date(), answer });
+      const surveyResult = await this.saveSurveyResult.save({
+        surveyId,
+        accountId,
+        date: new Date(),
+        answer,
+      });
 
-      return null;
+      return HttpResponseFactory.makeOk(surveyResult);
     } catch (error) {
       return HttpResponseFactory.makeInternalServerError(error);
     }
