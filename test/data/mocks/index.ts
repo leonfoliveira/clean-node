@@ -11,4 +11,5 @@ export * from './db/account/mock-update-access-token-repository';
 export * from './db/log/mock-log-error-repository';
 
 export * from './db/survey/mock-add-survey-repository';
+export * from './db/survey/mock-load-survey-by-id-repository';
 export * from './db/survey/mock-load-surveys-repository';
