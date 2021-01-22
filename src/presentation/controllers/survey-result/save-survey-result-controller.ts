@@ -9,8 +9,17 @@ export class SaveSurveyResultController implements Controller {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { surveyId } = httpRequest.params;
-      await this.loadSurveyById.loadById(surveyId);
-      return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
+      const survey = await this.loadSurveyById.loadById(surveyId);
+      if (!survey) {
+        return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
+      }
+
+      const { answer } = httpRequest.body;
+      if (!survey.answers.map((a) => a.answer).includes(answer)) {
+        return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('answer'));
+      }
+
+      return null;
     } catch (error) {
       return HttpResponseFactory.makeInternalServerError(error);
     }
