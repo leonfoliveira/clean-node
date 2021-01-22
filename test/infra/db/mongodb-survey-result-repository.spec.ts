@@ -28,7 +28,7 @@ describe('MongodbSurveyResultRepository', () => {
   });
 
   describe('SaveSurveyResultRepository', () => {
-    it('should return a SurveyResult on success', async () => {
+    it('should create a SurveyResult if its new', async () => {
       const sut = makeSut();
       const params = mockSurveyResultModel();
       delete params.id;
@@ -42,5 +42,21 @@ describe('MongodbSurveyResultRepository', () => {
       expect(result.answer).toEqual(params.answer);
       expect(result.date).toEqual(params.date);
     });
+  });
+
+  it('should update SurveyResult if its not new', async () => {
+    const sut = makeSut();
+    const params = mockSurveyResultModel();
+    delete params.id;
+    const id = (await surveyResultCollection.insertOne(params)).ops[0]._id;
+
+    const result = await sut.save(params);
+
+    expect(result).toBeTruthy();
+    expect(result.id).toEqual(id);
+    expect(result.surveyId).toBe(params.surveyId);
+    expect(result.accountId).toBe(params.accountId);
+    expect(result.answer).toEqual(params.answer);
+    expect(result.date).toEqual(params.date);
   });
 });
