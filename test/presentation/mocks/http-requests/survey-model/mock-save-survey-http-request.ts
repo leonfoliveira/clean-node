@@ -6,4 +6,7 @@ export const mockSaveSurveyHttpRequest = (): HttpRequest => ({
   params: {
     surveyId: faker.random.uuid(),
   },
+  body: {
+    answer: faker.random.words(),
+  },
 });

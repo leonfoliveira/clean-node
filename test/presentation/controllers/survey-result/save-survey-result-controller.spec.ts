@@ -4,6 +4,7 @@ import { SaveSurveyResultController } from '@/presentation/controllers';
 import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { LoadSurveyByIdStub } from '@/test/domain/mocks/usecases';
+import { generateStringDifferent } from '@/test/helpers';
 import { mockSaveSurveyHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
@@ -48,5 +49,21 @@ describe('SaveSurveyResultController', () => {
     const httpResponse = await sut.handle(mockSaveSurveyHttpRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
+  });
+
+  it('should return 404 if non existent answer is provided', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut();
+    const httpRequest = mockSaveSurveyHttpRequest();
+    Object.assign(httpRequest.body, {
+      answer: generateStringDifferent(
+        `${loadSurveyByIdStub.response.answers[0].answer}${loadSurveyByIdStub.response.answers[1].answer}`,
+      ),
+    });
+
+    const httpResponse = await sut.handle(httpRequest);
+
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeNotFound(new RegisterNotFoundError('answer')),
+    );
   });
 });
