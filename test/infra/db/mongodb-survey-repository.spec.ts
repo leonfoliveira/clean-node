@@ -60,4 +60,17 @@ describe('MongodbSurveyRepository', () => {
       expect(result).toEqual([]);
     });
   });
+
+  describe('LoadSurveyByIdRepository', () => {
+    it('should load survey by id on success', async () => {
+      const sut = makeSut();
+      const survey = mockSurveyModel();
+      delete survey.id;
+      const id = (await surveyCollection.insertOne(survey)).ops[0]._id;
+
+      const result = await sut.loadById(id);
+
+      expect(result).toEqual(survey);
+    });
+  });
 });
