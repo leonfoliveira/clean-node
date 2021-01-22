@@ -24,4 +24,12 @@ describe('DbLoadSurveyById', () => {
 
     expect(loadByIdSpy).toHaveBeenCalledWith(params.id);
   });
+
+  it('should return a SurveyModel on success', async () => {
+    const { sut, loadSurveyByIdRepositoryStub } = makeSut();
+
+    const result = await sut.loadById(mockLoadSurveyByIdDTO());
+
+    expect(result).toEqual(loadSurveyByIdRepositoryStub.response);
+  });
 });
