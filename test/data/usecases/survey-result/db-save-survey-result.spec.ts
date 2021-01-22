@@ -2,7 +2,7 @@ import faker from 'faker';
 
 import { DbSaveSurveyResult } from '@/data/usecases';
 import { SaveSurveyResultRepositoryStub } from '@/test/data/mocks';
-import { mockAddSurveyDTO } from '@/test/domain/mocks/usecases';
+import { mockSaveSurveyResultDTO } from '@/test/domain/mocks/usecases';
 
 type SutTypes = {
   sut: DbSaveSurveyResult;
@@ -20,7 +20,7 @@ describe('DbSaveSurveyResult', () => {
   it('should call SaveSurveyResultRepository with correct values', async () => {
     const { sut, saveSurveyResultRepositoryStub } = makeSut();
     const saveSpy = jest.spyOn(saveSurveyResultRepositoryStub, 'save');
-    const params = mockAddSurveyDTO();
+    const params = mockSaveSurveyResultDTO();
 
     await sut.save(params);
 
@@ -30,7 +30,7 @@ describe('DbSaveSurveyResult', () => {
   it('should return a SurveyResult on success', async () => {
     const { sut, saveSurveyResultRepositoryStub } = makeSut();
 
-    const result = await sut.save(mockAddSurveyDTO());
+    const result = await sut.save(mockSaveSurveyResultDTO());
 
     expect(result).toEqual(saveSurveyResultRepositoryStub.response);
   });
@@ -40,7 +40,7 @@ describe('DbSaveSurveyResult', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(saveSurveyResultRepositoryStub, 'save').mockRejectedValueOnce(error);
 
-    const promise = sut.save(mockAddSurveyDTO());
+    const promise = sut.save(mockSaveSurveyResultDTO());
 
     await expect(promise).rejects.toThrow(error);
   });

@@ -13,4 +13,5 @@ export * from './db/log/mock-log-error-repository';
 export * from './db/survey/mock-add-survey-repository';
 export * from './db/survey/mock-load-survey-by-id-repository';
 export * from './db/survey/mock-load-surveys-repository';
-export * from './db/survey/mock-save-survey-result-repository';
+
+export * from './db/survey-result/mock-save-survey-result-repository';
