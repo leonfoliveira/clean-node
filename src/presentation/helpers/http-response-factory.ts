@@ -22,6 +22,10 @@ export class HttpResponseFactory {
     return { statusCode: 403, body: error };
   }
 
+  static makeNotFound(error: Error): HttpResponse {
+    return { statusCode: 404, body: error };
+  }
+
   static makeInternalServerError(error: Error): HttpResponse {
     return { statusCode: 500, body: new ServerError(error.stack) };
   }
