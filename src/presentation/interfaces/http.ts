@@ -1,4 +1,5 @@
 export type HttpRequest = {
+  params?: Record<string, any>;
   headers?: Record<string, any>;
   body?: any;
 };
