@@ -93,4 +93,14 @@ describe('SaveSurveyResultController', () => {
       answer: params.body.answer,
     });
   });
+
+  it('should return 500 if SaveSurveyResult throws', async () => {
+    const { sut, saveSurveyResultStub, params } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(saveSurveyResultStub, 'save').mockRejectedValueOnce(error);
+
+    const httpResponse = await sut.handle(params);
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
+  });
 });
