@@ -27,6 +27,14 @@ describe('DbSaveSurveyResult', () => {
     expect(saveSpy).toHaveBeenCalledWith(params);
   });
 
+  it('should return a SurveyResult on success', async () => {
+    const { sut, saveSurveyResultRepositoryStub } = makeSut();
+
+    const result = await sut.save(mockAddSurveyDTO());
+
+    expect(result).toEqual(saveSurveyResultRepositoryStub.response);
+  });
+
   it('should throw if SaveSurveyResultRepository throws', async () => {
     const { sut, saveSurveyResultRepositoryStub } = makeSut();
     const error = new Error(faker.random.words());
