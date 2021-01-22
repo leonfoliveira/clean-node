@@ -5,3 +5,4 @@ export * from './db/mongodb-account-repository';
 export * from './db/mongodb-helper';
 export * from './db/mongodb-log-repository';
 export * from './db/mongodb-survey-repository';
+export * from './db/mongodb-survey-result-repository';
