@@ -4,11 +4,4 @@ export interface AddSurvey {
   add: (params: AddSurveyDTO) => Promise<SurveyModel>;
 }
 
-export type AddSurveyDTO = {
-  question: string;
-  answers: {
-    image?: string;
-    answer: string;
-  }[];
-  date: Date;
-};
+export type AddSurveyDTO = Omit<SurveyModel, 'id'>;

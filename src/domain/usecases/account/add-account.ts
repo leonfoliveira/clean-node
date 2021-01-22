@@ -4,8 +4,4 @@ export interface AddAccount {
   add(params: AddAccountDTO): Promise<AccountModel>;
 }
 
-export type AddAccountDTO = {
-  name: string;
-  email: string;
-  password: string;
-};
+export type AddAccountDTO = Omit<AccountModel, 'id'>;
