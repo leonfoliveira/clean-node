@@ -1,3 +1,5 @@
+import faker from 'faker';
+
 import { SaveSurveyResultController } from '@/presentation/controllers';
 import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
@@ -36,5 +38,15 @@ describe('SaveSurveyResultController', () => {
     expect(httpResponse).toEqual(
       HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey')),
     );
+  });
+
+  it('should return 500 if LoadSurveyById throws', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockRejectedValueOnce(error);
+
+    const httpResponse = await sut.handle(mockSaveSurveyHttpRequest());
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
 });
