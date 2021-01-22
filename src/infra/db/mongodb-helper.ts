@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { MongoClient, Collection } from 'mongodb';
 
 export const MongoHelper = {
@@ -23,14 +22,7 @@ export const MongoHelper = {
     return this.client.db().collection(name);
   },
 
-  mapId(data: any): any {
-    const mappedData = {
-      ...data,
-      id: data._id,
-    };
-    delete mappedData._id;
-
-    return mappedData;
+  mapId({ _id, ...data }: any): any {
+    return { ...data, id: _id };
   },
 };
-/* eslint-enable no-underscore-dangle */
