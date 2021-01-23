@@ -1,0 +1,53 @@
+{
+  "put": {
+    "security": [{ "apiKeyAuth": [] }],
+    "tags": ["Survey"],
+    "summary": "Save Survey Answer",
+    "parameters": [
+      {
+        "in": "path",
+        "name": "surveyId",
+        "required": "true",
+        "schema": { "type": "string" }
+      }
+    ],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "answer": { "type": "string" }
+            },
+            "required": ["answer"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/schemas/survey-result"
+            }
+          }
+        }
+      },
+      "400": {
+        "$ref": "#/components/bad-request"
+      },
+      "403": {
+        "$ref": "#/components/forbidden"
+      },
+      "404": {
+        "$ref": "#/components/not-found"
+      },
+      "500": {
+        "$ref": "#/components/internal-server-error"
+      }
+    }
+  }
+}
