@@ -31,5 +31,52 @@
         "$ref": "#/components/internal-server-error"
       }
     }
+  },
+  "post": {
+    "security": [{ "apiKeyAuth": [] }],
+    "tags": ["Survey"],
+    "summary": "Create Survey",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "question": { "type": "string", "minLength": 1, "maxLength": 100 },
+              "answers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "image": { "type": "string", "format": "uri" },
+                    "answer": { "type": "string", "minLength": 1, "maxLength": 100 }
+                  },
+                  "required": ["answer"]
+                }
+              }
+            },
+            "required": ["question", "answers"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "201": {
+        "description": "Created"
+      },
+      "400": {
+        "$ref": "#/components/bad-request"
+      },
+      "403": {
+        "$ref": "#/components/forbidden"
+      },
+      "404": {
+        "$ref": "#/components/not-found"
+      },
+      "500": {
+        "$ref": "#/components/internal-server-error"
+      }
+    }
   }
 }

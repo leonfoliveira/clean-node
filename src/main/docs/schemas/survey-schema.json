@@ -2,17 +2,17 @@
   "type": "object",
   "properties": {
     "id": { "type": "string" },
-    "question": {
+    "question": { "type": "string" },
+    "answers": {
       "type": "array",
       "items": {
         "type": "object",
         "properties": {
-          "image": { "type": "string" },
+          "image": { "type": "string", "format": "uri" },
           "answer": { "type": "string" }
         }
       }
     },
-    "answers": { "type": "string" },
     "date": { "type": "string", "format": "date-time" }
   }
 }
