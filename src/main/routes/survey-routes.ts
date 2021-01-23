@@ -8,8 +8,8 @@ import { validateAddSurvey } from '@/main/validators';
 export default (router: Router): void => {
   router.post(
     '/surveys',
-    validateAddSurvey(),
     authenticateAdmin(),
+    validateAddSurvey(),
     adaptRoute(makeAddSurveyController()),
   );
 
