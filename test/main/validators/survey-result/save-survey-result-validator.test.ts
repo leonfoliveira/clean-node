@@ -1,3 +1,4 @@
+import faker from 'faker';
 import { Collection } from 'mongodb';
 import request from 'supertest';
 
@@ -28,6 +29,26 @@ describe('AddSurveyValidator', () => {
   it('should return 400 if no answer is provided', async () => {
     const httpRequest = mockSaveSurveyHttpRequest();
     delete httpRequest.body.answer;
+    const httpResponse = await request(app)
+      .put('/api/surveys/any_id/results')
+      .set('x-access-token', await makeAccessToken(accountCollection))
+      .send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
+
+  it('should return 400 if answer is not a string', async () => {
+    const httpRequest = mockSaveSurveyHttpRequest();
+    httpRequest.body.answer = faker.random.number();
+    const httpResponse = await request(app)
+      .put('/api/surveys/any_id/results')
+      .set('x-access-token', await makeAccessToken(accountCollection))
+      .send(httpRequest.body);
+    testInvalidParamResponse(httpResponse);
+  });
+
+  it('should return 400 if answer is empty', async () => {
+    const httpRequest = mockSaveSurveyHttpRequest();
+    httpRequest.body.answer = '';
     const httpResponse = await request(app)
       .put('/api/surveys/any_id/results')
       .set('x-access-token', await makeAccessToken(accountCollection))
