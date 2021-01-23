@@ -41,7 +41,7 @@ describe('SaveSurveyResultController', () => {
 
     await sut.handle(params);
 
-    expect(loadByIdSpy).toHaveBeenCalledWith(params.params.surveyId);
+    expect(loadByIdSpy).toHaveBeenCalledWith({ id: params.params.surveyId });
   });
 
   it('should return 404 if LoadSurveyById returns null', async () => {
