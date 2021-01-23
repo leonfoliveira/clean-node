@@ -7,6 +7,8 @@ export const adaptRoute = (controller: Controller) => async (
   res: Response,
 ): Promise<void> => {
   const httpRequest: HttpRequest = {
+    params: req.params,
+    headers: req.headers,
     body: req.body,
   };
 

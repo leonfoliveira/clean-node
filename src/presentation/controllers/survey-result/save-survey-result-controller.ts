@@ -12,7 +12,7 @@ export class SaveSurveyResultController implements Controller {
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const { surveyId } = httpRequest.params;
-      const survey = await this.loadSurveyById.loadById(surveyId);
+      const survey = await this.loadSurveyById.loadById({ id: surveyId });
       if (!survey) {
         return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
       }
