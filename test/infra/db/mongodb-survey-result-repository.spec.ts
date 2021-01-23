@@ -1,15 +1,30 @@
-import { Collection } from 'mongodb';
+import { AccountModel, SurveyModel } from 'domain/models';
+
+import { Collection, ObjectId } from 'mongodb';
 
 import { MongodbSurveyResultRepository, MongoHelper } from '@/infra';
-import { mockSurveyResultModel } from '@/test/domain/mocks/models';
+import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
+import { mockSaveSurveyResultDTO } from '@/test/domain/mocks/usecases';
 
 const makeSut = (): MongodbSurveyResultRepository => new MongodbSurveyResultRepository();
 
-describe('MongodbSurveyResultRepository', () => {
-  let surveyCollection: Collection;
-  let surveyResultCollection: Collection;
-  let accountCollection: Collection;
+let surveyCollection: Collection;
+let surveyResultCollection: Collection;
+let accountCollection: Collection;
 
+const mockSurvey = async (): Promise<SurveyModel> => {
+  const params = mockSurveyModel();
+  delete params.id;
+  return MongoHelper.mapId((await surveyCollection.insertOne(params)).ops[0]);
+};
+
+const mockAccount = async (): Promise<AccountModel> => {
+  const params = mockAccountModel();
+  delete params.id;
+  return MongoHelper.mapId((await accountCollection.insertOne(params)).ops[0]);
+};
+
+describe('MongodbSurveyResultRepository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
@@ -30,33 +45,55 @@ describe('MongodbSurveyResultRepository', () => {
   describe('SaveSurveyResultRepository', () => {
     it('should create a SurveyResult if its new', async () => {
       const sut = makeSut();
-      const params = mockSurveyResultModel();
-      delete params.id;
+      const params = mockSaveSurveyResultDTO();
+      const survey = await mockSurvey();
+      params.surveyId = survey.id;
+      params.accountId = (await mockAccount()).id;
+      params.answer = survey.answers[0].answer;
 
       const result = await sut.save(params);
 
       expect(result).toBeTruthy();
-      expect(result.id).toBeTruthy();
-      expect(result.surveyId).toBe(params.surveyId);
-      expect(result.accountId).toBe(params.accountId);
-      expect(result.answer).toEqual(params.answer);
-      expect(result.date).toEqual(params.date);
+      expect(result.id).toEqual(survey.id);
+      expect(result.question).toEqual(survey.question);
+      expect(result.answers[0].answer).toBe(survey.answers[0].answer);
+      expect(result.answers[0].image).toBe(survey.answers[0].image);
+      expect(result.answers[0].count).toBe(1);
+      expect(result.answers[0].percent).toBe(100);
+      expect(result.answers[1].answer).toBe(survey.answers[1].answer);
+      expect(result.answers[1].image).toBe(survey.answers[1].image);
+      expect(result.answers[1].count).toBe(0);
+      expect(result.answers[1].percent).toBe(0);
+      expect(result.date).toEqual(survey.date);
     });
   });
 
   it('should update SurveyResult if its not new', async () => {
     const sut = makeSut();
-    const params = mockSurveyResultModel();
-    delete params.id;
-    const id = (await surveyResultCollection.insertOne(params)).ops[0]._id;
+    const params = mockSaveSurveyResultDTO();
+    const survey = await mockSurvey();
+    params.surveyId = survey.id;
+    params.accountId = (await mockAccount()).id;
+    params.answer = survey.answers[1].answer;
+    await surveyResultCollection.insertOne({
+      ...params,
+      surveyId: new ObjectId(params.surveyId),
+      accountId: new ObjectId(params.accountId),
+    });
 
     const result = await sut.save(params);
 
     expect(result).toBeTruthy();
-    expect(result.id).toEqual(id);
-    expect(result.surveyId).toBe(params.surveyId);
-    expect(result.accountId).toBe(params.accountId);
-    expect(result.answer).toEqual(params.answer);
-    expect(result.date).toEqual(params.date);
+    expect(result.id).toEqual(survey.id);
+    expect(result.question).toEqual(survey.question);
+    expect(result.answers[0].answer).toBe(survey.answers[1].answer);
+    expect(result.answers[0].image).toBe(survey.answers[1].image);
+    expect(result.answers[0].count).toBe(1);
+    expect(result.answers[0].percent).toBe(100);
+    expect(result.answers[1].answer).toBe(survey.answers[0].answer);
+    expect(result.answers[1].image).toBe(survey.answers[0].image);
+    expect(result.answers[1].count).toBe(0);
+    expect(result.answers[1].percent).toBe(0);
+    expect(result.date).toEqual(survey.date);
   });
 });

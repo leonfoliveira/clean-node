@@ -4,4 +4,9 @@ export interface SaveSurveyResult {
   save(params: SaveSurveyResultDTO): Promise<SurveyResultModel>;
 }
 
-export type SaveSurveyResultDTO = Omit<SurveyResultModel, 'id'>;
+export type SaveSurveyResultDTO = {
+  surveyId: string;
+  accountId: string;
+  answer: string;
+  date: Date;
+};

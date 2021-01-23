@@ -7,3 +7,15 @@ export type SurveyModel = {
   }[];
   date: Date;
 };
+
+export type SurveyResultModel = {
+  id: string;
+  question: string;
+  answers: {
+    image?: string;
+    answer: string;
+    count: number;
+    percent: number;
+  }[];
+  date: Date;
+};

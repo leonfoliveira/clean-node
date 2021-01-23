@@ -4,15 +4,15 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Docker: Attach to Node",
-      "remoteRoot": "/usr/src/clean-node-api",
+      "name": "Attach to Node",
       "port": 9222,
       "restart": true
     },
     {
       "type": "node",
       "request": "attach",
-      "name": "Attach to Node",
+      "name": "Docker: Attach to Node",
+      "remoteRoot": "/usr/src/clean-node-api",
       "port": 9222,
       "restart": true
     }

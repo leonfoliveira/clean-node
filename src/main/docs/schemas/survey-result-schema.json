@@ -2,9 +2,19 @@
   "type": "object",
   "properties": {
     "id": { "type": "string" },
-    "surveyId": { "type": "string" },
-    "accountId": { "type": "string" },
-    "answer": { "type": "string" },
+    "question": { "type": "string" },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "image": { "type": "string", "format": "uri" },
+          "answer": { "type": "string" },
+          "count": { "type": "number", "minimum": 0 },
+          "percent": { "type": "number", "minimum": 0, "maximum": 100 }
+        }
+      }
+    },
     "date": { "type": "string", "format": "date-time" }
   }
 }
