@@ -4,6 +4,6 @@ import { RequestHandler } from 'express';
 export const validateSaveSurveyResult = (): RequestHandler =>
   celebrate({
     [Segments.BODY]: Joi.object().keys({
-      answer: Joi.required(),
+      answer: Joi.string().required(),
     }),
   });
