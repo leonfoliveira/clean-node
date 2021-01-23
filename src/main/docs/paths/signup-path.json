@@ -1,7 +1,7 @@
 {
   "post": {
     "tags": ["Login"],
-    "summary": "Authenticate User",
+    "summary": "Create User",
     "requestBody": {
       "required": true,
       "content": {
@@ -9,6 +9,11 @@
           "schema": {
             "type": "object",
             "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50
+              },
               "email": {
                 "type": "string",
                 "format": "email"
@@ -18,9 +23,15 @@
                 "format": "password",
                 "minLength": 8,
                 "maxLength": 32
+              },
+              "passwordConfirmation": {
+                "type": "string",
+                "format": "password",
+                "minLength": 8,
+                "maxLength": 32
               }
             },
-            "required": ["email", "password"]
+            "required": ["name", "email", "password", "passwordConfirmation"]
           }
         }
       }
@@ -39,8 +50,8 @@
       "400": {
         "$ref": "#/components/bad-request"
       },
-      "403": {
-        "$ref": "#/components/forbidden"
+      "409": {
+        "$ref": "#/components/conflict"
       },
       "404": {
         "$ref": "#/components/not-found"

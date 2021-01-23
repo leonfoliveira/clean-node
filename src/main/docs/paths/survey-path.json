@@ -2,7 +2,7 @@
   "get": {
     "security": [{ "apiKeyAuth": [] }],
     "tags": ["Survey"],
-    "summary": "List All Surveys API",
+    "summary": "List All Surveys",
     "responses": {
       "200": {
         "description": "Success",

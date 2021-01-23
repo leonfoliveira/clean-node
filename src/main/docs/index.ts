@@ -1,9 +1,11 @@
 import badRequestComponent from './components/bad-request.json';
+import conflictComponent from './components/conflict.json';
 import forbiddenComponent from './components/forbidden.json';
 import internalServerErrorComponent from './components/internal-server-error.json';
 import notFoundComponent from './components/not-found.json';
 import unauthorizedComponent from './components/unauthorized.json';
 import loginPath from './paths/login-path.json';
+import signupPath from './paths/signup-path.json';
 import surveyPath from './paths/survey-path.json';
 import apiKeyAuthSchema from './schemas/api-key-auth-schema.json';
 import authorizationSchema from './schemas/authorization-schema.json';
@@ -39,6 +41,7 @@ export const swaggerConfig = {
       apiKeyAuth: apiKeyAuthSchema,
     },
     'bad-request': badRequestComponent,
+    conflict: conflictComponent,
     forbidden: forbiddenComponent,
     'internal-server-error': internalServerErrorComponent,
     'not-found': notFoundComponent,
@@ -46,6 +49,7 @@ export const swaggerConfig = {
   },
   paths: {
     '/login': loginPath,
+    '/signup': signupPath,
     '/survey': surveyPath,
   },
   schemas: {
