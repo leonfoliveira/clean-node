@@ -46,14 +46,14 @@ describe('SignUp Controller', () => {
     );
   });
 
-  it('should return 403 if AddAccount returns null', async () => {
+  it('should return 409 if AddAccount returns null', async () => {
     const { sut, addAccountStub } = makeSut();
     jest.spyOn(addAccountStub, 'add').mockResolvedValueOnce(null);
     const httpRequest = mockSignupHttpRequest();
 
     const httpResponse = await sut.handle(httpRequest);
 
-    expect(httpResponse).toEqual(HttpResponseFactory.makeForbidden(new EmailInUseError()));
+    expect(httpResponse).toEqual(HttpResponseFactory.makeConflict(new EmailInUseError()));
   });
 
   it('should return 200 if valid data is provided', async () => {
