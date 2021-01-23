@@ -1,0 +1,35 @@
+{
+  "get": {
+    "security": [{ "apiKeyAuth": [] }],
+    "tags": ["Survey"],
+    "summary": "List All Surveys API",
+    "responses": {
+      "200": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": { "$ref": "#/schemas/survey" }
+            }
+          }
+        }
+      },
+      "204": {
+        "description": "No Content"
+      },
+      "400": {
+        "$ref": "#/components/bad-request"
+      },
+      "403": {
+        "$ref": "#/components/forbidden"
+      },
+      "404": {
+        "$ref": "#/components/not-found"
+      },
+      "500": {
+        "$ref": "#/components/internal-server-error"
+      }
+    }
+  }
+}

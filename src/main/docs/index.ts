@@ -1,10 +1,14 @@
 import badRequestComponent from './components/bad-request.json';
+import forbiddenComponent from './components/forbidden.json';
 import internalServerErrorComponent from './components/internal-server-error.json';
 import notFoundComponent from './components/not-found.json';
 import unauthorizedComponent from './components/unauthorized.json';
 import loginPath from './paths/login-path.json';
+import surveyPath from './paths/survey-path.json';
+import apiKeyAuthSchema from './schemas/api-key-auth-schema.json';
 import authorizationSchema from './schemas/authorization-schema.json';
 import errorSchema from './schemas/error-schema.json';
+import surveySchema from './schemas/survey-schema.json';
 
 export const swaggerConfig = {
   openapi: '3.0.0',
@@ -12,6 +16,10 @@ export const swaggerConfig = {
     title: 'Fordevs API',
     description: 'Fordevs, surveys for programmers API',
     version: '1.0.0',
+  },
+  license: {
+    name: 'GPL-3.0',
+    url: 'https://www.gnu.org/licenses/gpl-3.0.en.html',
   },
   servers: [
     {
@@ -22,18 +30,27 @@ export const swaggerConfig = {
     {
       name: 'Login',
     },
+    {
+      name: 'Survey',
+    },
   ],
   components: {
+    securitySchemes: {
+      apiKeyAuth: apiKeyAuthSchema,
+    },
     'bad-request': badRequestComponent,
+    forbidden: forbiddenComponent,
     'internal-server-error': internalServerErrorComponent,
     'not-found': notFoundComponent,
     unauthorized: unauthorizedComponent,
   },
   paths: {
     '/login': loginPath,
+    '/survey': surveyPath,
   },
   schemas: {
     error: errorSchema,
     authorization: authorizationSchema,
+    survey: surveySchema,
   },
 };
