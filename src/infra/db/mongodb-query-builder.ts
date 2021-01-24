@@ -21,11 +21,6 @@ export class MongodbQueryBuilder {
     return this;
   }
 
-  addFields(data: Record<string, any>): MongodbQueryBuilder {
-    this.query.push({ $addFields: data });
-    return this;
-  }
-
   project(data: Record<string, any>): MongodbQueryBuilder {
     this.query.push({ $project: data });
     return this;
