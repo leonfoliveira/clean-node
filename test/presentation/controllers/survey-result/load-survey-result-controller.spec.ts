@@ -67,15 +67,12 @@ describe('LoadSurveyResultController', () => {
     });
   });
 
-  it('should return 404 if LoadSurveyResult returns null', async () => {
+  it('should return 200 on success', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
-    loadSurveyResultStub.response = null;
 
     const httpResponse = await sut.handle(mockLoadSurveyResultHttpRequest());
 
-    expect(httpResponse).toEqual(
-      HttpResponseFactory.makeNotFound(new RegisterNotFoundError('surveyResult')),
-    );
+    expect(httpResponse).toEqual(HttpResponseFactory.makeOk(loadSurveyResultStub.response));
   });
 
   it('should return 500 if LoadSurveyResult throws', async () => {
