@@ -19,7 +19,7 @@ const makeSut = (): SutTypes => {
 };
 
 describe('LoadSurveyResultController', () => {
-  it('should call LoadSurveyById with correct values', async () => {
+  it('should call LoadSurveyResult with correct values', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load');
     const httpRequest = mockLoadSurveyResultHttpRequest();
@@ -32,7 +32,7 @@ describe('LoadSurveyResultController', () => {
     });
   });
 
-  it('should return 404 if LoadSurveyById returns null', async () => {
+  it('should return 404 if LoadSurveyResult returns null', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
     loadSurveyResultStub.response = null;
 
@@ -43,7 +43,7 @@ describe('LoadSurveyResultController', () => {
     );
   });
 
-  it('should return 500 if LoadSurveyById throws', async () => {
+  it('should return 500 if LoadSurveyResult throws', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
     const error = new Error(faker.random.words());
     jest.spyOn(loadSurveyResultStub, 'load').mockRejectedValueOnce(error);
