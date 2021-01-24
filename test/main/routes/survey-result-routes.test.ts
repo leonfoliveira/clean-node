@@ -45,7 +45,7 @@ describe('SurveyRoutes', () => {
       expect(httpResponse.status).toBe(403);
     });
 
-    it('should return 200 on SaveSurvey success', async () => {
+    it('should return 200 on SaveSurveyResult success', async () => {
       const survey = mockSurveyModel();
       delete survey.id;
       const surveyId = (await surveyCollection.insertOne(survey)).ops[0]._id;
@@ -63,6 +63,18 @@ describe('SurveyRoutes', () => {
       const httpResponse = await request(app).get('/api/surveys/any_id/results');
 
       expect(httpResponse.status).toBe(403);
+    });
+
+    it('should return 200 on LoadSurveyResult success', async () => {
+      const accessToken = await makeAccessToken(accountCollection);
+      const survey = mockSurveyModel();
+      delete survey.id;
+      const res = await surveyCollection.insertOne(survey);
+      const httpResponse = await request(app)
+        .get(`/api/surveys/${res.ops[0]._id}/results`)
+        .set('x-access-token', accessToken);
+
+      expect(httpResponse.status).toBe(200);
     });
   });
 });
