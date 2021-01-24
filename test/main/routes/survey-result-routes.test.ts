@@ -6,7 +6,7 @@ import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
 import { env } from '@/main/config/env';
 import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
-import { mockSaveSurveyHttpRequest } from '@/test/presentation/mocks';
+import { mockSaveSurveyResultHttpRequest } from '@/test/presentation/mocks';
 
 const makeAccessToken = async (accountCollection: Collection, role?: string): Promise<string> => {
   const account = mockAccountModel();
@@ -40,7 +40,7 @@ describe('SurveyRoutes', () => {
     it('should return 403 if no accessToken is provided', async () => {
       const httpResponse = await request(app)
         .put('/api/surveys/any_id/results')
-        .send(mockSaveSurveyHttpRequest().body);
+        .send(mockSaveSurveyResultHttpRequest().body);
 
       expect(httpResponse.status).toBe(403);
     });

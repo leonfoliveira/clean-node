@@ -7,7 +7,7 @@ import { HttpResponseFactory } from '@/presentation/helpers';
 import { HttpRequest } from '@/presentation/interfaces';
 import { LoadSurveyByIdStub, SaveSurveyResultStub } from '@/test/domain/mocks/usecases';
 import { generateStringDifferent } from '@/test/helpers';
-import { mockSaveSurveyHttpRequest } from '@/test/presentation/mocks';
+import { mockSaveSurveyResultHttpRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: SaveSurveyResultController;
@@ -20,7 +20,7 @@ const makeSut = (): SutTypes => {
   const loadSurveyByIdStub = new LoadSurveyByIdStub();
   const saveSurveyResultStub = new SaveSurveyResultStub();
   const sut = new SaveSurveyResultController(loadSurveyByIdStub, saveSurveyResultStub);
-  const params = mockSaveSurveyHttpRequest();
+  const params = mockSaveSurveyResultHttpRequest();
   params.body.answer = loadSurveyByIdStub.response.answers[0].answer;
 
   return { sut, loadSurveyByIdStub, saveSurveyResultStub, params };
