@@ -7,10 +7,14 @@ export class LoadSurveyResultController implements Controller {
   constructor(private readonly loadSurveyResult: LoadSurveyResult) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    await this.loadSurveyResult.load({
-      surveyId: httpRequest.params.surveyId,
-      accountId: httpRequest.headers.accountId,
-    });
-    return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('surveyResult'));
+    try {
+      await this.loadSurveyResult.load({
+        surveyId: httpRequest.params.surveyId,
+        accountId: httpRequest.headers.accountId,
+      });
+      return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('surveyResult'));
+    } catch (error) {
+      return HttpResponseFactory.makeInternalServerError(error);
+    }
   }
 }
