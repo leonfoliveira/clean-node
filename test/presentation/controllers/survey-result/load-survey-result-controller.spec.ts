@@ -1,4 +1,6 @@
 import { LoadSurveyResultController } from '@/presentation/controllers';
+import { RegisterNotFoundError } from '@/presentation/errors';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { LoadSurveyResultStub } from '@/test/domain/mocks/usecases';
 import { mockLoadSurveyResultHttpRequest } from '@/test/presentation/mocks';
 
@@ -15,7 +17,7 @@ const makeSut = (): SutTypes => {
 };
 
 describe('LoadSurveyResultController', () => {
-  it('should call LoadSurveyByIdStub with correct values', async () => {
+  it('should call LoadSurveyById with correct values', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load');
     const httpRequest = mockLoadSurveyResultHttpRequest();
@@ -26,5 +28,16 @@ describe('LoadSurveyResultController', () => {
       surveyId: httpRequest.params.surveyId,
       accountId: httpRequest.headers.accountId,
     });
+  });
+
+  it('should return 404 if LoadSurveyById returns null', async () => {
+    const { sut, loadSurveyResultStub } = makeSut();
+    loadSurveyResultStub.response = null;
+
+    const httpResponse = await sut.handle(mockLoadSurveyResultHttpRequest());
+
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeNotFound(new RegisterNotFoundError('surveyResult')),
+    );
   });
 });
