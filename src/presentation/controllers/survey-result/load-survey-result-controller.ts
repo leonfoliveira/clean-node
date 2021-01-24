@@ -18,11 +18,12 @@ export class LoadSurveyResultController implements Controller {
         return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
       }
 
-      await this.loadSurveyResult.load({
+      const surveyResult = await this.loadSurveyResult.load({
         surveyId: httpRequest.params.surveyId,
         accountId: httpRequest.headers.accountId,
       });
-      return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('surveyResult'));
+
+      return HttpResponseFactory.makeOk(surveyResult);
     } catch (error) {
       return HttpResponseFactory.makeInternalServerError(error);
     }
