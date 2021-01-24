@@ -1,7 +1,8 @@
-import { DbLoadSurveyResult } from '@/data/usecases';
-import { mockLoadSurveyResultDTO } from '@/test/domain/mocks/usecases';
+import faker from 'faker';
 
-import { LoadSurveyResultRepositoryStub } from '../../mocks';
+import { DbLoadSurveyResult } from '@/data/usecases';
+import { LoadSurveyResultRepositoryStub } from '@/test/data/mocks';
+import { mockLoadSurveyResultDTO } from '@/test/domain/mocks/usecases';
 
 type SutTypes = {
   sut: DbLoadSurveyResult;
@@ -24,5 +25,15 @@ describe('DbLoadSurveyResult', () => {
     await sut.load(params);
 
     expect(loadBySurveyIdSpy).toHaveBeenCalledWith(params.surveyId);
+  });
+
+  it('should throw if LoadSurveyResultRepository throws', async () => {
+    const { sut, loadSurveyResultRepositoryStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockRejectedValueOnce(error);
+
+    const promise = sut.load(mockLoadSurveyResultDTO());
+
+    await expect(promise).rejects.toThrow(error);
   });
 });
