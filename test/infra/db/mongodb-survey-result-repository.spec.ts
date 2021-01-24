@@ -51,16 +51,13 @@ describe('MongodbSurveyResultRepository', () => {
       params.accountId = (await mockAccount()).id;
       params.answer = survey.answers[0].answer;
 
-      const result = await sut.save(params);
+      await sut.save(params);
 
-      expect(result).toBeTruthy();
-      expect(result.id).toEqual(survey.id);
-      expect(result.question).toEqual(survey.question);
-      expect(result.answers[0].count).toBe(1);
-      expect(result.answers[0].percent).toBe(100);
-      expect(result.answers[1].count).toBe(0);
-      expect(result.answers[1].percent).toBe(0);
-      expect(result.date).toEqual(survey.date);
+      const surveyResult = await surveyResultCollection.findOne({
+        surveyId: params.surveyId,
+        accountId: params.accountId,
+      });
+      expect(surveyResult).toBeTruthy();
     });
 
     it('should update SurveyResult if its not new', async () => {
@@ -76,16 +73,15 @@ describe('MongodbSurveyResultRepository', () => {
         accountId: new ObjectId(params.accountId),
       });
 
-      const result = await sut.save(params);
+      await sut.save(params);
 
-      expect(result).toBeTruthy();
-      expect(result.id).toEqual(survey.id);
-      expect(result.question).toEqual(survey.question);
-      expect(result.answers[0].count).toBe(1);
-      expect(result.answers[0].percent).toBe(100);
-      expect(result.answers[1].count).toBe(0);
-      expect(result.answers[1].percent).toBe(0);
-      expect(result.date).toEqual(survey.date);
+      const surveyResult = await surveyResultCollection
+        .find({
+          surveyId: params.surveyId,
+          accountId: params.accountId,
+        })
+        .toArray();
+      expect(surveyResult).toHaveLength(1);
     });
   });
 

@@ -10,7 +10,7 @@ import { MongoHelper, MongodbQueryBuilder } from '@/infra';
 
 export class MongodbSurveyResultRepository
   implements SaveSurveyResultRepository, LoadSurveyResultRepository {
-  async save(params: SaveSurveyResultRepositoryParams): Promise<SurveyResultModel> {
+  async save(params: SaveSurveyResultRepositoryParams): Promise<void> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults');
     const ObjSurveyId = new ObjectId(params.surveyId);
     const ObjAccountId = new ObjectId(params.accountId);
@@ -20,9 +20,6 @@ export class MongodbSurveyResultRepository
       { $set: { ...params, surveyId: ObjSurveyId, accountId: ObjAccountId } },
       { upsert: true },
     );
-
-    const surveyResult = await this.loadBySurveyId(params.surveyId, params.accountId);
-    return surveyResult;
   }
 
   async loadBySurveyId(surveyId: string, accountId: string): Promise<SurveyResultModel> {

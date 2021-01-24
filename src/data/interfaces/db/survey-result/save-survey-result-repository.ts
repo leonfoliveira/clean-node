@@ -1,8 +1,7 @@
-import { SurveyResultModel } from '@/domain/models';
 import { SaveSurveyResultDTO } from '@/domain/usecases';
 
 export interface SaveSurveyResultRepository {
-  save: (params: SaveSurveyResultRepositoryParams) => Promise<SurveyResultModel>;
+  save: (params: SaveSurveyResultRepositoryParams) => Promise<void>;
 }
 
 export type SaveSurveyResultRepositoryParams = SaveSurveyResultDTO;
