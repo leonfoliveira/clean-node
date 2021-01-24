@@ -6,4 +6,5 @@ export * from './survey/add-survey';
 export * from './survey/load-survey-by-id';
 export * from './survey/load-surveys';
 
+export * from './survey-result/load-survey-result';
 export * from './survey-result/save-survey-result';
