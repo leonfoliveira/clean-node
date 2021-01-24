@@ -33,6 +33,17 @@ describe('LoadSurveyResultController', () => {
     });
   });
 
+  it('should return 404 if LoadSurveyById returns null', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut();
+    loadSurveyByIdStub.response = null;
+
+    const httpResponse = await sut.handle(mockLoadSurveyResultHttpRequest());
+
+    expect(httpResponse).toEqual(
+      HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey')),
+    );
+  });
+
   it('should call LoadSurveyResult with correct values', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load');
