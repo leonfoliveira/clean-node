@@ -58,6 +58,25 @@ describe('DbLoadSurveyResult', () => {
     expect(loadByIdSpy).toHaveBeenCalledWith(params.surveyId);
   });
 
+  it('should return a SurveyResultModel if LoadSurveyResultRepository returns null', async () => {
+    const { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub } = makeSut();
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockResolvedValueOnce(null);
+    const params = mockLoadSurveyResultDTO();
+
+    const result = await sut.load(params);
+
+    const exp = loadSurveyByIdRepositoryStub.response;
+    expect(result).toEqual({
+      ...exp,
+      answers: exp.answers.map((a) => ({
+        ...a,
+        count: 0,
+        percent: 0,
+        isCurrentAccountAnswerCount: false,
+      })),
+    });
+  });
+
   it('should throw if LoadSurveyByIdRepository throws', async () => {
     const { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub } = makeSut();
     jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockResolvedValueOnce(null);
