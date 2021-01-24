@@ -1,4 +1,6 @@
 import { LoadSurveyResult } from '@/domain/usecases';
+import { RegisterNotFoundError } from '@/presentation/errors';
+import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
 
 export class LoadSurveyResultController implements Controller {
@@ -9,6 +11,6 @@ export class LoadSurveyResultController implements Controller {
       surveyId: httpRequest.params.surveyId,
       accountId: httpRequest.headers.accountId,
     });
-    return null;
+    return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('surveyResult'));
   }
 }
