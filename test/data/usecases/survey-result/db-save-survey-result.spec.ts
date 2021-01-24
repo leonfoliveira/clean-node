@@ -43,11 +43,11 @@ describe('DbSaveSurveyResult', () => {
   });
 
   it('should return a SurveyResult on success', async () => {
-    const { sut, saveSurveyResultRepositoryStub } = makeSut();
+    const { sut, loadSurveyResultRepositoryStub } = makeSut();
 
     const result = await sut.save(mockSaveSurveyResultDTO());
 
-    expect(result).toEqual(saveSurveyResultRepositoryStub.response);
+    expect(result).toEqual(loadSurveyResultRepositoryStub.response);
   });
 
   it('should throw if SaveSurveyResultRepository throws', async () => {
