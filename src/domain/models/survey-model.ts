@@ -16,6 +16,7 @@ export type SurveyResultModel = {
     answer: string;
     count: number;
     percent: number;
+    isCurrentAccountAnswerCount: boolean;
   }[];
   date: Date;
 };
