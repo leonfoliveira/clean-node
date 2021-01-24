@@ -1,29 +1,31 @@
 import { ObjectId } from 'mongodb';
 
-import { SaveSurveyResultRepository, SaveSurveyResultRepositoryParams } from '@/data/interfaces';
+import {
+  LoadSurveyResultRepository,
+  SaveSurveyResultRepository,
+  SaveSurveyResultRepositoryParams,
+} from '@/data/interfaces';
 import { SurveyResultModel } from '@/domain/models';
 import { MongoHelper, MongodbQueryBuilder } from '@/infra';
 
-export class MongodbSurveyResultRepository implements SaveSurveyResultRepository {
+export class MongodbSurveyResultRepository
+  implements SaveSurveyResultRepository, LoadSurveyResultRepository {
   async save(params: SaveSurveyResultRepositoryParams): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults');
-    const surveyId = new ObjectId(params.surveyId);
-    const accountId = new ObjectId(params.accountId);
+    const ObjSurveyId = new ObjectId(params.surveyId);
+    const ObjAccountId = new ObjectId(params.accountId);
 
     await surveyResultCollection.findOneAndUpdate(
-      { surveyId, accountId },
-      { $set: { ...params, surveyId } },
+      { surveyId: ObjSurveyId, accountId: ObjAccountId },
+      { $set: { ...params, surveyId: ObjSurveyId, accountId: ObjAccountId } },
       { upsert: true },
     );
 
-    const surveyResult = await this.loadBySurveyId(surveyId, accountId);
-    return surveyResult && MongoHelper.mapId(surveyResult);
+    const surveyResult = await this.loadBySurveyId(params.surveyId, params.accountId);
+    return surveyResult;
   }
 
-  private async loadBySurveyId(
-    surveyId: ObjectId,
-    accountId: ObjectId,
-  ): Promise<SurveyResultModel> {
+  async loadBySurveyId(surveyId: string, accountId: string): Promise<SurveyResultModel> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults');
     const query = new MongodbQueryBuilder()
       .match({
@@ -208,6 +210,6 @@ export class MongodbSurveyResultRepository implements SaveSurveyResultRepository
       })
       .build();
     const surveyResult = await surveyResultCollection.aggregate(query).toArray();
-    return surveyResult?.length && surveyResult[0];
+    return surveyResult?.length && surveyResult[0] && MongoHelper.mapId(surveyResult[0]);
   }
 }

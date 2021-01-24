@@ -6,6 +6,6 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
   constructor(private readonly loadSurveyResultRepository: LoadSurveyResultRepository) {}
 
   async load(params: LoadSurveyResultDTO): Promise<SurveyResultModel> {
-    return this.loadSurveyResultRepository.loadBySurveyId(params.surveyId);
+    return this.loadSurveyResultRepository.loadBySurveyId(params.surveyId, params.accountId);
   }
 }

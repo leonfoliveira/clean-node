@@ -6,4 +6,5 @@ export interface LoadSurveyResult {
 
 export type LoadSurveyResultDTO = {
   surveyId: string;
+  accountId: string;
 };
