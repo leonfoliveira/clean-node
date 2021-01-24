@@ -57,4 +57,15 @@ describe('DbLoadSurveyResult', () => {
 
     expect(loadByIdSpy).toHaveBeenCalledWith(params.surveyId);
   });
+
+  it('should throw if LoadSurveyByIdRepository throws', async () => {
+    const { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub } = makeSut();
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockResolvedValueOnce(null);
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById').mockRejectedValueOnce(error);
+
+    const promise = sut.load(mockLoadSurveyResultDTO());
+
+    await expect(promise).rejects.toThrow(error);
+  });
 });
