@@ -44,6 +44,16 @@ describe('LoadSurveyResultController', () => {
     );
   });
 
+  it('should return 500 if LoadSurveyById throws', async () => {
+    const { sut, loadSurveyByIdStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(loadSurveyByIdStub, 'loadById').mockRejectedValueOnce(error);
+
+    const httpResponse = await sut.handle(mockLoadSurveyResultHttpRequest());
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
+  });
+
   it('should call LoadSurveyResult with correct values', async () => {
     const { sut, loadSurveyResultStub } = makeSut();
     const loadSpy = jest.spyOn(loadSurveyResultStub, 'load');
