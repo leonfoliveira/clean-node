@@ -1,19 +1,21 @@
 import faker from 'faker';
 
 import { DbLoadSurveyResult } from '@/data/usecases';
-import { LoadSurveyResultRepositoryStub } from '@/test/data/mocks';
+import { LoadSurveyByIdRepositoryStub, LoadSurveyResultRepositoryStub } from '@/test/data/mocks';
 import { mockLoadSurveyResultDTO } from '@/test/domain/mocks/usecases';
 
 type SutTypes = {
   sut: DbLoadSurveyResult;
   loadSurveyResultRepositoryStub: LoadSurveyResultRepositoryStub;
+  loadSurveyByIdRepositoryStub: LoadSurveyByIdRepositoryStub;
 };
 
 const makeSut = (): SutTypes => {
   const loadSurveyResultRepositoryStub = new LoadSurveyResultRepositoryStub();
-  const sut = new DbLoadSurveyResult(loadSurveyResultRepositoryStub);
+  const loadSurveyByIdRepositoryStub = new LoadSurveyByIdRepositoryStub();
+  const sut = new DbLoadSurveyResult(loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub);
 
-  return { sut, loadSurveyResultRepositoryStub };
+  return { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub };
 };
 
 describe('DbLoadSurveyResult', () => {
@@ -43,5 +45,16 @@ describe('DbLoadSurveyResult', () => {
     const promise = sut.load(mockLoadSurveyResultDTO());
 
     await expect(promise).rejects.toThrow(error);
+  });
+
+  it('should call LoadSurveyByIdRepository with correct values if LoadSurveyResultRepository returns null', async () => {
+    const { sut, loadSurveyResultRepositoryStub, loadSurveyByIdRepositoryStub } = makeSut();
+    jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId').mockResolvedValueOnce(null);
+    const loadByIdSpy = jest.spyOn(loadSurveyByIdRepositoryStub, 'loadById');
+    const params = mockLoadSurveyResultDTO();
+
+    await sut.load(params);
+
+    expect(loadByIdSpy).toHaveBeenCalledWith(params.surveyId);
   });
 });
