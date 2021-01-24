@@ -9,12 +9,21 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
   ) {}
 
   async load(params: LoadSurveyResultDTO): Promise<SurveyResultModel> {
-    const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(
+    let surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(
       params.surveyId,
       params.accountId,
     );
     if (!surveyResult) {
-      await this.loadSurveyByIdRepository.loadById(params.surveyId);
+      const survey = await this.loadSurveyByIdRepository.loadById(params.surveyId);
+      surveyResult = {
+        ...survey,
+        answers: survey.answers.map((a) => ({
+          ...a,
+          count: 0,
+          percent: 0,
+          isCurrentAccountAnswerCount: false,
+        })),
+      };
     }
 
     return surveyResult;
