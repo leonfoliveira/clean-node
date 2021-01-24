@@ -56,44 +56,83 @@ describe('MongodbSurveyResultRepository', () => {
       expect(result).toBeTruthy();
       expect(result.id).toEqual(survey.id);
       expect(result.question).toEqual(survey.question);
-      expect(result.answers[0].answer).toBe(survey.answers[0].answer);
-      expect(result.answers[0].image).toBe(survey.answers[0].image);
       expect(result.answers[0].count).toBe(1);
       expect(result.answers[0].percent).toBe(100);
-      expect(result.answers[1].answer).toBe(survey.answers[1].answer);
-      expect(result.answers[1].image).toBe(survey.answers[1].image);
+      expect(result.answers[1].count).toBe(0);
+      expect(result.answers[1].percent).toBe(0);
+      expect(result.date).toEqual(survey.date);
+    });
+
+    it('should update SurveyResult if its not new', async () => {
+      const sut = makeSut();
+      const params = mockSaveSurveyResultDTO();
+      const survey = await mockSurvey();
+      params.surveyId = survey.id;
+      params.accountId = (await mockAccount()).id;
+      params.answer = survey.answers[1].answer;
+      await surveyResultCollection.insertOne({
+        ...params,
+        surveyId: new ObjectId(params.surveyId),
+        accountId: new ObjectId(params.accountId),
+      });
+
+      const result = await sut.save(params);
+
+      expect(result).toBeTruthy();
+      expect(result.id).toEqual(survey.id);
+      expect(result.question).toEqual(survey.question);
+      expect(result.answers[0].count).toBe(1);
+      expect(result.answers[0].percent).toBe(100);
       expect(result.answers[1].count).toBe(0);
       expect(result.answers[1].percent).toBe(0);
       expect(result.date).toEqual(survey.date);
     });
   });
 
-  it('should update SurveyResult if its not new', async () => {
-    const sut = makeSut();
-    const params = mockSaveSurveyResultDTO();
-    const survey = await mockSurvey();
-    params.surveyId = survey.id;
-    params.accountId = (await mockAccount()).id;
-    params.answer = survey.answers[1].answer;
-    await surveyResultCollection.insertOne({
-      ...params,
-      surveyId: new ObjectId(params.surveyId),
-      accountId: new ObjectId(params.accountId),
+  describe('LoadSurveyResultRepository', () => {
+    it('should return a SurveyResult on success', async () => {
+      const sut = makeSut();
+      const survey = await mockSurvey();
+      const accountId = (await mockAccount()).id;
+      await surveyResultCollection.insertMany([
+        {
+          surveyId: survey.id,
+          accountId,
+          answer: survey.answers[0].answer,
+          date: new Date(),
+        },
+        {
+          surveyId: survey.id,
+          accountId,
+          answer: survey.answers[0].answer,
+          date: new Date(),
+        },
+        {
+          surveyId: survey.id,
+          accountId,
+          answer: survey.answers[1].answer,
+          date: new Date(),
+        },
+        {
+          surveyId: survey.id,
+          accountId,
+          answer: survey.answers[0].answer,
+          date: new Date(),
+        },
+      ]);
+
+      const result = await sut.loadBySurveyId(survey.id, accountId);
+
+      expect(result).toBeTruthy();
+      expect(result.id).toEqual(survey.id);
+      expect(result.question).toEqual(survey.question);
+      expect(result.answers[0].count).toBe(3);
+      expect(result.answers[0].percent).toBe(75);
+      expect(result.answers[1].count).toBe(1);
+      expect(result.answers[1].percent).toBe(25);
+      expect(result.answers[2].count).toBe(0);
+      expect(result.answers[2].percent).toBe(0);
+      expect(result.date).toEqual(survey.date);
     });
-
-    const result = await sut.save(params);
-
-    expect(result).toBeTruthy();
-    expect(result.id).toEqual(survey.id);
-    expect(result.question).toEqual(survey.question);
-    expect(result.answers[0].answer).toBe(survey.answers[1].answer);
-    expect(result.answers[0].image).toBe(survey.answers[1].image);
-    expect(result.answers[0].count).toBe(1);
-    expect(result.answers[0].percent).toBe(100);
-    expect(result.answers[1].answer).toBe(survey.answers[0].answer);
-    expect(result.answers[1].image).toBe(survey.answers[0].image);
-    expect(result.answers[1].count).toBe(0);
-    expect(result.answers[1].percent).toBe(0);
-    expect(result.date).toEqual(survey.date);
   });
 });

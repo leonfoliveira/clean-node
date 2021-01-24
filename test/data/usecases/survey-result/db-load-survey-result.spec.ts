@@ -17,14 +17,14 @@ const makeSut = (): SutTypes => {
 };
 
 describe('DbLoadSurveyResult', () => {
-  it('should call LoadSurveyResultRepository with correct value', async () => {
+  it('should call LoadSurveyResultRepository with correct values', async () => {
     const { sut, loadSurveyResultRepositoryStub } = makeSut();
     const loadBySurveyIdSpy = jest.spyOn(loadSurveyResultRepositoryStub, 'loadBySurveyId');
     const params = mockLoadSurveyResultDTO();
 
     await sut.load(params);
 
-    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(params.surveyId);
+    expect(loadBySurveyIdSpy).toHaveBeenCalledWith(params.surveyId, params.accountId);
   });
 
   it('should return a SurveyResult on success', async () => {
