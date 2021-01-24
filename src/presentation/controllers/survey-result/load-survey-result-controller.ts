@@ -11,9 +11,12 @@ export class LoadSurveyResultController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      await this.loadSurveyById.loadById({
+      const survey = await this.loadSurveyById.loadById({
         id: httpRequest.params.surveyId,
       });
+      if (!survey) {
+        return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
+      }
 
       await this.loadSurveyResult.load({
         surveyId: httpRequest.params.surveyId,
