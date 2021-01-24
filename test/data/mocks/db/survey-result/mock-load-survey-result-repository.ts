@@ -3,9 +3,9 @@ import { SurveyResultModel } from '@/domain/models';
 import { mockSurveyResultModel } from '@/test/domain/mocks/models';
 
 export class LoadSurveyResultRepositoryStub implements LoadSurveyResultRepository {
-  result = mockSurveyResultModel();
+  response = mockSurveyResultModel();
 
   async loadBySurveyId(): Promise<SurveyResultModel> {
-    return this.result;
+    return this.response;
   }
 }

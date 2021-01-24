@@ -27,6 +27,14 @@ describe('DbLoadSurveyResult', () => {
     expect(loadBySurveyIdSpy).toHaveBeenCalledWith(params.surveyId);
   });
 
+  it('should return a SurveyResult on success', async () => {
+    const { sut, loadSurveyResultRepositoryStub } = makeSut();
+
+    const result = await sut.load(mockLoadSurveyResultDTO());
+
+    expect(result).toEqual(loadSurveyResultRepositoryStub.response);
+  });
+
   it('should throw if LoadSurveyResultRepository throws', async () => {
     const { sut, loadSurveyResultRepositoryStub } = makeSut();
     const error = new Error(faker.random.words());
