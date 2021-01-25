@@ -10,6 +10,10 @@ export class JwtAdapter implements TokenGenerator, TokenDecoder {
   }
 
   async decode(accessToken: string): Promise<any> {
-    return jwt.verify(accessToken, this.secret);
+    try {
+      return jwt.verify(accessToken, this.secret);
+    } catch {
+      return null;
+    }
   }
 }
