@@ -1,13 +1,24 @@
-import { Collection } from 'mongodb';
+import faker from 'faker';
+import { Collection, ObjectId } from 'mongodb';
 
+import { AccountModel } from '@/domain/models';
 import { MongodbSurveyRepository, MongoHelper } from '@/infra';
-import { mockSurveyModel } from '@/test/domain/mocks/models';
+import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
+import { mockSaveSurveyResultDTO } from '@/test/domain/mocks/usecases';
 
 const makeSut = (): MongodbSurveyRepository => new MongodbSurveyRepository();
 
-describe('MongodbSurveyRepository', () => {
-  let surveyCollection: Collection;
+let surveyCollection: Collection;
+let surveyResultCollection: Collection;
+let accountCollection: Collection;
 
+const mockAccount = async (): Promise<AccountModel> => {
+  const params = mockAccountModel();
+  delete params.id;
+  return MongoHelper.mapId((await accountCollection.insertOne(params)).ops[0]);
+};
+
+describe('MongodbSurveyRepository', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
@@ -19,6 +30,10 @@ describe('MongodbSurveyRepository', () => {
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection('surveys');
     await surveyCollection.deleteMany({});
+    surveyResultCollection = await MongoHelper.getCollection('surveyResults');
+    await surveyResultCollection.deleteMany({});
+    accountCollection = await MongoHelper.getCollection('accounts');
+    await accountCollection.deleteMany({});
   });
 
   describe('AddSurveyRepository', () => {
@@ -44,18 +59,28 @@ describe('MongodbSurveyRepository', () => {
         return survey;
       };
       let surveys = [mockSurveyWithoutId(), mockSurveyWithoutId()];
-      await surveyCollection.insertMany(surveys);
+      const insertedSurveys = await surveyCollection.insertMany(surveys);
       surveys = surveys.map((survey) => MongoHelper.mapId(survey));
+      const account = await mockAccount();
+      await surveyResultCollection.insertOne({
+        ...mockSaveSurveyResultDTO(),
+        surveyId: insertedSurveys.ops[0]._id,
+        accountId: account.id,
+        answer: insertedSurveys.ops[0].answers[0].answer,
+      });
 
-      const result = await sut.loadAll();
+      const result = await sut.loadAll(account.id);
 
+      surveys[0].didAnswer = true;
+      surveys[1].didAnswer = false;
       expect(result).toEqual(surveys);
     });
 
     it('should load empty list', async () => {
       const sut = makeSut();
+      const account = await mockAccount();
 
-      const result = await sut.loadAll();
+      const result = await sut.loadAll(account.id);
 
       expect(result).toEqual([]);
     });
