@@ -1,28 +1,25 @@
 import { LoadSurveyById, SaveSurveyResult } from '@/domain/usecases';
 import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
+import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class SaveSurveyResultController implements Controller {
+export class SaveSurveyResultController implements Controller<SaveSurveyResultController.Request> {
   constructor(
     private readonly loadSurveyById: LoadSurveyById,
     private readonly saveSurveyResult: SaveSurveyResult,
   ) {}
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(request: SaveSurveyResultController.Request): Promise<HttpResponse> {
     try {
-      const { surveyId } = httpRequest.params;
+      const { surveyId, accountId, answer } = request;
       const survey = await this.loadSurveyById.loadById({ id: surveyId });
       if (!survey) {
         return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
       }
-
-      const { answer } = httpRequest.body;
       if (!survey.answers.map((a) => a.answer).includes(answer)) {
         return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('answer'));
       }
 
-      const { accountId } = httpRequest.headers;
       const surveyResult = await this.saveSurveyResult.save({
         surveyId,
         accountId,
@@ -35,4 +32,12 @@ export class SaveSurveyResultController implements Controller {
       return HttpResponseFactory.makeInternalServerError(error);
     }
   }
+}
+
+export namespace SaveSurveyResultController {
+  export type Request = {
+    surveyId: string;
+    accountId: string;
+    answer: string;
+  };
 }

@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 
-import { Controller, HttpRequest } from '@/presentation/interfaces';
+import { Controller } from '@/presentation/interfaces';
 
 export const adaptRoute = (controller: Controller) => async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const httpRequest: HttpRequest = {
-    params: req.params,
-    headers: req.headers,
-    body: req.body,
+  const request: Record<string, any> = {
+    ...req.params,
+    ...req.headers,
+    ...req.body,
   };
 
-  const httpResponse = await controller.handle(httpRequest);
+  const httpResponse = await controller.handle(request);
 
   if (httpResponse.statusCode >= 400) {
     res.status(httpResponse.statusCode).json({ error: httpResponse.body.message });

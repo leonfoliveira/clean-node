@@ -5,7 +5,15 @@ import request from 'supertest';
 
 import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
-import { mockLoginHttpRequest, mockSignupHttpRequest } from '@/test/presentation/mocks';
+import { mockLoginRequest, mockSignupRequest } from '@/test/presentation/mocks';
+
+const mockSignupHttpRequest = (): Record<string, any> => ({
+  body: mockSignupRequest(),
+});
+
+const mockLoginHttpRequest = (): Record<string, any> => ({
+  body: mockLoginRequest(),
+});
 
 describe('LoginRoutes', () => {
   let accountCollection: Collection;

@@ -5,7 +5,11 @@ import request from 'supertest';
 import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
 import { testInvalidParamResponse, makeAccessToken } from '@/test/helpers';
-import { mockSaveSurveyResultHttpRequest } from '@/test/presentation/mocks/http-requests';
+import { mockSaveSurveyResultRequest } from '@/test/presentation/mocks/http-requests';
+
+const mockHttpRequest = (): Record<string, any> => ({
+  body: mockSaveSurveyResultRequest(),
+});
 
 describe('AddSurveyValidator', () => {
   let accountCollection: Collection;
@@ -27,7 +31,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if no answer is provided', async () => {
-    const httpRequest = mockSaveSurveyResultHttpRequest();
+    const httpRequest = mockHttpRequest();
     delete httpRequest.body.answer;
     const httpResponse = await request(app)
       .put('/api/surveys/any_id/results')
@@ -37,7 +41,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answer is not a string', async () => {
-    const httpRequest = mockSaveSurveyResultHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answer = faker.random.number();
     const httpResponse = await request(app)
       .put('/api/surveys/any_id/results')
@@ -47,7 +51,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answer is empty', async () => {
-    const httpRequest = mockSaveSurveyResultHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answer = '';
     const httpResponse = await request(app)
       .put('/api/surveys/any_id/results')

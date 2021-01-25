@@ -1,13 +1,13 @@
 import { Authentication } from '@/domain/usecases';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
+import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class LoginController implements Controller {
+export class LoginController implements Controller<LoginController.Request> {
   constructor(private readonly authentication: Authentication) {}
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(request: LoginController.Request): Promise<HttpResponse> {
     try {
-      const { email, password } = httpRequest.body;
+      const { email, password } = request;
       const authorization = await this.authentication.auth({ email, password });
       if (!authorization) {
         return HttpResponseFactory.makeUnauthorized();
@@ -18,4 +18,11 @@ export class LoginController implements Controller {
       return HttpResponseFactory.makeInternalServerError(error);
     }
   }
+}
+
+export namespace LoginController {
+  export type Request = {
+    email: string;
+    password: string;
+  };
 }

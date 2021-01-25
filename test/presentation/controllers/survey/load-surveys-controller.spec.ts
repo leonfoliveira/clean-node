@@ -3,7 +3,7 @@ import faker from 'faker';
 import { LoadSurveysController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { LoadSurveysStub } from '@/test/domain/mocks/usecases';
-import { mockLoadSurveysHttpRequest } from '@/test/presentation/mocks/http-requests';
+import { mockLoadSurveysRequest } from '@/test/presentation/mocks/http-requests';
 
 type SutTypes = {
   sut: LoadSurveysController;
@@ -21,17 +21,17 @@ describe('LoadSurveysController', () => {
   it('should call LoadSurveys with correct values', async () => {
     const { sut, loadSurveysStub } = makeSut();
     const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll');
-    const httpRequest = mockLoadSurveysHttpRequest();
+    const request = mockLoadSurveysRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
 
-    expect(loadAllSpy).toHaveBeenCalledWith({ accountId: httpRequest.headers.accountId });
+    expect(loadAllSpy).toHaveBeenCalledWith({ accountId: request.accountId });
   });
 
   it('should return 200 on success', async () => {
     const { sut, loadSurveysStub } = makeSut();
 
-    const httpResponse = await sut.handle(mockLoadSurveysHttpRequest());
+    const httpResponse = await sut.handle(mockLoadSurveysRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeOk(loadSurveysStub.response));
   });
@@ -40,7 +40,7 @@ describe('LoadSurveysController', () => {
     const { sut, loadSurveysStub } = makeSut();
     loadSurveysStub.response = [];
 
-    const httpResponse = await sut.handle(mockLoadSurveysHttpRequest());
+    const httpResponse = await sut.handle(mockLoadSurveysRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeNoContent());
   });
@@ -50,7 +50,7 @@ describe('LoadSurveysController', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(loadSurveysStub, 'loadAll').mockRejectedValueOnce(error);
 
-    const httpResponse = await sut.handle(mockLoadSurveysHttpRequest());
+    const httpResponse = await sut.handle(mockLoadSurveysRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });

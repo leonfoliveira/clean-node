@@ -1,26 +1,26 @@
 import { LoadSurveyById, LoadSurveyResult } from '@/domain/usecases';
 import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
+import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class LoadSurveyResultController implements Controller {
+export class LoadSurveyResultController implements Controller<LoadSurveyResultController.Request> {
   constructor(
     private readonly loadSurveyById: LoadSurveyById,
     private readonly loadSurveyResult: LoadSurveyResult,
   ) {}
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(request: LoadSurveyResultController.Request): Promise<HttpResponse> {
     try {
       const survey = await this.loadSurveyById.loadById({
-        id: httpRequest.params.surveyId,
+        id: request.surveyId,
       });
       if (!survey) {
         return HttpResponseFactory.makeNotFound(new RegisterNotFoundError('survey'));
       }
 
       const surveyResult = await this.loadSurveyResult.load({
-        surveyId: httpRequest.params.surveyId,
-        accountId: httpRequest.headers.accountId,
+        surveyId: request.surveyId,
+        accountId: request.accountId,
       });
 
       return HttpResponseFactory.makeOk(surveyResult);
@@ -28,4 +28,11 @@ export class LoadSurveyResultController implements Controller {
       return HttpResponseFactory.makeInternalServerError(error);
     }
   }
+}
+
+export namespace LoadSurveyResultController {
+  export type Request = {
+    surveyId: string;
+    accountId: string;
+  };
 }

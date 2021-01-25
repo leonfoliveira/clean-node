@@ -4,7 +4,7 @@ import MockDate from 'mockdate';
 import { AddSurveyController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { AddSurveyStub } from '@/test/domain/mocks/usecases';
-import { mockAddSurveyHttpRequest } from '@/test/presentation/mocks';
+import { mockAddSurveyRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: AddSurveyController;
@@ -30,11 +30,11 @@ describe('AddSurveyController', () => {
   it('should call AddSurvey with correct values', async () => {
     const { sut, addSurveyStub } = makeSut();
     const addSpy = jest.spyOn(addSurveyStub, 'add');
-    const httpRequest = mockAddSurveyHttpRequest();
+    const request = mockAddSurveyRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
 
-    expect(addSpy).toHaveBeenCalledWith({ ...httpRequest.body, date: new Date() });
+    expect(addSpy).toHaveBeenCalledWith({ ...request, date: new Date() });
   });
 
   it('should return 500 if AddSurvey throws', async () => {
@@ -42,7 +42,7 @@ describe('AddSurveyController', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(addSurveyStub, 'add').mockRejectedValueOnce(error);
 
-    const httpResponse = await sut.handle(mockAddSurveyHttpRequest());
+    const httpResponse = await sut.handle(mockAddSurveyRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
@@ -50,7 +50,7 @@ describe('AddSurveyController', () => {
   it('should return 201 on success', async () => {
     const { sut } = makeSut();
 
-    const httpResponse = await sut.handle(mockAddSurveyHttpRequest());
+    const httpResponse = await sut.handle(mockAddSurveyRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeCreated());
   });

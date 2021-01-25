@@ -3,7 +3,7 @@ import faker from 'faker';
 import { LoginController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { AuthenticationStub } from '@/test/domain/mocks/usecases';
-import { mockLoginHttpRequest } from '@/test/presentation/mocks';
+import { mockLoginRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: LoginController;
@@ -21,18 +21,18 @@ describe('LoginController', () => {
   it('should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut();
     const authSpy = jest.spyOn(authenticationStub, 'auth');
-    const httpRequest = mockLoginHttpRequest();
+    const request = mockLoginRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
 
-    expect(authSpy).toHaveBeenCalledWith(httpRequest.body);
+    expect(authSpy).toHaveBeenCalledWith(request);
   });
 
   it('should return 401 if invalid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut();
     jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(null);
 
-    const httpResponse = await sut.handle(mockLoginHttpRequest());
+    const httpResponse = await sut.handle(mockLoginRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeUnauthorized());
   });
@@ -43,7 +43,7 @@ describe('LoginController', () => {
     error.stack = faker.random.words();
     jest.spyOn(authenticationStub, 'auth').mockRejectedValueOnce(error);
 
-    const httpResponse = await sut.handle(mockLoginHttpRequest());
+    const httpResponse = await sut.handle(mockLoginRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });
@@ -51,7 +51,7 @@ describe('LoginController', () => {
   it('should return 200 if valid credentials are provided', async () => {
     const { sut, authenticationStub } = makeSut();
 
-    const httpResponse = await sut.handle(mockLoginHttpRequest());
+    const httpResponse = await sut.handle(mockLoginRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeOk(authenticationStub.response));
   });

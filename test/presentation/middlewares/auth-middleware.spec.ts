@@ -1,5 +1,4 @@
 import faker from 'faker';
-import { HttpRequest } from 'presentation/interfaces';
 
 import { AccessDeniedError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
@@ -18,17 +17,15 @@ const makeSut = (role?: string): SutTypes => {
   return { sut, loadAccountByTokenStub };
 };
 
-const mockHttpRequest = (): HttpRequest => ({
-  headers: {
-    'x-access-token': faker.random.uuid(),
-  },
+const mockRequest = (): AuthMiddleware.Request => ({
+  accessToken: faker.random.uuid(),
 });
 
 describe('AuthMiddleware', () => {
   it('should return 403 if no x-access-token exists in headers', async () => {
     const { sut } = makeSut();
 
-    const httpResponse = await sut.handle({});
+    const httpResponse = await sut.handle({ accessToken: undefined });
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeForbidden(new AccessDeniedError()));
   });
@@ -37,11 +34,11 @@ describe('AuthMiddleware', () => {
     const role = faker.random.word();
     const { sut, loadAccountByTokenStub } = makeSut(role);
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load');
-    const httpRequest = mockHttpRequest();
+    const request = mockRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
     expect(loadSpy).toHaveBeenCalledWith({
-      accessToken: httpRequest.headers['x-access-token'],
+      accessToken: request.accessToken,
       role,
     });
   });
@@ -50,7 +47,7 @@ describe('AuthMiddleware', () => {
     const { sut, loadAccountByTokenStub } = makeSut();
     jest.spyOn(loadAccountByTokenStub, 'load').mockResolvedValueOnce(null);
 
-    const httpResponse = await sut.handle(mockHttpRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeForbidden(new AccessDeniedError()));
   });
@@ -58,7 +55,7 @@ describe('AuthMiddleware', () => {
   it('should return 200 if LoadAccountByToken returns an AccountModel', async () => {
     const { sut, loadAccountByTokenStub } = makeSut();
 
-    const httpResponse = await sut.handle(mockHttpRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(
       HttpResponseFactory.makeOk({ accountId: loadAccountByTokenStub.response.id }),
@@ -70,7 +67,7 @@ describe('AuthMiddleware', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(loadAccountByTokenStub, 'load').mockRejectedValueOnce(error);
 
-    const httpResponse = await sut.handle(mockHttpRequest());
+    const httpResponse = await sut.handle(mockRequest());
 
     expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(error));
   });

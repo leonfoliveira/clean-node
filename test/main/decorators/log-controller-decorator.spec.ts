@@ -3,7 +3,11 @@ import faker from 'faker';
 import { LogControllerDecorator } from '@/main/decorators';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { LogErrorRepositoryStub } from '@/test/data/mocks';
-import { mockHttpRequest, ControllerStub } from '@/test/presentation/mocks';
+import { ControllerStub } from '@/test/presentation/mocks';
+
+const mockRequest = (): Record<string, any> => ({
+  [faker.database.column()]: faker.random.words(),
+});
 
 type SutTypes = {
   sut: LogControllerDecorator;
@@ -23,18 +27,18 @@ describe('LogControllerDecorator', () => {
   it('should call Controller with the same params', async () => {
     const { sut, controllerStub } = makeSut();
     const handleSpy = jest.spyOn(controllerStub, 'handle');
-    const httpRequest = mockHttpRequest();
+    const request = mockRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
 
-    expect(handleSpy).toHaveBeenCalledWith(httpRequest);
+    expect(handleSpy).toHaveBeenCalledWith(request);
   });
 
   it('should return the same as Controller', async () => {
     const { sut, controllerStub } = makeSut();
-    const httpRequest = mockHttpRequest();
+    const request = mockRequest();
 
-    const response = await sut.handle(httpRequest);
+    const response = await sut.handle(request);
 
     expect(response).toEqual(controllerStub.response);
   });
@@ -46,9 +50,9 @@ describe('LogControllerDecorator', () => {
       body: { [faker.database.column()]: faker.random.words() },
     });
     const logErrorSpy = jest.spyOn(logErrorRepository, 'logError');
-    const httpRequest = mockHttpRequest();
+    const request = mockRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
 
     expect(logErrorSpy).not.toBeCalled();
   });
@@ -61,9 +65,9 @@ describe('LogControllerDecorator', () => {
       .spyOn(controllerStub, 'handle')
       .mockResolvedValueOnce(HttpResponseFactory.makeInternalServerError(error));
     const logErrorSpy = jest.spyOn(logErrorRepository, 'logError');
-    const httpRequest = mockHttpRequest();
+    const request = mockRequest();
 
-    await sut.handle(httpRequest);
+    await sut.handle(request);
 
     expect(logErrorSpy).toHaveBeenCalledWith(error.stack);
   });

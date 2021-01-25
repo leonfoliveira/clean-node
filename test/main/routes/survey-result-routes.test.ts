@@ -6,7 +6,11 @@ import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
 import { env } from '@/main/config/env';
 import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
-import { mockSaveSurveyResultHttpRequest } from '@/test/presentation/mocks';
+import { mockSaveSurveyResultRequest } from '@/test/presentation/mocks';
+
+const mockSaveSurveyResultHttpRequest = (): Record<string, any> => ({
+  body: mockSaveSurveyResultRequest(),
+});
 
 const makeAccessToken = async (accountCollection: Collection, role?: string): Promise<string> => {
   const account = mockAccountModel();

@@ -1,17 +1,17 @@
 import { AddAccount, Authentication } from '@/domain/usecases';
 import { EmailInUseError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/interfaces';
+import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class SignUpController implements Controller {
+export class SignUpController implements Controller<SignUpController.Request> {
   constructor(
     private readonly addAccount: AddAccount,
     private readonly authentication: Authentication,
   ) {}
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(request: SignUpController.Request): Promise<HttpResponse> {
     try {
-      const { name, email, password } = httpRequest.body;
+      const { name, email, password } = request;
       const account = await this.addAccount.add({ name, email, password });
       if (!account) {
         return HttpResponseFactory.makeConflict(new EmailInUseError());
@@ -24,4 +24,13 @@ export class SignUpController implements Controller {
       return HttpResponseFactory.makeInternalServerError(error);
     }
   }
+}
+
+export namespace SignUpController {
+  export type Request = {
+    name: string;
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+  };
 }

@@ -9,7 +9,11 @@ import {
   generateStringWithLength,
   makeAccessToken,
 } from '@/test/helpers';
-import { mockAddSurveyHttpRequest } from '@/test/presentation/mocks/http-requests';
+import { mockAddSurveyRequest } from '@/test/presentation/mocks/http-requests';
+
+const mockHttpRequest = (): Record<string, any> => ({
+  body: mockAddSurveyRequest(),
+});
 
 describe('AddSurveyValidator', () => {
   let accountCollection: Collection;
@@ -31,7 +35,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if no question is provided', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     delete httpRequest.body.question;
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -41,7 +45,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if question is not a string', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.question = faker.random.number();
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -51,7 +55,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if question is empty', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.question = '';
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -61,7 +65,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if question length is more than 100', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.question = generateStringWithLength(101);
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -71,7 +75,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers is not provided', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     delete httpRequest.body.answers;
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -81,7 +85,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers is not an array', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers = faker.random.words();
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -91,7 +95,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers is not an array of objects', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers = [faker.random.words()];
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -101,7 +105,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.answer is not provided', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     delete httpRequest.body.answers[0].answer;
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -111,7 +115,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.answer is not a string', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers[0].answer = 1;
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -121,7 +125,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.answer is empty', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers[0].answer = '';
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -131,7 +135,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.answer length is more than 100', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers[0].answer = generateStringWithLength(101);
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -141,7 +145,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.image is not a string', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers[0].image = 0;
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -151,7 +155,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.image is empty', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers[0].image = '';
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -161,7 +165,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should return 400 if answers.image not a valid URL', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     httpRequest.body.answers[0].image = faker.random.words();
     const httpResponse = await request(app)
       .post('/api/surveys')
@@ -171,7 +175,7 @@ describe('AddSurveyValidator', () => {
   });
 
   it('should not return InvalidParamError if validation passes', async () => {
-    const httpRequest = mockAddSurveyHttpRequest();
+    const httpRequest = mockHttpRequest();
     const httpResponse = await request(app)
       .post('/api/surveys')
       .set('x-access-token', await makeAccessToken(accountCollection))
