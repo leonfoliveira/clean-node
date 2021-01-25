@@ -122,11 +122,14 @@ describe('DbAuthentication', () => {
   });
 
   it('should return an AuthorizationModel on success', async () => {
-    const { sut, tokenGeneratorStub } = makeSut();
+    const { sut, loadAccountByEmailRepositoryStub, tokenGeneratorStub } = makeSut();
 
     const authorization = await sut.auth(mockAuthenticationDTO());
 
-    expect(authorization).toEqual({ accessToken: tokenGeneratorStub.response });
+    expect(authorization).toEqual({
+      accessToken: tokenGeneratorStub.response,
+      name: loadAccountByEmailRepositoryStub.response.name,
+    });
   });
 
   it('should call UpdateAccessTokenRepository with correct values', async () => {
