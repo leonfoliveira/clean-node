@@ -26,7 +26,7 @@ export class MongodbSurveyResultRepository
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults');
     const query = new MongodbQueryBuilder()
       .match({
-        surveyId,
+        surveyId: new ObjectId(surveyId),
       })
       .group({
         _id: 0,
@@ -63,7 +63,11 @@ export class MongodbSurveyResultRepository
         },
         currentAccountAnswer: {
           $push: {
-            $cond: [{ $eq: ['$data.accountId', accountId] }, '$data.answer', '$invalid'],
+            $cond: [
+              { $eq: ['$data.accountId', new ObjectId(accountId)] },
+              '$data.answer',
+              '$invalid',
+            ],
           },
         },
       })
@@ -207,6 +211,6 @@ export class MongodbSurveyResultRepository
       })
       .build();
     const surveyResult = await surveyResultCollection.aggregate(query).toArray();
-    return surveyResult?.length && surveyResult[0] && MongoHelper.mapId(surveyResult[0]);
+    return surveyResult?.length && surveyResult[0] ? MongoHelper.mapId(surveyResult[0]) : null;
   }
 }
