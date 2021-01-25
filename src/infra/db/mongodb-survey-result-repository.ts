@@ -183,8 +183,8 @@ export class MongodbSurveyResultRepository
         answer: {
           answer: '$_id.answer',
           image: '$_id.image',
-          count: '$count',
-          percent: '$percent',
+          count: { $round: '$count' },
+          percent: { $round: '$percent' },
           isCurrentAccountAnswer: {
             $eq: ['$isCurrentAccountAnswerCount', 1],
           },
