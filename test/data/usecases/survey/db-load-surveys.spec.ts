@@ -2,6 +2,7 @@ import faker from 'faker';
 
 import { DbLoadSurveys } from '@/data/usecases';
 import { LoadSurveysRepositoryStub } from '@/test/data/mocks';
+import { mockLoadSurveysDTO } from '@/test/domain/mocks/usecases';
 
 type SutTypes = {
   sut: DbLoadSurveys;
@@ -16,19 +17,20 @@ const makeSut = (): SutTypes => {
 };
 
 describe('DbLoadSurveys', () => {
-  it('should call LoadSurveysRepository', async () => {
+  it('should call LoadSurveysRepository with correct values', async () => {
     const { sut, loadSurveysRepositoryStub } = makeSut();
     const loadAllSpy = jest.spyOn(loadSurveysRepositoryStub, 'loadAll');
+    const params = mockLoadSurveysDTO();
 
-    await sut.load();
+    await sut.loadAll(params);
 
-    expect(loadAllSpy).toHaveBeenCalled();
+    expect(loadAllSpy).toHaveBeenCalledWith(params.accountId);
   });
 
   it('should return a list of surveys on success', async () => {
     const { sut, loadSurveysRepositoryStub } = makeSut();
 
-    const surveys = await sut.load();
+    const surveys = await sut.loadAll(mockLoadSurveysDTO());
 
     expect(surveys).toEqual(loadSurveysRepositoryStub.response);
   });
@@ -38,7 +40,7 @@ describe('DbLoadSurveys', () => {
     const error = new Error(faker.random.words());
     jest.spyOn(loadSurveysRepositoryStub, 'loadAll').mockRejectedValueOnce(error);
 
-    const promise = sut.load();
+    const promise = sut.loadAll(mockLoadSurveysDTO());
 
     await expect(promise).rejects.toThrow(error);
   });

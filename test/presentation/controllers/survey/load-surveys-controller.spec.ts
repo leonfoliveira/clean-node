@@ -20,12 +20,12 @@ const makeSut = (): SutTypes => {
 describe('LoadSurveysController', () => {
   it('should call LoadSurveys with correct values', async () => {
     const { sut, loadSurveysStub } = makeSut();
-    const loadSpy = jest.spyOn(loadSurveysStub, 'load');
+    const loadAllSpy = jest.spyOn(loadSurveysStub, 'loadAll');
     const httpRequest = mockLoadSurveysHttpRequest();
 
     await sut.handle(httpRequest);
 
-    expect(loadSpy).toHaveBeenCalledWith({ accountId: httpRequest.headers.accountId });
+    expect(loadAllSpy).toHaveBeenCalledWith({ accountId: httpRequest.headers.accountId });
   });
 
   it('should return 200 on success', async () => {
@@ -48,7 +48,7 @@ describe('LoadSurveysController', () => {
   it('should return 500 if LoadSurveys throws', async () => {
     const { sut, loadSurveysStub } = makeSut();
     const error = new Error(faker.random.words());
-    jest.spyOn(loadSurveysStub, 'load').mockRejectedValueOnce(error);
+    jest.spyOn(loadSurveysStub, 'loadAll').mockRejectedValueOnce(error);
 
     const httpResponse = await sut.handle(mockLoadSurveysHttpRequest());
 
