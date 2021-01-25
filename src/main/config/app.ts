@@ -1,11 +1,16 @@
 import express, { Application } from 'express';
 
-import { setupRequestMiddlewares, setupResponseMiddlewares } from '@/main/config/middlewares';
-import { setupRoutes } from '@/main/config/routes';
-import { setupSwagger } from '@/main/config/swagger';
+import {
+  setupRoutes,
+  setupSwagger,
+  setupStaticFiles,
+  setupRequestMiddlewares,
+  setupResponseMiddlewares,
+} from '@/main/config';
 
 const app: Application = express();
 
+setupStaticFiles(app);
 setupSwagger(app);
 setupRequestMiddlewares(app);
 setupRoutes(app);
