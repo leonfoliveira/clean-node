@@ -49,5 +49,39 @@
         "$ref": "#/components/internal-server-error"
       }
     }
+  },
+  "get": {
+    "security": [{ "apiKeyAuth": [] }],
+    "tags": ["Survey"],
+    "summary": "Load Survey Result",
+    "parameters": [
+      {
+        "in": "path",
+        "name": "surveyId",
+        "required": "true",
+        "schema": { "type": "string" }
+      }
+    ],
+    "responses": {
+      "200": {
+        "description": "Success",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/schemas/survey-result"
+            }
+          }
+        }
+      },
+      "403": {
+        "$ref": "#/components/forbidden"
+      },
+      "404": {
+        "$ref": "#/components/not-found"
+      },
+      "500": {
+        "$ref": "#/components/internal-server-error"
+      }
+    }
   }
 }

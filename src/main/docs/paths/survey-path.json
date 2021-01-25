@@ -18,9 +18,6 @@
       "204": {
         "description": "No Content"
       },
-      "400": {
-        "$ref": "#/components/bad-request"
-      },
       "403": {
         "$ref": "#/components/forbidden"
       },
