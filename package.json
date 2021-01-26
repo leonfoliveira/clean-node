@@ -1,6 +1,6 @@
 {
   "name": "clean-node",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "main": "index.js",
   "repository": "https://github.com/leonfoliveira/clean-node.git",
   "author": "Leonardo Oliveira <leonfoliveira@gmail.com>",
