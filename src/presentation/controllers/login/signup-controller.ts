@@ -3,7 +3,7 @@ import { EmailInUseError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class SignUpController implements Controller<SignUpController.Request> {
+export class SignUpController implements Controller<SignUpController.Request, HttpResponse> {
   constructor(
     private readonly addAccount: AddAccount,
     private readonly authentication: Authentication,

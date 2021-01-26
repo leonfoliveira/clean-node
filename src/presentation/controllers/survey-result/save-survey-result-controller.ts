@@ -3,7 +3,8 @@ import { RegisterNotFoundError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class SaveSurveyResultController implements Controller<SaveSurveyResultController.Request> {
+export class SaveSurveyResultController
+  implements Controller<SaveSurveyResultController.Request, HttpResponse> {
   constructor(
     private readonly loadSurveyById: LoadSurveyById,
     private readonly saveSurveyResult: SaveSurveyResult,

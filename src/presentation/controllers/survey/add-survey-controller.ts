@@ -2,7 +2,7 @@ import { AddSurvey } from '@/domain/usecases';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class AddSurveyController implements Controller<AddSurveyController.Request> {
+export class AddSurveyController implements Controller<AddSurveyController.Request, HttpResponse> {
   constructor(private readonly addSurvey: AddSurvey) {}
 
   async handle(request: AddSurveyController.Request): Promise<HttpResponse> {

@@ -2,7 +2,8 @@ import { LoadSurveys } from '@/domain/usecases';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class LoadSurveysController implements Controller<LoadSurveysController.Request> {
+export class LoadSurveysController
+  implements Controller<LoadSurveysController.Request, HttpResponse> {
   constructor(private readonly loadSurvey: LoadSurveys) {}
 
   async handle(request: LoadSurveysController.Request): Promise<HttpResponse> {

@@ -2,7 +2,7 @@ import { Authentication } from '@/domain/usecases';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { Controller, HttpResponse } from '@/presentation/interfaces';
 
-export class LoginController implements Controller<LoginController.Request> {
+export class LoginController implements Controller<LoginController.Request, HttpResponse> {
   constructor(private readonly authentication: Authentication) {}
 
   async handle(request: LoginController.Request): Promise<HttpResponse> {
