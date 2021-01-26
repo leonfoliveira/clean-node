@@ -22,7 +22,10 @@
     "class-methods-use-this": "off",
     "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
     "no-underscore-dangle": ["error", { "allow": ["_id"] }],
-    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      { "allowHigherOrderFunctions": true }
+    ],
     "@typescript-eslint/lines-between-class-members": [
       "error",
       "always",
