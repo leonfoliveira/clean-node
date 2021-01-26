@@ -1,10 +1,12 @@
-import faker from 'faker';
 import { Collection, ObjectId } from 'mongodb';
 
-import { AccountModel } from '@/domain/models';
 import { MongodbSurveyRepository, MongoHelper } from '@/infra';
-import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
-import { mockSaveSurveyResultDTO } from '@/test/domain/mocks/usecases';
+import { mockAddSurveyRepositoryParams } from '@/test/data/mocks';
+import {
+  mockAccountEntity,
+  mockSaveSurveyResultEntity,
+  mockSurveyEntity,
+} from '@/test/infra/mocks';
 
 const makeSut = (): MongodbSurveyRepository => new MongodbSurveyRepository();
 
@@ -12,10 +14,14 @@ let surveyCollection: Collection;
 let surveyResultCollection: Collection;
 let accountCollection: Collection;
 
-const mockAccount = async (): Promise<AccountModel> => {
-  const params = mockAccountModel();
-  delete params.id;
-  return MongoHelper.mapId((await accountCollection.insertOne(params)).ops[0]);
+const createAccount = async (): Promise<any> => {
+  const account = mockAccountEntity();
+  return MongoHelper.mapId((await accountCollection.insertOne(account)).ops[0]);
+};
+
+const createSurvey = async (): Promise<any> => {
+  const survey = mockAccountEntity();
+  return MongoHelper.mapId((await surveyCollection.insertOne(survey)).ops[0]);
 };
 
 describe('MongodbSurveyRepository', () => {
@@ -39,7 +45,7 @@ describe('MongodbSurveyRepository', () => {
   describe('AddSurveyRepository', () => {
     it('should return a SurveyModel on add success', async () => {
       const sut = makeSut();
-      const survey = mockSurveyModel();
+      const survey = mockAddSurveyRepositoryParams();
 
       const result = await sut.add(survey);
 
@@ -53,32 +59,34 @@ describe('MongodbSurveyRepository', () => {
   describe('LoadSurveysRepository', () => {
     it('should load all surveys on success', async () => {
       const sut = makeSut();
-      const mockSurveyWithoutId = (): any => {
-        const survey = mockSurveyModel();
-        delete survey.id;
-        return survey;
-      };
-      let surveys = [mockSurveyWithoutId(), mockSurveyWithoutId()];
+      const surveys = [mockSurveyEntity(), mockSurveyEntity()];
       const insertedSurveys = await surveyCollection.insertMany(surveys);
-      surveys = surveys.map((survey) => MongoHelper.mapId(survey));
-      const account = await mockAccount();
-      await surveyResultCollection.insertOne({
-        ...mockSaveSurveyResultDTO(),
-        surveyId: insertedSurveys.ops[0]._id,
-        accountId: account.id,
-        answer: insertedSurveys.ops[0].answers[0].answer,
-      });
+      const account = await createAccount();
+      await surveyResultCollection.insertOne(
+        mockSaveSurveyResultEntity({
+          surveyId: insertedSurveys.ops[0]._id,
+          accountId: new ObjectId(account.id),
+          answer: insertedSurveys.ops[0].answers[0].answer,
+        }),
+      );
 
       const result = await sut.loadAll(account.id);
 
-      surveys[0].didAnswer = true;
-      surveys[1].didAnswer = false;
-      expect(result).toEqual(surveys);
+      expect(result[0].id).toBeTruthy();
+      expect(result[0].question).toBe(surveys[0].question);
+      expect(result[0].answers).toEqual(surveys[0].answers);
+      expect(result[0].date).toEqual(surveys[0].date);
+      expect(result[0].didAnswer).toBe(true);
+      expect(result[1].id).toBeTruthy();
+      expect(result[1].question).toBe(surveys[1].question);
+      expect(result[1].answers).toEqual(surveys[1].answers);
+      expect(result[1].date).toEqual(surveys[1].date);
+      expect(result[1].didAnswer).toBe(false);
     });
 
     it('should load empty list', async () => {
       const sut = makeSut();
-      const account = await mockAccount();
+      const account = await createAccount();
 
       const result = await sut.loadAll(account.id);
 
@@ -89,11 +97,9 @@ describe('MongodbSurveyRepository', () => {
   describe('LoadSurveyByIdRepository', () => {
     it('should load survey by id on success', async () => {
       const sut = makeSut();
-      const survey = mockSurveyModel();
-      delete survey.id;
-      const id = (await surveyCollection.insertOne({ ...survey })).ops[0]._id;
+      const survey = await createSurvey();
 
-      const result = await sut.loadById(id);
+      const result = await sut.loadById(survey.id);
 
       expect(result.id).toBeTruthy();
       expect(result.question).toBe(survey.question);

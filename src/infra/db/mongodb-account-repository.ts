@@ -1,6 +1,5 @@
 import {
   AddAccountRepository,
-  AddAccountRepositoryParams,
   LoadAccountByEmailRepository,
   LoadAccountByTokenRepository,
   UpdateAccessTokenRepository,
@@ -14,9 +13,9 @@ export class MongodbAccountRepository
     LoadAccountByEmailRepository,
     UpdateAccessTokenRepository,
     LoadAccountByTokenRepository {
-  async add(params: AddAccountRepositoryParams): Promise<AccountModel> {
+  async add(account: AddAccountRepository.Params): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
-    const result = await accountCollection.insertOne(params);
+    const result = await accountCollection.insertOne(account);
 
     return MongoHelper.mapId(result.ops[0]);
   }

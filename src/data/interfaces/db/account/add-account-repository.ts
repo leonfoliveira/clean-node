@@ -1,8 +1,13 @@
 import { AccountModel } from '@/domain/models';
-import { AddAccountDTO } from '@/domain/usecases';
 
 export interface AddAccountRepository {
-  add: (params: AddAccountRepositoryParams) => Promise<AccountModel>;
+  add: (account: AddAccountRepository.Params) => Promise<AccountModel>;
 }
 
-export type AddAccountRepositoryParams = AddAccountDTO;
+export namespace AddAccountRepository {
+  export type Params = {
+    name: string;
+    email: string;
+    password: string;
+  };
+}

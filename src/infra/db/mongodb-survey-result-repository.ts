@@ -1,23 +1,21 @@
 import { ObjectId } from 'mongodb';
 
-import {
-  LoadSurveyResultRepository,
-  SaveSurveyResultRepository,
-  SaveSurveyResultRepositoryParams,
-} from '@/data/interfaces';
+import { LoadSurveyResultRepository, SaveSurveyResultRepository } from '@/data/interfaces';
 import { SurveyResultModel } from '@/domain/models';
 import { MongoHelper, MongodbQueryBuilder } from '@/infra';
 
 export class MongodbSurveyResultRepository
   implements SaveSurveyResultRepository, LoadSurveyResultRepository {
-  async save(params: SaveSurveyResultRepositoryParams): Promise<void> {
+  async save(surveyResult: SaveSurveyResultRepository.Params): Promise<void> {
     const surveyResultCollection = await MongoHelper.getCollection('surveyResults');
-    const ObjSurveyId = new ObjectId(params.surveyId);
-    const ObjAccountId = new ObjectId(params.accountId);
+    Object.assign(surveyResult, {
+      surveyId: new ObjectId(surveyResult.surveyId),
+      accountId: new ObjectId(surveyResult.accountId),
+    });
 
     await surveyResultCollection.findOneAndUpdate(
-      { surveyId: ObjSurveyId, accountId: ObjAccountId },
-      { $set: { ...params, surveyId: ObjSurveyId, accountId: ObjAccountId } },
+      { surveyId: surveyResult.surveyId, accountId: surveyResult.accountId },
+      { $set: surveyResult },
       { upsert: true },
     );
   }

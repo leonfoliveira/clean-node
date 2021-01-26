@@ -1,7 +1,12 @@
-import { SaveSurveyResultDTO } from '@/domain/usecases';
-
 export interface SaveSurveyResultRepository {
-  save: (params: SaveSurveyResultRepositoryParams) => Promise<void>;
+  save: (surveyResult: SaveSurveyResultRepository.Params) => Promise<void>;
 }
 
-export type SaveSurveyResultRepositoryParams = SaveSurveyResultDTO;
+export namespace SaveSurveyResultRepository {
+  export type Params = {
+    surveyId: string;
+    accountId: string;
+    answer: string;
+    date: Date;
+  };
+}

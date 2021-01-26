@@ -2,7 +2,6 @@ import { ObjectId } from 'mongodb';
 
 import {
   AddSurveyRepository,
-  AddSurveyRepositoryParams,
   LoadSurveysRepository,
   LoadSurveyByIdRepository,
 } from '@/data/interfaces';
@@ -11,11 +10,11 @@ import { MongoHelper, MongodbQueryBuilder } from '@/infra';
 
 export class MongodbSurveyRepository
   implements AddSurveyRepository, LoadSurveysRepository, LoadSurveyByIdRepository {
-  async add(params: AddSurveyRepositoryParams): Promise<SurveyModel> {
+  async add(survey: AddSurveyRepository.Params): Promise<SurveyModel> {
     const surveyCollection = await MongoHelper.getCollection('surveys');
-    const survey = await surveyCollection.insertOne(params);
+    const result = await surveyCollection.insertOne(survey);
 
-    return survey && MongoHelper.mapId(survey.ops[0]);
+    return result && MongoHelper.mapId(result.ops[0]);
   }
 
   async loadAll(accountId: string): Promise<SurveyModel[]> {

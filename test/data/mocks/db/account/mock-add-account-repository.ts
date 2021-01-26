@@ -1,9 +1,14 @@
+import faker from 'faker';
+
 import { AddAccountRepository } from '@/data/interfaces';
 import { AccountModel } from '@/domain/models';
 import { mockAccountModel } from '@/test/domain/mocks/models';
-import { mockAddAccountDTO } from '@/test/domain/mocks/usecases';
 
-export const mockAddAccountRepositoryParams = mockAddAccountDTO;
+export const mockAddAccountRepositoryParams = (): AddAccountRepository.Params => ({
+  name: faker.name.findName(),
+  email: faker.internet.email(),
+  password: faker.internet.password(),
+});
 
 export class AddAccountRepositoryStub implements AddAccountRepository {
   response = mockAccountModel();

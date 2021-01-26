@@ -1,10 +1,12 @@
-import { AccountModel, SurveyModel } from 'domain/models';
-
 import { Collection, ObjectId } from 'mongodb';
 
 import { MongodbSurveyResultRepository, MongoHelper } from '@/infra';
-import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
-import { mockSaveSurveyResultDTO } from '@/test/domain/mocks/usecases';
+import { mockSaveSurveyResultRepositoryParams } from '@/test/data/mocks';
+import {
+  mockAccountEntity,
+  mockSaveSurveyResultEntity,
+  mockSurveyEntity,
+} from '@/test/infra/mocks';
 
 const makeSut = (): MongodbSurveyResultRepository => new MongodbSurveyResultRepository();
 
@@ -12,16 +14,14 @@ let surveyCollection: Collection;
 let surveyResultCollection: Collection;
 let accountCollection: Collection;
 
-const mockSurvey = async (): Promise<SurveyModel> => {
-  const params = mockSurveyModel();
-  delete params.id;
-  return MongoHelper.mapId((await surveyCollection.insertOne(params)).ops[0]);
+const createSurvey = async (): Promise<any> => {
+  const survey = mockSurveyEntity();
+  return MongoHelper.mapId((await surveyCollection.insertOne(survey)).ops[0]);
 };
 
-const mockAccount = async (): Promise<AccountModel> => {
-  const params = mockAccountModel();
-  delete params.id;
-  return MongoHelper.mapId((await accountCollection.insertOne(params)).ops[0]);
+const createAccount = async (): Promise<any> => {
+  const account = mockAccountEntity();
+  return MongoHelper.mapId((await accountCollection.insertOne(account)).ops[0]);
 };
 
 describe('MongodbSurveyResultRepository', () => {
@@ -45,11 +45,13 @@ describe('MongodbSurveyResultRepository', () => {
   describe('SaveSurveyResultRepository', () => {
     it('should create a SurveyResult if its new', async () => {
       const sut = makeSut();
-      const params = mockSaveSurveyResultDTO();
-      const survey = await mockSurvey();
-      params.surveyId = survey.id;
-      params.accountId = (await mockAccount()).id;
-      params.answer = survey.answers[0].answer;
+      const survey = await createSurvey();
+      const account = await createAccount();
+      const params = mockSaveSurveyResultRepositoryParams({
+        surveyId: survey.id,
+        accountId: account.id,
+        answer: survey.answers[0].answer,
+      });
 
       await sut.save(params);
 
@@ -62,16 +64,20 @@ describe('MongodbSurveyResultRepository', () => {
 
     it('should update SurveyResult if its not new', async () => {
       const sut = makeSut();
-      const params = mockSaveSurveyResultDTO();
-      const survey = await mockSurvey();
-      params.surveyId = survey.id;
-      params.accountId = (await mockAccount()).id;
-      params.answer = survey.answers[1].answer;
-      await surveyResultCollection.insertOne({
-        ...params,
-        surveyId: new ObjectId(params.surveyId),
-        accountId: new ObjectId(params.accountId),
+      const survey = await createSurvey();
+      const account = await createAccount();
+      const params = mockSaveSurveyResultRepositoryParams({
+        surveyId: survey.id,
+        accountId: account.id,
+        answer: survey.answers[1].answer,
       });
+      await surveyResultCollection.insertOne(
+        mockSaveSurveyResultEntity({
+          surveyId: new ObjectId(survey.id),
+          accountId: new ObjectId(account.id),
+          answer: survey.answers[1].answer,
+        }),
+      );
 
       await sut.save(params);
 
@@ -88,36 +94,32 @@ describe('MongodbSurveyResultRepository', () => {
   describe('LoadSurveyResultRepository', () => {
     it('should return a SurveyResult on success', async () => {
       const sut = makeSut();
-      const survey = await mockSurvey();
-      const accountId = (await mockAccount()).id;
+      const survey = await createSurvey();
+      const account = await createAccount();
       await surveyResultCollection.insertMany([
-        {
-          surveyId: survey.id,
-          accountId,
+        mockSaveSurveyResultEntity({
+          surveyId: new ObjectId(survey.id),
+          accountId: new ObjectId(account.id),
           answer: survey.answers[0].answer,
-          date: new Date(),
-        },
-        {
-          surveyId: survey.id,
-          accountId,
+        }),
+        mockSaveSurveyResultEntity({
+          surveyId: new ObjectId(survey.id),
+          accountId: new ObjectId(account.id),
           answer: survey.answers[0].answer,
-          date: new Date(),
-        },
-        {
-          surveyId: survey.id,
-          accountId,
+        }),
+        mockSaveSurveyResultEntity({
+          surveyId: new ObjectId(survey.id),
+          accountId: new ObjectId(account.id),
           answer: survey.answers[1].answer,
-          date: new Date(),
-        },
-        {
-          surveyId: survey.id,
-          accountId,
+        }),
+        mockSaveSurveyResultEntity({
+          surveyId: new ObjectId(survey.id),
+          accountId: new ObjectId(account.id),
           answer: survey.answers[0].answer,
-          date: new Date(),
-        },
+        }),
       ]);
 
-      const result = await sut.loadBySurveyId(survey.id, accountId);
+      const result = await sut.loadBySurveyId(survey.id, account.id);
 
       expect(result).toBeTruthy();
       expect(result.id).toEqual(survey.id);

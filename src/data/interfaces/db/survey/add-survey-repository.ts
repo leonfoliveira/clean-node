@@ -1,8 +1,17 @@
 import { SurveyModel } from '@/domain/models';
-import { AddSurveyDTO } from '@/domain/usecases';
 
 export interface AddSurveyRepository {
-  add: (params: AddSurveyRepositoryParams) => Promise<SurveyModel>;
+  add: (survey: AddSurveyRepository.Params) => Promise<SurveyModel>;
 }
 
-export type AddSurveyRepositoryParams = AddSurveyDTO;
+export namespace AddSurveyRepository {
+  export type Params = {
+    question: string;
+    answers: {
+      image?: string;
+      answer: string;
+    }[];
+    date: Date;
+    didAnswer?: boolean;
+  };
+}
