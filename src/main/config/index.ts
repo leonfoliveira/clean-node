@@ -1,3 +1,4 @@
+export * from './apollo-server';
 export * from './env';
 export * from './middlewares';
 export * from './routes';

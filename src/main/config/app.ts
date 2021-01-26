@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 
 import {
+  setupApolloServer,
   setupRoutes,
   setupSwagger,
   setupStaticFiles,
@@ -10,6 +11,7 @@ import {
 
 const app: Application = express();
 
+setupApolloServer(app);
 setupStaticFiles(app);
 setupSwagger(app);
 setupRequestMiddlewares(app);
