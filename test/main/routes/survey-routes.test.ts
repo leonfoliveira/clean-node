@@ -3,28 +3,28 @@ import { Collection } from 'mongodb';
 import request from 'supertest';
 
 import { MongoHelper } from '@/infra';
+import { env } from '@/main/config';
 import { app } from '@/main/config/app';
-import { env } from '@/main/config/env';
-import { mockAccountModel } from '@/test/domain/mocks/models';
+import { mockAccountEntity } from '@/test/infra/mocks';
 import { mockAddSurveyRequest } from '@/test/presentation/mocks';
+
+let accountCollection: Collection;
+let surveyCollection: Collection;
 
 const mockAddSurveyHttpRequest = (): Record<string, any> => ({
   body: mockAddSurveyRequest(),
 });
 
-const makeAccessToken = async (accountCollection: Collection, role?: string): Promise<string> => {
-  const account = mockAccountModel();
-  delete account.id;
-  const id = (await accountCollection.insertOne({ ...account, role })).ops[0]._id;
-  const accessToken = jwt.sign({ id }, env.jwtSecret);
-  await accountCollection.updateOne({ _id: id }, { $set: { accessToken } });
+const makeAccessToken = async (role?: string): Promise<string> => {
+  const account = mockAccountEntity(role);
+  const result = (await accountCollection.insertOne(account)).ops[0];
+
+  const accessToken = jwt.sign({ id: result._id }, env.jwtSecret);
+  await accountCollection.updateOne({ _id: result._id }, { $set: { accessToken } });
   return accessToken;
 };
 
 describe('SurveyRoutes', () => {
-  let accountCollection: Collection;
-  let surveyCollection: Collection;
-
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
@@ -45,17 +45,14 @@ describe('SurveyRoutes', () => {
       const httpResponse = await request(app)
         .post('/api/surveys')
         .send(mockAddSurveyHttpRequest().body);
-
       expect(httpResponse.status).toBe(403);
     });
-
     it('should return 201 if valid accessToken is provided', async () => {
-      const accessToken = await makeAccessToken(accountCollection, 'admin');
+      const accessToken = await makeAccessToken('admin');
       const httpResponse = await request(app)
         .post('/api/surveys')
         .set('x-access-token', accessToken)
         .send(mockAddSurveyHttpRequest().body);
-
       expect(httpResponse.status).toBe(201);
     });
   });
@@ -68,7 +65,7 @@ describe('SurveyRoutes', () => {
     });
 
     it('should return 204 if valid accessToken is provided', async () => {
-      const accessToken = await makeAccessToken(accountCollection);
+      const accessToken = await makeAccessToken();
       const httpResponse = await request(app)
         .get('/api/surveys')
         .set('x-access-token', accessToken)

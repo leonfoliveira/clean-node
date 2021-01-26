@@ -3,28 +3,33 @@ import { Collection } from 'mongodb';
 import request from 'supertest';
 
 import { MongoHelper } from '@/infra';
+import { env } from '@/main/config';
 import { app } from '@/main/config/app';
-import { env } from '@/main/config/env';
-import { mockAccountModel, mockSurveyModel } from '@/test/domain/mocks/models';
+import { mockAccountEntity, mockSurveyEntity } from '@/test/infra/mocks';
 import { mockSaveSurveyResultRequest } from '@/test/presentation/mocks';
+
+let accountCollection: Collection;
+let surveyCollection: Collection;
 
 const mockSaveSurveyResultHttpRequest = (): Record<string, any> => ({
   body: mockSaveSurveyResultRequest(),
 });
 
-const makeAccessToken = async (accountCollection: Collection, role?: string): Promise<string> => {
-  const account = mockAccountModel();
-  delete account.id;
-  const id = (await accountCollection.insertOne({ ...account, role })).ops[0]._id;
-  const accessToken = jwt.sign({ id }, env.jwtSecret);
-  await accountCollection.updateOne({ _id: id }, { $set: { accessToken } });
+const makeAccessToken = async (role?: string): Promise<string> => {
+  const account = mockAccountEntity(role);
+  const result = (await accountCollection.insertOne(account)).ops[0];
+
+  const accessToken = jwt.sign({ id: result._id }, env.jwtSecret);
+  await accountCollection.updateOne({ _id: result._id }, { $set: { accessToken } });
   return accessToken;
 };
 
-describe('SurveyRoutes', () => {
-  let accountCollection: Collection;
-  let surveyCollection: Collection;
+const createSurvey = async (): Promise<any> => {
+  const survey = mockSurveyEntity();
+  return (await surveyCollection.insertOne(survey)).ops[0];
+};
 
+describe('SurveyRoutes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });
@@ -50,12 +55,10 @@ describe('SurveyRoutes', () => {
     });
 
     it('should return 200 on SaveSurveyResult success', async () => {
-      const survey = mockSurveyModel();
-      delete survey.id;
-      const surveyId = (await surveyCollection.insertOne(survey)).ops[0]._id;
+      const survey = await createSurvey();
       const httpResponse = await request(app)
-        .put(`/api/surveys/${surveyId}/results`)
-        .set('x-access-token', await makeAccessToken(accountCollection))
+        .put(`/api/surveys/${survey._id}/results`)
+        .set('x-access-token', await makeAccessToken())
         .send({ answer: survey.answers[0].answer });
 
       expect(httpResponse.status).toBe(200);
@@ -70,12 +73,10 @@ describe('SurveyRoutes', () => {
     });
 
     it('should return 200 on LoadSurveyResult success', async () => {
-      const accessToken = await makeAccessToken(accountCollection);
-      const survey = mockSurveyModel();
-      delete survey.id;
-      const res = await surveyCollection.insertOne(survey);
+      const accessToken = await makeAccessToken();
+      const survey = await createSurvey();
       const httpResponse = await request(app)
-        .get(`/api/surveys/${res.ops[0]._id}/results`)
+        .get(`/api/surveys/${survey._id}/results`)
         .set('x-access-token', accessToken);
 
       expect(httpResponse.status).toBe(200);

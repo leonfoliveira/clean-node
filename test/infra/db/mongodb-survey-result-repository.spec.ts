@@ -16,12 +16,12 @@ let accountCollection: Collection;
 
 const createSurvey = async (): Promise<any> => {
   const survey = mockSurveyEntity();
-  return MongoHelper.mapId((await surveyCollection.insertOne(survey)).ops[0]);
+  return (await surveyCollection.insertOne(survey)).ops[0];
 };
 
 const createAccount = async (): Promise<any> => {
   const account = mockAccountEntity();
-  return MongoHelper.mapId((await accountCollection.insertOne(account)).ops[0]);
+  return (await accountCollection.insertOne(account)).ops[0];
 };
 
 describe('MongodbSurveyResultRepository', () => {
@@ -48,8 +48,8 @@ describe('MongodbSurveyResultRepository', () => {
       const survey = await createSurvey();
       const account = await createAccount();
       const params = mockSaveSurveyResultRepositoryParams({
-        surveyId: survey.id,
-        accountId: account.id,
+        surveyId: survey._id,
+        accountId: account._id,
         answer: survey.answers[0].answer,
       });
 
@@ -67,14 +67,14 @@ describe('MongodbSurveyResultRepository', () => {
       const survey = await createSurvey();
       const account = await createAccount();
       const params = mockSaveSurveyResultRepositoryParams({
-        surveyId: survey.id,
-        accountId: account.id,
+        surveyId: survey._id,
+        accountId: account._id,
         answer: survey.answers[1].answer,
       });
       await surveyResultCollection.insertOne(
         mockSaveSurveyResultEntity({
-          surveyId: new ObjectId(survey.id),
-          accountId: new ObjectId(account.id),
+          surveyId: new ObjectId(survey._id),
+          accountId: new ObjectId(account._id),
           answer: survey.answers[1].answer,
         }),
       );
@@ -98,31 +98,31 @@ describe('MongodbSurveyResultRepository', () => {
       const account = await createAccount();
       await surveyResultCollection.insertMany([
         mockSaveSurveyResultEntity({
-          surveyId: new ObjectId(survey.id),
-          accountId: new ObjectId(account.id),
+          surveyId: new ObjectId(survey._id),
+          accountId: new ObjectId(account._id),
           answer: survey.answers[0].answer,
         }),
         mockSaveSurveyResultEntity({
-          surveyId: new ObjectId(survey.id),
-          accountId: new ObjectId(account.id),
+          surveyId: new ObjectId(survey._id),
+          accountId: new ObjectId(account._id),
           answer: survey.answers[0].answer,
         }),
         mockSaveSurveyResultEntity({
-          surveyId: new ObjectId(survey.id),
-          accountId: new ObjectId(account.id),
+          surveyId: new ObjectId(survey._id),
+          accountId: new ObjectId(account._id),
           answer: survey.answers[1].answer,
         }),
         mockSaveSurveyResultEntity({
-          surveyId: new ObjectId(survey.id),
-          accountId: new ObjectId(account.id),
+          surveyId: new ObjectId(survey._id),
+          accountId: new ObjectId(account._id),
           answer: survey.answers[0].answer,
         }),
       ]);
 
-      const result = await sut.loadBySurveyId(survey.id, account.id);
+      const result = await sut.loadBySurveyId(survey._id, account._id);
 
       expect(result).toBeTruthy();
-      expect(result.id).toEqual(survey.id);
+      expect(result.id).toEqual(survey._id);
       expect(result.question).toEqual(survey.question);
       expect(result.answers[0].count).toBe(3);
       expect(result.answers[0].percent).toBe(75);

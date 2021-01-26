@@ -7,6 +7,8 @@ import { MongoHelper } from '@/infra';
 import { app } from '@/main/config/app';
 import { mockLoginRequest, mockSignupRequest } from '@/test/presentation/mocks';
 
+let accountCollection: Collection;
+
 const mockSignupHttpRequest = (): Record<string, any> => ({
   body: mockSignupRequest(),
 });
@@ -16,8 +18,6 @@ const mockLoginHttpRequest = (): Record<string, any> => ({
 });
 
 describe('LoginRoutes', () => {
-  let accountCollection: Collection;
-
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL);
   });

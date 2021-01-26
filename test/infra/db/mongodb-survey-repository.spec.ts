@@ -16,12 +16,12 @@ let accountCollection: Collection;
 
 const createAccount = async (): Promise<any> => {
   const account = mockAccountEntity();
-  return MongoHelper.mapId((await accountCollection.insertOne(account)).ops[0]);
+  return (await accountCollection.insertOne(account)).ops[0];
 };
 
 const createSurvey = async (): Promise<any> => {
   const survey = mockAccountEntity();
-  return MongoHelper.mapId((await surveyCollection.insertOne(survey)).ops[0]);
+  return (await surveyCollection.insertOne(survey)).ops[0];
 };
 
 describe('MongodbSurveyRepository', () => {
@@ -65,12 +65,12 @@ describe('MongodbSurveyRepository', () => {
       await surveyResultCollection.insertOne(
         mockSaveSurveyResultEntity({
           surveyId: insertedSurveys.ops[0]._id,
-          accountId: new ObjectId(account.id),
+          accountId: new ObjectId(account._id),
           answer: insertedSurveys.ops[0].answers[0].answer,
         }),
       );
 
-      const result = await sut.loadAll(account.id);
+      const result = await sut.loadAll(account._id);
 
       expect(result[0].id).toBeTruthy();
       expect(result[0].question).toBe(surveys[0].question);
@@ -88,7 +88,7 @@ describe('MongodbSurveyRepository', () => {
       const sut = makeSut();
       const account = await createAccount();
 
-      const result = await sut.loadAll(account.id);
+      const result = await sut.loadAll(account._id);
 
       expect(result).toEqual([]);
     });
@@ -99,7 +99,7 @@ describe('MongodbSurveyRepository', () => {
       const sut = makeSut();
       const survey = await createSurvey();
 
-      const result = await sut.loadById(survey.id);
+      const result = await sut.loadById(survey._id);
 
       expect(result.id).toBeTruthy();
       expect(result.question).toBe(survey.question);
