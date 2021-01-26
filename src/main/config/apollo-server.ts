@@ -15,7 +15,7 @@ const checkError = (error: GraphQLError, errorName: string): boolean => {
 };
 
 const handleErrors = (response: any, errors: readonly GraphQLError[]): void => {
-  const error = errors[0];
+  const error = errors?.[0];
 
   if (error) {
     delete response.data;
