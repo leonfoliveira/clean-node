@@ -26,7 +26,6 @@
   "dependencies": {
     "apollo-server-express": "^2.19.2",
     "bcrypt": "^5.0.0",
-    "celebrate": "^13.0.4",
     "express": "^4.17.1",
     "graphql": "^15.4.0",
     "graphql-iso-date": "^3.6.1",
