@@ -1,7 +1,6 @@
 import { Schema } from 'joi';
 
-import { InvalidParamError } from '@/presentation/errors';
-import { Validator } from '@/presentation/interfaces';
+import { Validator } from '@/data/interfaces';
 
 export class JoiAdapter implements Validator {
   constructor(private readonly schema: Schema) {}
@@ -9,7 +8,7 @@ export class JoiAdapter implements Validator {
   validate(data: Record<string, any>): Error {
     const result = this.schema.validate(data);
     if (result.error) {
-      return new InvalidParamError(result.error.message);
+      return new Error(result.error.message);
     }
 
     return null;

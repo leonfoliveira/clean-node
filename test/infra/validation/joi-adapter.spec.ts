@@ -2,7 +2,6 @@ import faker from 'faker';
 import Joi, { ObjectSchema, ValidationError } from 'joi';
 
 import { JoiAdapter } from '@/infra';
-import { InvalidParamError } from '@/presentation/errors';
 
 type SutTypes = {
   sut: JoiAdapter;
@@ -42,14 +41,14 @@ describe('JoiAdapter', () => {
     expect(result).toBeNull();
   });
 
-  it('should return InvalidParamError if joi.validate returns an error', () => {
+  it('should return an Error if joi.validate returns an error', () => {
     const { sut, schema } = makeSut();
     const error = new ValidationError(faker.random.words(), null, null);
     jest.spyOn(schema, 'validate').mockReturnValue({ value: {}, error });
 
     const result = sut.validate(mockData());
 
-    expect(result).toEqual(new InvalidParamError(error.message));
+    expect(result).toEqual(new Error(error.message));
   });
 
   it('should throw if joi.validate throws', () => {
