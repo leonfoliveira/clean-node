@@ -1,6 +1,6 @@
 import faker from 'faker';
 
-import { LogControllerDecorator } from '@/main/decorators';
+import { LogControllerDecorator } from '@/main/utils';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { LogErrorRepositoryStub } from '@/test/data/mocks';
 import { ControllerStub } from '@/test/presentation/mocks';
