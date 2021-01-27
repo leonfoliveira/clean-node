@@ -7,3 +7,5 @@ export * from './db/mongodb-log-repository';
 export * from './db/mongodb-query-builder';
 export * from './db/mongodb-survey-repository';
 export * from './db/mongodb-survey-result-repository';
+
+export * from './validation/joi-adapter';
