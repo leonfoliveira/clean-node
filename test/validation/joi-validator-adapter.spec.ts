@@ -1,16 +1,27 @@
 import faker from 'faker';
-import Joi from 'joi';
+import Joi, { ObjectSchema } from 'joi';
 
 import { JoiValidatorAdapter } from '@/validation';
 
+type SutTypes = {
+  sut: JoiValidatorAdapter;
+  schema: ObjectSchema;
+};
+
+const makeSut = (): SutTypes => {
+  const schema = Joi.object({
+    [faker.database.column()]: Joi.string(),
+  });
+  jest.spyOn(schema, 'validate').mockReturnValue({ value: {}, error: undefined });
+  const sut = new JoiValidatorAdapter(schema);
+
+  return { sut, schema };
+};
+
 describe('JoiValidatorAdapter', () => {
   it('should call joi.validate with correct values', () => {
-    const schema = Joi.object({
-      [faker.database.column()]: Joi.string(),
-    });
-    jest.spyOn(schema, 'validate').mockReturnValueOnce({ value: {}, error: undefined });
+    const { sut, schema } = makeSut();
     const validateSpy = jest.spyOn(schema, 'validate');
-    const sut = new JoiValidatorAdapter(schema);
     const data = { [faker.database.column()]: faker.random.words() };
 
     sut.validate(data);
