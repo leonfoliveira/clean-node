@@ -9,8 +9,13 @@ export class LogControllerDecorator implements Controller {
 
   async handle(request: Record<string, any>): Promise<HttpResponse> {
     const httpResponse = await this.controller.handle(request);
-    if (httpResponse.statusCode === 500) {
-      await this.logErrorRepository.logError(httpResponse.body.stack);
+    try {
+      if (httpResponse.statusCode === 500) {
+        await this.logErrorRepository.logError(httpResponse.body.stack);
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
     }
     return httpResponse;
   }
