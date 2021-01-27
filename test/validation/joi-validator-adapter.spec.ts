@@ -28,4 +28,13 @@ describe('JoiValidatorAdapter', () => {
 
     expect(validateSpy).toBeCalledWith(data);
   });
+
+  it('should return null if joi.validate does not return an error', () => {
+    const { sut } = makeSut();
+    const data = { [faker.database.column()]: faker.random.words() };
+
+    const result = sut.validate(data);
+
+    expect(result).toBeNull();
+  });
 });
