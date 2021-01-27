@@ -16,3 +16,5 @@ export * from './db/survey/load-surveys-repository';
 
 export * from './db/survey-result/load-survey-result-repository';
 export * from './db/survey-result/save-survey-result-repository';
+
+export * from './validation/validator';

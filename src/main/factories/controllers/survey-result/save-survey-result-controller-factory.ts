@@ -1,9 +1,13 @@
-import { makeLogControllerDecorator } from '@/main/factories/decorators';
 import { makeLoadSurveyById, makeSaveSurveyResult } from '@/main/factories/usecases';
+import { makeLogControllerDecorator, makeValidationControllerProxy } from '@/main/factories/utils';
+import { makeSaveSurveyResultValidator } from '@/main/factories/validators';
 import { SaveSurveyResultController } from '@/presentation/controllers';
 import { Controller } from '@/presentation/interfaces';
 
 export const makeSaveSurveyResultController = (): Controller =>
-  makeLogControllerDecorator(
-    new SaveSurveyResultController(makeLoadSurveyById(), makeSaveSurveyResult()),
+  makeValidationControllerProxy(
+    makeSaveSurveyResultValidator(),
+    makeLogControllerDecorator(
+      new SaveSurveyResultController(makeLoadSurveyById(), makeSaveSurveyResult()),
+    ),
   );

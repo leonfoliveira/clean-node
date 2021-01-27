@@ -1,9 +1,11 @@
-import { celebrate, Segments, Joi } from 'celebrate';
-import { RequestHandler } from 'express';
+import Joi from 'joi';
 
-export const validateAddSurvey = (): RequestHandler =>
-  celebrate({
-    [Segments.BODY]: Joi.object().keys({
+import { Validator } from '@/data/interfaces';
+import { JoiAdapter } from '@/infra';
+
+export const makeAddSurveyValidator = (): Validator =>
+  new JoiAdapter(
+    Joi.object({
       question: Joi.string().max(100).required(),
       answers: Joi.array()
         .items(
@@ -13,5 +15,5 @@ export const validateAddSurvey = (): RequestHandler =>
           }),
         )
         .required(),
-    }),
-  });
+    }).unknown(),
+  );

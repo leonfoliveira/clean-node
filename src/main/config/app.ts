@@ -5,8 +5,7 @@ import {
   setupRoutes,
   setupSwagger,
   setupStaticFiles,
-  setupRequestMiddlewares,
-  setupResponseMiddlewares,
+  setupMiddlewares,
 } from '@/main/config';
 
 const app: Application = express();
@@ -14,8 +13,7 @@ const app: Application = express();
 setupApolloServer(app);
 setupStaticFiles(app);
 setupSwagger(app);
-setupRequestMiddlewares(app);
+setupMiddlewares(app);
 setupRoutes(app);
-setupResponseMiddlewares(app);
 
 export { app };
