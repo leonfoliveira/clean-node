@@ -1,46 +1,23 @@
 import faker from 'faker';
 
 import { LoginController } from '@/presentation/controllers';
-import { InvalidParamError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { AuthenticationStub } from '@/test/domain/mocks/usecases';
-import { mockLoginRequest, ValidatorStub } from '@/test/presentation/mocks';
+import { mockLoginRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: LoginController;
-  validatorStub: ValidatorStub;
   authenticationStub: AuthenticationStub;
 };
 
 const makeSut = (): SutTypes => {
-  const validatorStub = new ValidatorStub();
   const authenticationStub = new AuthenticationStub();
-  const sut = new LoginController(validatorStub, authenticationStub);
+  const sut = new LoginController(authenticationStub);
 
-  return { sut, validatorStub, authenticationStub };
+  return { sut, authenticationStub };
 };
 
 describe('LoginController', () => {
-  it('should call Validator with correct values', async () => {
-    const { sut, validatorStub } = makeSut();
-    const validateSpy = jest.spyOn(validatorStub, 'validate');
-    const request = mockLoginRequest();
-
-    await sut.handle(request);
-
-    expect(validateSpy).toHaveBeenCalledWith(request);
-  });
-
-  it('should return 400 if Validator returns an error', async () => {
-    const { sut, validatorStub } = makeSut();
-    const error = new InvalidParamError(faker.random.words());
-    jest.spyOn(validatorStub, 'validate').mockReturnValueOnce(error);
-
-    const httpResponse = await sut.handle(mockLoginRequest());
-
-    expect(httpResponse).toEqual(HttpResponseFactory.makeBadRequest(error));
-  });
-
   it('should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut();
     const authSpy = jest.spyOn(authenticationStub, 'auth');

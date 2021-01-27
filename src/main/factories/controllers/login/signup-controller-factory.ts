@@ -1,5 +1,5 @@
-import { makeLogControllerDecorator } from '@/main/factories/decorators';
 import { makeAddAccount, makeAuthentication } from '@/main/factories/usecases';
+import { makeLogControllerDecorator } from '@/main/factories/utils';
 import { SignUpController } from '@/presentation/controllers';
 import { Controller } from '@/presentation/interfaces';
 
