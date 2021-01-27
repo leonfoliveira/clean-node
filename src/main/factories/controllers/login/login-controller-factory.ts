@@ -7,7 +7,10 @@ import { Controller } from '@/presentation/interfaces';
 
 import { makeValidator } from '../../validation';
 
-const validatorSchema = Joi.object({});
+const validatorSchema = Joi.object().keys({
+  email: Joi.string().email().required(),
+  password: Joi.string().min(8).max(32).required(),
+});
 
 export const makeLoginController = (): Controller =>
   makeLogControllerDecorator(

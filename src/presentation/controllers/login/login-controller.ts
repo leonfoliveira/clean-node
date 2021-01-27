@@ -10,12 +10,13 @@ export class LoginController implements Controller<LoginController.Request, Http
 
   async handle(request: LoginController.Request): Promise<HttpResponse> {
     try {
-      const error = this.validator.validate(request);
+      const { email, password } = request;
+
+      const error = this.validator.validate({ email, password });
       if (error) {
         return HttpResponseFactory.makeBadRequest(error);
       }
 
-      const { email, password } = request;
       const authorization = await this.authentication.auth({ email, password });
       if (!authorization) {
         return HttpResponseFactory.makeUnauthorized();
