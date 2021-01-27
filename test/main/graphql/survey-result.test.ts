@@ -1,10 +1,12 @@
 import { ApolloServer, gql } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-integration-testing';
+import faker from 'faker';
 import jwt from 'jsonwebtoken';
 import { Collection } from 'mongodb';
 
 import { MongoHelper } from '@/infra';
 import { env } from '@/main/config';
+import { AccessDeniedError } from '@/presentation/errors';
 import { mockAccountEntity, mockSurveyEntity } from '@/test/infra/mocks';
 
 import { makeApolloServer } from './helpers';
@@ -76,6 +78,19 @@ describe('SurveyResultGraphQL', () => {
         })),
       );
       expect(result.data.surveyResult.date).toBe(survey.date.toISOString());
+    });
+
+    it('should return AccessDeniedError if no token is provided', async () => {
+      const { query } = createTestClient({
+        apolloServer,
+      });
+
+      const result: any = await query(surveyResultQuery, {
+        variables: { surveyId: faker.random.uuid() },
+      });
+
+      expect(result.data).toBeFalsy();
+      expect(result.errors[0].message).toBe(new AccessDeniedError().message);
     });
   });
 });
