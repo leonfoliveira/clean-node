@@ -12,7 +12,6 @@ export class ValidationControllerProxy implements Controller {
       return HttpResponseFactory.makeBadRequest(new InvalidParamError(error.message));
     }
 
-    await this.controller.handle(request);
-    return null;
+    return this.controller.handle(request);
   }
 }
