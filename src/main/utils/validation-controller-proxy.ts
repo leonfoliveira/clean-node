@@ -7,11 +7,15 @@ export class ValidationControllerProxy implements Controller {
   constructor(private readonly validator: Validator, private readonly controller: Controller) {}
 
   async handle(request: Record<string, any>): Promise<any> {
-    const error = this.validator.validate(request);
-    if (error) {
-      return HttpResponseFactory.makeBadRequest(new InvalidParamError(error.message));
-    }
+    try {
+      const error = this.validator.validate(request);
+      if (error) {
+        return HttpResponseFactory.makeBadRequest(new InvalidParamError(error.message));
+      }
 
-    return this.controller.handle(request);
+      return this.controller.handle(request);
+    } catch (error) {
+      return HttpResponseFactory.makeInternalServerError(error);
+    }
   }
 }
