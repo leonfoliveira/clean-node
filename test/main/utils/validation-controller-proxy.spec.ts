@@ -52,4 +52,12 @@ describe('ValidationControllerProxy', () => {
 
     expect(handleSpy).toHaveBeenCalledWith(request);
   });
+
+  it('should return the same as Controller', async () => {
+    const { sut, controllerStub } = makeSut();
+
+    const httpResponse = await sut.handle(mockLoginRequest());
+
+    expect(httpResponse).toEqual(controllerStub.response);
+  });
 });
