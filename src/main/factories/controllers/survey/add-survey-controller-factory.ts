@@ -1,7 +1,11 @@
 import { makeAddSurvey } from '@/main/factories/usecases';
-import { makeLogControllerDecorator } from '@/main/factories/utils';
+import { makeLogControllerDecorator, makeValidationControllerProxy } from '@/main/factories/utils';
+import { makeAddSurveyValidator } from '@/main/factories/validators';
 import { AddSurveyController } from '@/presentation/controllers';
 import { Controller } from '@/presentation/interfaces';
 
 export const makeAddSurveyController = (): Controller =>
-  makeLogControllerDecorator(new AddSurveyController(makeAddSurvey()));
+  makeValidationControllerProxy(
+    makeAddSurveyValidator(),
+    makeLogControllerDecorator(new AddSurveyController(makeAddSurvey())),
+  );
