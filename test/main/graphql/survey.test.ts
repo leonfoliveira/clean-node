@@ -5,6 +5,7 @@ import { Collection } from 'mongodb';
 
 import { MongoHelper } from '@/infra';
 import { env } from '@/main/config';
+import { AccessDeniedError } from '@/presentation/errors';
 import { mockAccountEntity, mockSurveyEntity } from '@/test/infra/mocks';
 
 import { makeApolloServer } from './helpers';
@@ -55,7 +56,7 @@ describe('SurveyGraphQL', () => {
       }
     `;
 
-    it('should return Surveys', async () => {
+    it('should return Surveys on success', async () => {
       const survey = mockSurveyEntity();
       await surveyCollection.insertOne(survey);
       const accessToken = await makeAccessToken();
@@ -74,6 +75,17 @@ describe('SurveyGraphQL', () => {
       );
       expect(result.data.surveys[0].date).toBe(survey.date.toISOString());
       expect(result.data.surveys[0].didAnswer).toBe(false);
+    });
+
+    it('should return AccessDeniedError if no token is provided', async () => {
+      const { query } = createTestClient({
+        apolloServer,
+      });
+
+      const result: any = await query(surveysQuery);
+
+      expect(result.data).toBeFalsy();
+      expect(result.errors[0].message).toBe(new AccessDeniedError().message);
     });
   });
 });
