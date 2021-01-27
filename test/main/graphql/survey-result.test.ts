@@ -132,5 +132,21 @@ describe('SurveyResultGraphQL', () => {
       });
       expect(result.data.saveSurveyResult.date).toBe(survey.date.toISOString());
     });
+
+    it('should return AccessDeniedError if no token is provided', async () => {
+      const { mutate } = createTestClient({
+        apolloServer,
+      });
+
+      const result: any = await mutate(surveyResultMutation, {
+        variables: {
+          surveyId: faker.random.uuid(),
+          answer: faker.random.uuid(),
+        },
+      });
+
+      expect(result.data).toBeFalsy();
+      expect(result.errors[0].message).toBe(new AccessDeniedError().message);
+    });
   });
 });
