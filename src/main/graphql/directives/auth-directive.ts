@@ -15,7 +15,7 @@ export class AuthDirective extends SchemaDirectiveVisitor {
       const httpResponse = await makeAuthMiddleware().handle(request);
 
       if (httpResponse.statusCode === 200) {
-        Object.assign(context?.req, httpResponse.body);
+        Object.assign(context?.req.headers, httpResponse.body);
         return resolve.call(this, parent, args, context, info);
       }
       throw new ForbiddenError(httpResponse.body.message);

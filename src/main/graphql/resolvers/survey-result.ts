@@ -11,7 +11,7 @@ export default {
   },
 
   Mutation: {
-    saveSurveyResult: async (parent: any, args: any): Promise<any> =>
-      adaptResolver(makeSaveSurveyResultController(), args),
+    saveSurveyResult: async (parent: any, args: any, context: any): Promise<any> =>
+      adaptResolver(makeSaveSurveyResultController(), args, context),
   },
 };
