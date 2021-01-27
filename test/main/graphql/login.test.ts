@@ -1,9 +1,11 @@
 import { ApolloServer, gql } from 'apollo-server-express';
 import { createTestClient } from 'apollo-server-integration-testing';
 import bcrypt from 'bcrypt';
+import faker from 'faker';
 import { Collection } from 'mongodb';
 
 import { MongoHelper } from '@/infra';
+import { UnauthorizedError } from '@/presentation/errors';
 import { mockAccountEntity } from '@/test/infra/mocks';
 
 import { makeApolloServer } from './helpers';
@@ -53,6 +55,20 @@ describe('LoginGraphQL', () => {
 
       expect(result.data.login.accessToken).toBeTruthy();
       expect(result.data.login.name).toBe(account.name);
+    });
+
+    it('should UnauthorizedError on invalid credentials', async () => {
+      const { query } = createTestClient({ apolloServer });
+
+      const result: any = await query(loginQuery, {
+        variables: {
+          email: faker.internet.email(),
+          password: faker.internet.password(),
+        },
+      });
+
+      expect(result.data).toBeFalsy();
+      expect(result.errors[0].message).toBe(new UnauthorizedError().message);
     });
   });
 });
