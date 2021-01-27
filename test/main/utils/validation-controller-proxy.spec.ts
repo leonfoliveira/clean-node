@@ -43,6 +43,18 @@ describe('ValidationControllerProxy', () => {
     );
   });
 
+  it('should return 500 if Validator throws', async () => {
+    const { sut, validatorStub } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(validatorStub, 'validate').mockImplementationOnce(() => {
+      throw error;
+    });
+
+    const response = await sut.handle(mockLoginRequest());
+
+    expect(response).toEqual(HttpResponseFactory.makeInternalServerError(error));
+  });
+
   it('should call Controller with the same params', async () => {
     const { sut, controllerStub } = makeSut();
     const handleSpy = jest.spyOn(controllerStub, 'handle');
