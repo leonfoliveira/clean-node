@@ -1,6 +1,7 @@
 import faker from 'faker';
-import Joi, { ObjectSchema } from 'joi';
+import Joi, { ObjectSchema, ValidationError } from 'joi';
 
+import { InvalidParamError } from '@/presentation/errors';
 import { JoiValidatorAdapter } from '@/validation';
 
 type SutTypes = {
@@ -18,11 +19,15 @@ const makeSut = (): SutTypes => {
   return { sut, schema };
 };
 
+const mockData = (): Record<string, string> => ({
+  [faker.database.column()]: faker.random.words(),
+});
+
 describe('JoiValidatorAdapter', () => {
   it('should call joi.validate with correct values', () => {
     const { sut, schema } = makeSut();
     const validateSpy = jest.spyOn(schema, 'validate');
-    const data = { [faker.database.column()]: faker.random.words() };
+    const data = mockData();
 
     sut.validate(data);
 
@@ -31,10 +36,19 @@ describe('JoiValidatorAdapter', () => {
 
   it('should return null if joi.validate does not return an error', () => {
     const { sut } = makeSut();
-    const data = { [faker.database.column()]: faker.random.words() };
 
-    const result = sut.validate(data);
+    const result = sut.validate(mockData());
 
     expect(result).toBeNull();
+  });
+
+  it('should return InvalidParamError if joi.validate returns an error', () => {
+    const { sut, schema } = makeSut();
+    const error = new ValidationError(faker.random.words(), null, null);
+    jest.spyOn(schema, 'validate').mockReturnValue({ value: {}, error });
+
+    const result = sut.validate(mockData());
+
+    expect(result).toEqual(new InvalidParamError(error.message));
   });
 });
