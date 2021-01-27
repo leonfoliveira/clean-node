@@ -71,4 +71,21 @@ describe('LogControllerDecorator', () => {
 
     expect(logErrorSpy).toHaveBeenCalledWith(error.stack);
   });
+
+  it('should log error to console if LogErrorRepository throws', async () => {
+    const { sut, controllerStub, logErrorRepository } = makeSut();
+    const controllerError = new Error(faker.random.words());
+    controllerError.stack = faker.random.words();
+    jest
+      .spyOn(controllerStub, 'handle')
+      .mockResolvedValueOnce(HttpResponseFactory.makeInternalServerError(controllerError));
+    const error = new Error(faker.random.words());
+    jest.spyOn(logErrorRepository, 'logError').mockRejectedValueOnce(error);
+    const consoleSpy = jest.spyOn(console, 'error');
+
+    const httpResponse = await sut.handle(mockRequest());
+
+    expect(httpResponse).toEqual(HttpResponseFactory.makeInternalServerError(controllerError));
+    expect(consoleSpy).toHaveBeenCalledWith(error);
+  });
 });
