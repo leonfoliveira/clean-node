@@ -1,3 +1,3 @@
-export interface Controller<Request = any, Response = any> {
+export interface Controller<Request = Record<string, any>, Response = any> {
   handle: (request: Request) => Promise<Response>;
 }
