@@ -4,18 +4,20 @@ import { ValidationControllerProxy } from '@/main/utils';
 import { InvalidParamError } from '@/presentation/errors';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { ValidatorStub } from '@/test/data/mocks';
-import { mockLoginRequest } from '@/test/presentation/mocks';
+import { ControllerStub, mockLoginRequest } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: ValidationControllerProxy;
   validatorStub: ValidatorStub;
+  controllerStub: ControllerStub;
 };
 
 const makeSut = (): SutTypes => {
   const validatorStub = new ValidatorStub();
-  const sut = new ValidationControllerProxy(validatorStub);
+  const controllerStub = new ControllerStub();
+  const sut = new ValidationControllerProxy(validatorStub, controllerStub);
 
-  return { sut, validatorStub };
+  return { sut, validatorStub, controllerStub };
 };
 
 describe('ValidationControllerProxy', () => {
@@ -39,5 +41,15 @@ describe('ValidationControllerProxy', () => {
     expect(httpResponse).toEqual(
       HttpResponseFactory.makeBadRequest(new InvalidParamError(error.message)),
     );
+  });
+
+  it('should call Controller with the same params', async () => {
+    const { sut, controllerStub } = makeSut();
+    const handleSpy = jest.spyOn(controllerStub, 'handle');
+    const request = mockLoginRequest();
+
+    await sut.handle(request);
+
+    expect(handleSpy).toHaveBeenCalledWith(request);
   });
 });
