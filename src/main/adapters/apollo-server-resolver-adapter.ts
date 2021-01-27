@@ -5,6 +5,7 @@ import {
   UserInputError,
 } from 'apollo-server-express';
 
+import { EmailInUseError } from '@/presentation/errors';
 import { Controller } from '@/presentation/interfaces';
 
 export const adaptResolver = async (
@@ -25,6 +26,8 @@ export const adaptResolver = async (
       throw new AuthenticationError(httpResponse.body.message);
     case 403:
       throw new ForbiddenError(httpResponse.body.message);
+    case 409:
+      throw new EmailInUseError();
     default:
       throw new ApolloError(httpResponse.body.message);
   }
