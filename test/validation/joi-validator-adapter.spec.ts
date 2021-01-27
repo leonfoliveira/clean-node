@@ -51,4 +51,14 @@ describe('JoiValidatorAdapter', () => {
 
     expect(result).toEqual(new InvalidParamError(error.message));
   });
+
+  it('should throw if joi.validate throws', () => {
+    const { sut, schema } = makeSut();
+    const error = new Error(faker.random.words());
+    jest.spyOn(schema, 'validate').mockImplementationOnce(() => {
+      throw error;
+    });
+
+    expect(() => sut.validate(schema)).toThrow(error);
+  });
 });
