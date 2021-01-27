@@ -16,3 +16,5 @@ export * from './db/survey/mock-load-surveys-repository';
 
 export * from './db/survey-result/mock-load-survey-result-repository';
 export * from './db/survey-result/mock-save-survey-result-repository';
+
+export * from './validation/mock-validator';
