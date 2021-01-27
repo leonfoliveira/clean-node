@@ -3,21 +3,33 @@ import faker from 'faker';
 import { LoginController } from '@/presentation/controllers';
 import { HttpResponseFactory } from '@/presentation/helpers';
 import { AuthenticationStub } from '@/test/domain/mocks/usecases';
-import { mockLoginRequest } from '@/test/presentation/mocks';
+import { mockLoginRequest, ValidatorStub } from '@/test/presentation/mocks';
 
 type SutTypes = {
   sut: LoginController;
+  validatorStub: ValidatorStub;
   authenticationStub: AuthenticationStub;
 };
 
 const makeSut = (): SutTypes => {
+  const validatorStub = new ValidatorStub();
   const authenticationStub = new AuthenticationStub();
-  const sut = new LoginController(authenticationStub);
+  const sut = new LoginController(validatorStub, authenticationStub);
 
-  return { sut, authenticationStub };
+  return { sut, validatorStub, authenticationStub };
 };
 
 describe('LoginController', () => {
+  it('should call Validator with correct values', async () => {
+    const { sut, validatorStub } = makeSut();
+    const validateSpy = jest.spyOn(validatorStub, 'validate');
+    const request = mockLoginRequest();
+
+    await sut.handle(request);
+
+    expect(validateSpy).toHaveBeenCalledWith(request);
+  });
+
   it('should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut();
     const authSpy = jest.spyOn(authenticationStub, 'auth');
