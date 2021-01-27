@@ -5,7 +5,7 @@ import faker from 'faker';
 import { Collection } from 'mongodb';
 
 import { MongoHelper } from '@/infra';
-import { UnauthorizedError } from '@/presentation/errors';
+import { EmailInUseError, UnauthorizedError } from '@/presentation/errors';
 import { mockAccountEntity } from '@/test/infra/mocks';
 import { mockSignupRequest } from '@/test/presentation/mocks';
 
@@ -103,6 +103,22 @@ describe('LoginGraphQL', () => {
 
       expect(result.data.signUp.accessToken).toBeTruthy();
       expect(result.data.signUp.name).toBe(request.name);
+    });
+
+    it('should return EmailInUseError on invalid data', async () => {
+      const request = mockSignupRequest();
+      await accountCollection.insertOne({
+        ...request,
+        password: await bcrypt.hash(request.password, 12),
+      });
+      const { mutate } = createTestClient({ apolloServer });
+
+      const result: any = await mutate(signUpMutation, {
+        variables: request,
+      });
+
+      expect(result.data).toBeFalsy();
+      expect(result.errors[0].message).toBe(new EmailInUseError().message);
     });
   });
 });
